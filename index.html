@@ -153,7 +153,7 @@ h1.title .yr{
 .search input{
   width:100%;padding:11px 14px 11px 38px;border-radius:11px;
   background:rgba(0,0,0,.28);border:1px solid var(--line);color:var(--text);
-  font-family:inherit;font-size:14px;outline:none;transition:.18s var(--ease);
+  font-family:inherit;font-size:14px;outline:none;transition:border-color .18s var(--ease),box-shadow .18s var(--ease);
 }
 .search input::placeholder{color:var(--text-faint)}
 .search input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(25,224,138,.16)}
@@ -164,7 +164,7 @@ h1.title .yr{
 .btn-clear{
   appearance:none;border:1px solid var(--line-strong);background:transparent;color:var(--text-dim);
   font-family:inherit;font-weight:700;font-size:12.5px;padding:8px 14px;border-radius:9px;cursor:pointer;
-  transition:.18s var(--ease);opacity:0;pointer-events:none;
+  transition:color .18s var(--ease),border-color .18s var(--ease),background .18s var(--ease),opacity .18s var(--ease);opacity:0;pointer-events:none;
 }
 .btn-clear.show{opacity:1;pointer-events:auto}
 .btn-clear:hover{color:var(--text);border-color:var(--green);background:rgba(25,224,138,.08)}
@@ -268,7 +268,7 @@ main{padding:18px 0 70px;position:relative}
 .side{display:flex;align-items:center;gap:11px;min-width:0}
 .side.away{flex-direction:row-reverse;text-align:right}
 .fl{font-size:30px;line-height:1;flex:none;filter:drop-shadow(0 2px 5px rgba(0,0,0,.4))}
-.flagsvg{width:1.25em;height:.82em;border-radius:2px;vertical-align:-.1em;display:inline-block}
+.flagsvg{width:1.25em;height:.82em;border-radius:2px;vertical-align:-.1em;display:inline-block;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
 .nm{font-weight:700;font-size:15.5px;letter-spacing:.005em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:color .2s}
 .vs{font-family:"Anton",sans-serif;color:var(--text-faint);font-size:15px;letter-spacing:.04em}
 
@@ -331,7 +331,7 @@ body.filtering .cal-entry:not(.on):not([data-teams=""]){display:none}
 .gm-when .md{padding:2px 6px;border:1px solid var(--line);border-radius:5px;font-size:9.5px;letter-spacing:.06em;color:var(--text-dim)}
 
 /* filter: only groups containing a picked team, and only their fixtures */
-body.filtering .gc:not(:has(.gteam.on)){display:none}
+body.filtering .gc:not(:has(.gst-row.on)){display:none}
 body.filtering .gmatch:not(.on){display:none}
 .gteam.on{background:rgba(25,224,138,.1)}
 .gteam.on .nm{color:var(--green-bright)}
@@ -342,7 +342,7 @@ body.filtering .gmatch:not(.on){display:none}
 .gc-head:hover{background:linear-gradient(180deg,rgba(25,224,138,.1),transparent)}
 .gc-chev{margin-left:auto;width:17px;height:17px;color:var(--text-faint);transition:transform .22s var(--ease);flex:none}
 .gc.collapsed .gc-chev{transform:rotate(-90deg)}
-.gc.collapsed .gc-teams,.gc.collapsed .gc-matches{display:none}
+.gc.collapsed .gc-standings,.gc.collapsed .gc-matches{display:none}
 .gc.collapsed .gc-head{border-bottom:0}
 .gc-head:focus-visible,.stage-banner:focus-visible{outline:2px solid var(--green);outline-offset:-2px;border-radius:6px}
 
@@ -692,29 +692,31 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 .map-sphere{fill:url(#mapOcean);stroke:rgba(180,255,220,.12);stroke-width:.7;vector-effect:non-scaling-stroke}
 .map-grat{fill:none;stroke:rgba(180,255,220,.05);stroke-width:.5;vector-effect:non-scaling-stroke;pointer-events:none}
 .map-zoomctl{position:absolute;right:12px;bottom:12px;display:flex;flex-direction:column;gap:6px;z-index:15}
-.mzb{width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--line-strong);border-radius:9px;
+.mzb{position:relative;width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--line-strong);border-radius:9px;
   background:rgba(7,13,10,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:var(--text);
   font-family:inherit;font-weight:800;font-size:17px;line-height:1;cursor:pointer;
   transition:color .15s var(--ease),border-color .15s var(--ease),background .15s var(--ease),transform .1s var(--ease)}
+.mzb::after{content:"";position:absolute;inset:-3px}   /* 40×40 touch target; gap is 6px so neighbours meet but never overlap */
 .mzb:hover{border-color:var(--green);color:var(--green-bright);background:rgba(25,224,138,.1)}
-.mzb:active{transform:scale(.92)}
+.mzb:active{transform:scale(.96)}
 .mc-country{fill:#10201a;stroke:rgba(180,255,220,.10);stroke-width:.5;vector-effect:non-scaling-stroke}
 .map-fill{fill:var(--mk);fill-opacity:.82;stroke:var(--mk);stroke-width:.7;vector-effect:non-scaling-stroke;cursor:pointer;
-  transition:fill-opacity .2s var(--ease),filter .2s var(--ease)}
+  transition:fill-opacity .2s var(--ease),filter .2s var(--ease),stroke .2s var(--ease),stroke-width .2s var(--ease)}
 .map-fill:focus,.map-marker:focus{outline:none}   /* kill the browser's bounding-box focus ring on click */
 .map-fill:hover,.map-fill:focus-visible{fill-opacity:1;outline:none;stroke:#eafff5;stroke-width:1.2}
 .map-fill-multi{cursor:default}
 .map-fill-multi:hover{filter:none}
 .map-fill.dim{fill:#10201a;fill-opacity:1;stroke:rgba(180,255,220,.10);pointer-events:none;filter:none}
 .map-marker{fill:var(--mk);stroke:#eafff5;stroke-width:1.4;cursor:pointer;paint-order:stroke;
-  transition:opacity .2s var(--ease);filter:drop-shadow(0 0 4px color-mix(in srgb,var(--mk) 60%,transparent))}
+  transition:opacity .2s var(--ease),r .15s var(--ease);filter:drop-shadow(0 0 4px color-mix(in srgb,var(--mk) 60%,transparent))}
 .map-marker:hover,.map-marker:focus-visible{r:8;outline:none}
 .map-marker.dim{opacity:.1;pointer-events:none}
 .map-pop{position:absolute;z-index:20;transform:translate(-50%,calc(-100% - 13px));
   background:linear-gradient(180deg,rgba(255,255,255,.03),transparent 40%),var(--surface-2);
   border:1px solid var(--line-strong);border-radius:12px;padding:9px 11px;
   display:flex;gap:9px;align-items:flex-start;min-width:150px;max-width:240px;
-  box-shadow:0 16px 44px rgba(0,0,0,.6),0 0 0 1px rgba(25,224,138,.12)}
+  box-shadow:0 16px 44px rgba(0,0,0,.6),0 0 0 1px rgba(25,224,138,.12);
+  animation:mmIn .16s var(--ease)}   /* subtle fade-in each time it's shown (display toggle restarts it) */
 .map-pop[hidden]{display:none}
 .map-pop::after{content:"";position:absolute;left:50%;bottom:-6px;width:11px;height:11px;transform:translateX(-50%) rotate(45deg);
   background:var(--surface-2);border-right:1px solid var(--line-strong);border-bottom:1px solid var(--line-strong)}
@@ -727,6 +729,77 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 .map-pop-link:hover{text-decoration:underline}
 .map-note{margin:12px 0 0;font-size:11.5px;color:var(--text-faint);font-weight:500}
 @media (max-width:560px){ .map-filters{gap:8px 10px} .mapchip{padding:6px 9px;font-size:11.5px} .mapfg-l{width:100%} .map-clear{margin-left:0} }
+
+/* ---------------------------- STANDINGS (folded into Groups view) ---------------------------- */
+.gc-standings{padding:4px 10px 2px;overflow-x:auto}
+.gstand{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}
+.gstand th{font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--text-faint);
+  padding:7px 4px;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap}
+.gstand td{padding:8px 4px;text-align:center;border-bottom:1px solid var(--line);color:var(--text-dim);white-space:nowrap}
+.gstand tbody tr:last-child td{border-bottom:0}
+.gst-pos{width:18px;color:var(--text-faint);font-weight:800}
+.gst-team{text-align:left}
+.gst-team .fl{font-size:16px;line-height:1;vertical-align:-.12em;margin-right:7px;filter:saturate(1.05)}
+.gst-nm{font-weight:700;color:var(--text);cursor:pointer}
+.gst-nm:hover{color:var(--green-bright)}
+.gst-pts{font-weight:800;color:var(--text)}
+.gst-gf,.gst-ga{color:var(--text-faint)}
+.gst-row{cursor:pointer;transition:background .2s var(--ease)}
+.gst-row.gst-q{box-shadow:inset 3px 0 0 var(--green)}
+.gst-row.gst-q3{box-shadow:inset 3px 0 0 var(--st-R16)}
+.gst-row.gst-q .gst-pos{color:var(--green-bright)}
+.gst-row.gst-q3 .gst-pos{color:var(--st-R16)}
+.gst-row.on{background:rgba(25,224,138,.1)}
+.gst-row.on .gst-nm{color:var(--green-bright)}
+.gm-res{color:var(--text);font-weight:800}
+@media (max-width:560px){ .gst-wdl{display:none} }   /* drop W/D/L on phones; P/GF/GA/GD/Pts stay, table also scrolls */
+
+/* third-place ranking + manual-override actions */
+.tp-wrap{margin:4px 0 22px;border:1px solid var(--line);border-radius:var(--radius);
+  background:linear-gradient(180deg,rgba(246,183,60,.05),transparent 42%),var(--surface);padding:16px 16px 14px}
+.tp-head{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.tp-title{font-family:"Anton",sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(18px,3vw,26px);
+  line-height:.95;margin:0;letter-spacing:.01em}
+.tp-title span{display:block;font-family:"Hanken Grotesk",sans-serif;font-size:11px;font-weight:600;letter-spacing:.03em;
+  text-transform:none;color:var(--text-faint);margin-top:5px}
+.tp-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.tp-btn{appearance:none;border:1px solid var(--line-strong);background:rgba(0,0,0,.22);color:var(--text-dim);
+  font-family:inherit;font-weight:700;font-size:11.5px;padding:7px 12px;border-radius:9px;cursor:pointer;
+  transition:color .15s var(--ease),border-color .15s var(--ease),background .15s var(--ease),transform .1s var(--ease)}
+.tp-btn:hover{color:var(--text);border-color:var(--green);background:rgba(25,224,138,.08)}
+.tp-btn:active{transform:scale(.96)}
+.tp-grp{margin-left:7px;font-size:9.5px;font-weight:800;letter-spacing:.04em;color:var(--text-faint);
+  border:1px solid var(--line);border-radius:4px;padding:1px 5px}
+.tp-mark{font-weight:800}
+.tp-row.tp-in{box-shadow:inset 3px 0 0 var(--green)}
+.tp-row.tp-in .tp-mark{color:var(--green-bright)}
+.tp-row.tp-out{opacity:.5}
+.tp-row.tp-out .tp-mark{color:var(--text-faint)}
+.tp-note{margin:10px 2px 0;font-size:11px;line-height:1.5;color:var(--text-faint);text-wrap:pretty}
+
+/* match-modal score editor */
+.mm-score{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.mm-score-lab{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint);
+  margin-bottom:11px;display:flex;align-items:center;gap:8px}
+.mm-score-badge{font-size:9px;font-weight:800;letter-spacing:.04em;color:var(--green-bright);
+  background:rgba(25,224,138,.14);border:1px solid rgba(25,224,138,.4);border-radius:4px;padding:1px 6px}
+.mm-score-row{display:flex;align-items:center;justify-content:center;gap:10px}
+.mm-score-tm{font-weight:700;font-size:13px;color:var(--text-dim)}
+.mm-sc-in{width:54px;padding:9px 8px;text-align:center;font-family:inherit;font-weight:800;font-size:18px;
+  font-variant-numeric:tabular-nums;background:rgba(0,0,0,.3);border:1px solid var(--line-strong);border-radius:9px;
+  color:var(--text);outline:none;transition:border-color .16s var(--ease),box-shadow .16s var(--ease)}
+.mm-sc-in:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(25,224,138,.16)}
+.mm-sc-in::-webkit-outer-spin-button,.mm-sc-in::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.mm-sc-in{-moz-appearance:textfield}
+.mm-score-dash{color:var(--text-faint);font-weight:800}
+.mm-score-btns{display:flex;justify-content:center;gap:8px;margin-top:13px}
+.mm-sc-save,.mm-sc-clear{appearance:none;font-family:inherit;font-weight:700;font-size:12.5px;padding:9px 17px;
+  border-radius:9px;cursor:pointer;transition:color .15s var(--ease),border-color .15s var(--ease),background .15s var(--ease),transform .1s var(--ease)}
+.mm-sc-save{border:0;background:var(--green);color:#062013;box-shadow:0 4px 16px rgba(25,224,138,.32)}
+.mm-sc-save:active,.mm-sc-clear:active{transform:scale(.96)}
+.mm-sc-clear{border:1px solid var(--line-strong);background:transparent;color:var(--text-dim)}
+.mm-sc-clear:hover{color:var(--text);border-color:var(--green)}
+.mm-score-note{font-size:10.5px;color:var(--text-faint);text-align:center;margin:11px 0 0;text-wrap:pretty}
 </style>
 </head>
 <body>
@@ -1098,7 +1171,7 @@ function kickoff(dateStr, time, plus){
 const isTeam = c => Object.prototype.hasOwnProperty.call(TEAMS,c);
 
 // derive per-match: absolute kickoff Date (reuses the CEST time core), sortable ts, resolved venue
-MATCHES.forEach((m,i) => { m.i = i; m.kickoffDate = kickoff(m.date, m.kickoffLocal, m.plus); m.ts = m.kickoffDate.getTime(); m.venue = VENUES[m.hostCity] || null; });
+MATCHES.forEach((m,i) => { m.i = i; m.kickoffDate = kickoff(m.date, m.kickoffLocal, m.plus); m.ts = m.kickoffDate.getTime(); m.venue = VENUES[m.hostCity] || null; m.baseHome = m.home; m.baseAway = m.away; });
 const ALL = MATCHES;                                   // single source; every view derives from this
 const STAGE_COUNT = ALL.reduce((acc,m)=>{ acc[m.stage]=(acc[m.stage]||0)+1; return acc; },{});
 const OPENER_TS = Math.min(...ALL.map(m=>m.ts));
@@ -1211,25 +1284,127 @@ function renderSchedule(){
 /* =====================================================================
    RENDER , GROUPS
    ===================================================================== */
+/* =====================================================================
+   STANDINGS , computed live from played GROUP matches in MATCHES.
+   FIFA group ranking order: points, goal difference, goals scored, then
+   head-to-head (points, GD, goals) among the still-tied teams, then fair
+   play (data unavailable , step skipped + noted), then alphabetical (a
+   deterministic stand-in for FIFA's drawing of lots).
+   ===================================================================== */
+function blankRow(code){ return {code, name:TEAMS[code][0], P:0,W:0,D:0,L:0,GF:0,GA:0,GD:0,Pts:0}; }
+function playedGroupMatches(){
+  return MATCHES.filter(m=> m.stage==='GROUP' && isTeam(m.home) && isTeam(m.away) && m.homeScore!=null && m.awayScore!=null);
+}
+function computeStandings(){
+  const table={};
+  Object.keys(GROUPS).forEach(g=>{ table[g]={}; GROUPS[g].forEach(c=> table[g][c]=blankRow(c)); });
+  playedGroupMatches().forEach(m=>{
+    const h=table[m.group][m.home], a=table[m.group][m.away]; if(!h||!a) return;
+    const hs=m.homeScore, as=m.awayScore;
+    h.P++; a.P++; h.GF+=hs; h.GA+=as; a.GF+=as; a.GA+=hs;
+    if(hs>as){ h.W++; a.L++; h.Pts+=3; }
+    else if(hs<as){ a.W++; h.L++; a.Pts+=3; }
+    else { h.D++; a.D++; h.Pts++; a.Pts++; }
+  });
+  const ranked={};
+  Object.keys(GROUPS).forEach(g=>{
+    Object.values(table[g]).forEach(r=> r.GD=r.GF-r.GA);
+    ranked[g]=rankGroup(Object.values(table[g]));
+  });
+  return ranked;
+}
+// head-to-head mini-table over only the given team codes (played group matches)
+function h2hStats(codes){
+  const set=new Set(codes), s={}; codes.forEach(c=> s[c]={Pts:0,GD:0,GF:0});
+  playedGroupMatches().forEach(m=>{
+    if(!set.has(m.home)||!set.has(m.away)) return;
+    const hs=m.homeScore, as=m.awayScore;
+    s[m.home].GF+=hs; s[m.home].GD+=hs-as; s[m.away].GF+=as; s[m.away].GD+=as-hs;
+    if(hs>as) s[m.home].Pts+=3; else if(hs<as) s[m.away].Pts+=3; else { s[m.home].Pts++; s[m.away].Pts++; }
+  });
+  return s;
+}
+function rankGroup(rows){
+  const sorted=rows.slice().sort((a,b)=> b.Pts-a.Pts || b.GD-a.GD || b.GF-a.GF);
+  const out=[]; let i=0;
+  while(i<sorted.length){
+    let j=i+1;                                                       // a cluster still tied on overall pts/GD/GF
+    while(j<sorted.length && sorted[j].Pts===sorted[i].Pts && sorted[j].GD===sorted[i].GD && sorted[j].GF===sorted[i].GF) j++;
+    const cluster=sorted.slice(i,j);
+    if(cluster.length>1){                                            // break it on head-to-head, then alphabetical
+      const h=h2hStats(cluster.map(r=>r.code));
+      cluster.sort((a,b)=> h[b.code].Pts-h[a.code].Pts || h[b.code].GD-h[a.code].GD || h[b.code].GF-h[a.code].GF || a.name.localeCompare(b.name));
+    }
+    cluster.forEach(r=>out.push(r));
+    i=j;
+  }
+  return out;
+}
+// the 12 group third-place teams, ranked; top 8 advance to the Round of 32
+function thirdPlaceRanking(ranked){
+  ranked = ranked || computeStandings();
+  const thirds=Object.keys(GROUPS).map(g=> ({...ranked[g][2], group:g}));
+  thirds.sort((a,b)=> b.Pts-a.Pts || b.GD-a.GD || b.GF-a.GF || a.name.localeCompare(b.name));
+  thirds.forEach((r,idx)=> r.advancing = idx<8);
+  return thirds;
+}
+function standingsTableHTML(g, ranked){
+  const tr=ranked[g].map((r,idx)=>{
+    const pos=idx+1, qual = pos<=2 ? 'gst-q' : (pos===3 ? 'gst-q3' : '');
+    return `<tr class="gst-row ${qual}" data-team="${r.code}">
+      <td class="gst-pos">${pos}</td>
+      <td class="gst-team"><span class="fl">${TEAMS[r.code][1]}</span><span class="gst-nm" data-team="${r.code}">${TEAMS[r.code][0]}</span></td>
+      <td>${r.P}</td><td class="gst-wdl">${r.W}</td><td class="gst-wdl">${r.D}</td><td class="gst-wdl">${r.L}</td>
+      <td class="gst-gf">${r.GF}</td><td class="gst-ga">${r.GA}</td><td>${r.GD>0?'+':''}${r.GD}</td>
+      <td class="gst-pts">${r.Pts}</td></tr>`;
+  }).join('');
+  return `<table class="gstand"><thead><tr>
+    <th class="gst-pos">#</th><th class="gst-team">Team</th><th title="Played">P</th>
+    <th class="gst-wdl" title="Won">W</th><th class="gst-wdl" title="Drawn">D</th><th class="gst-wdl" title="Lost">L</th>
+    <th class="gst-gf" title="Goals for">GF</th><th class="gst-ga" title="Goals against">GA</th>
+    <th title="Goal difference">GD</th><th class="gst-pts" title="Points">Pts</th></tr></thead><tbody>${tr}</tbody></table>`;
+}
+function thirdPlaceHTML(ranked){
+  const thirds=thirdPlaceRanking(ranked), anyPlayed=playedGroupMatches().length>0;
+  const tr=thirds.map((r,idx)=>`<tr class="gst-row tp-row ${r.advancing?'tp-in':'tp-out'}" data-team="${r.code}">
+    <td class="gst-pos">${idx+1}</td>
+    <td class="gst-team"><span class="fl">${TEAMS[r.code][1]}</span><span class="gst-nm" data-team="${r.code}">${TEAMS[r.code][0]}</span><span class="tp-grp">${r.group}</span></td>
+    <td>${r.P}</td><td>${r.GD>0?'+':''}${r.GD}</td><td class="gst-gf">${r.GF}</td><td class="gst-pts">${r.Pts}</td>
+    <td class="tp-mark">${r.advancing?'✓':'·'}</td></tr>`).join('');
+  return `<div class="tp-wrap">
+    <div class="tp-head"><h3 class="tp-title">Best third-placed teams <span>derived · top 8 advance to the Round of 32</span></h3>
+      <div class="tp-actions">
+        <button class="tp-btn" id="exportOverrides" title="Download a results.json-shaped file of your manual scores">Export overrides</button>
+        <button class="tp-btn" id="clearManual" title="Remove all manually entered scores">Clear manual</button></div></div>
+    <table class="gstand tp-table"><thead><tr>
+      <th class="gst-pos">#</th><th class="gst-team">Team</th><th title="Played">P</th><th title="Goal difference">GD</th>
+      <th class="gst-gf" title="Goals for">GF</th><th class="gst-pts" title="Points">Pts</th><th class="tp-mark">R32</th>
+    </tr></thead><tbody>${tr}</tbody></table>
+    <p class="tp-note">Ranks the 12 group third-place teams by points, goal difference, then goals scored , the top 8 advance. This is the qualification cut; the actual Round-of-32 bracket slots depend on which group combination qualifies and are filled by the results pipeline. Fair-play tiebreaker not included (data unavailable).${anyPlayed?'':' No group matches played yet , the table shows the seeded order.'}</p>
+  </div>`;
+}
+/* =====================================================================
+   RENDER , GROUPS (standings table per card + derived third-place table)
+   ===================================================================== */
 function renderGroups(){
   const gTeam = c => `<span class="fl">${TEAMS[c][1]}</span><span class="tn" data-team="${c}">${c}</span>`;
-  let html='<div class="groups-grid">';
+  const ranked = computeStandings();
+  let html = thirdPlaceHTML(ranked) + '<div class="groups-grid">';
   Object.keys(GROUPS).forEach((g,gi)=>{
-    const teams = GROUPS[g].map(c=>`<div class="gteam" data-team="${c}"><span class="fl">${TEAMS[c][1]}</span><span class="nm">${TEAMS[c][0]}</span></div>`).join("");
     const matches = MATCHES.filter(m=>m.stage==="GROUP"&&m.group===g)
       .sort((a,b)=>a.ts-b.ts)
       .map(m=>{
         const [y,mo,da]=m.date.split('-').map(Number);
         return `<div class="gmatch" data-teams="${m.home} ${m.away}" data-mi="${m.i}">
           <div class="gm-teams">${gTeam(m.home)}<span class="x">v</span>${gTeam(m.away)}</div>
-          <div class="gm-when"><span class="md">MD${m.md}</span><span>${da} ${MO[mo-1]}</span><span>${m.kickoffLocal}${m.plus?'<sup>+1</sup>':''}</span><span class="gm-city">${m.venue?m.venue.city:'TBC'}</span></div>
+          <div class="gm-when"><span class="md">MD${m.md}</span><span>${da} ${MO[mo-1]}</span><span>${m.homeScore!=null?`<b class="gm-res">${m.homeScore}-${m.awayScore}</b>`:`${m.kickoffLocal}${m.plus?'<sup>+1</sup>':''}`}</span><span class="gm-city">${m.venue?m.venue.city:'TBC'}</span></div>
         </div>`;
       }).join("");
     html+=`<div class="gc anim" style="animation-delay:${Math.min(gi,11)*28}ms">
       <div class="gc-head" data-gcol="${g}" role="button" tabindex="0" aria-expanded="true" title="Collapse / expand Group ${g}"><span class="gc-letter">${g}</span>
         <div><div class="lbl">Group ${g}</div><div class="sub">4 teams · 6 matches</div></div>
         <svg class="gc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg></div>
-      <div class="gc-teams">${teams}</div>
+      <div class="gc-standings">${standingsTableHTML(g, ranked)}</div>
       <div class="gc-matches">${matches}</div></div>`;
   });
   html+='</div>';
@@ -1348,28 +1523,71 @@ async function loadSquads(){
     const m=/^#team\/([A-Z]{3})$/.exec(location.hash); if(m && TEAMS[m[1]]) renderSquad(m[1]);
   }catch(e){ console.log('[squads] data/squads.json not available yet (run scripts/fetch-squads.mjs)'); }
 }
-/* results overlay , scores + resolved knockout teams from data/results.json.
-   Refreshable without touching this file (run scripts/fetch-results.mjs); MATCHES
-   stays the single source of truth, this just patches it in place then re-renders.
-   Shape: { lastUpdated, source, matches: { "<matchIndex>": { h, a, hs, as, status } } }
-     h/a  = resolved 3-letter codes for a knockout slot (optional)
-     hs/as = final/live scores (optional)   status = e.g. "FT", "HT", "LIVE" */
+/* =====================================================================
+   RESULTS OVERLAY + MANUAL SCORE OVERRIDES
+   Two independent layers compose onto MATCHES (the single source of truth):
+     AUTO   = data/results.json .matches   (fetched; knockout slot resolution + scores)
+     MANUAL = localStorage wc2026.manualResults   (scores only; takes precedence)
+   The cron only ever writes results.json (AUTO), so it can NEVER clobber a manual
+   edit , the two live in different places and applyOverlays() re-reads both every
+   time, recomputing from the pristine base (m.baseHome/baseAway). Idempotent.
+   Both share one shape: { "<matchIndex>": { hs, as, status, h?, a? } }
+   ===================================================================== */
+let AUTO_RESULTS = {};
+let MANUAL_RESULTS = {};
+try{ MANUAL_RESULTS = JSON.parse(localStorage.getItem('wc2026.manualResults')||'{}') || {}; }catch(e){ MANUAL_RESULTS = {}; }
+
+// recompute every match's resolved teams + score from base + both overlay layers
+function applyOverlays(){
+  MATCHES.forEach(m=>{
+    const a = AUTO_RESULTS[m.i] || {}, man = MANUAL_RESULTS[m.i] || {};
+    // knockout slot resolution is AUTO-only; otherwise fall back to the pristine slot code
+    m.home = (a.h && TEAMS[a.h]) ? a.h : m.baseHome;
+    m.away = (a.a && TEAMS[a.a]) ? a.a : m.baseAway;
+    // score: manual wins, then auto, then none
+    const manHas = man.hs!=null && man.as!=null, autoHas = a.hs!=null && a.as!=null;
+    if(manHas){ m.homeScore=man.hs; m.awayScore=man.as; m.status=man.status||'FT'; m.manual=true; }
+    else if(autoHas){ m.homeScore=a.hs; m.awayScore=a.as; m.status=a.status||'FT'; m.manual=false; }
+    else { m.homeScore=null; m.awayScore=null; m.status=undefined; m.manual=false; }
+  });
+}
+function saveManual(){ localStorage.setItem('wc2026.manualResults', JSON.stringify(MANUAL_RESULTS)); }
+function setManualScore(i, hs, as, status){
+  hs=Number(hs); as=Number(as);
+  if(!Number.isFinite(hs)||!Number.isFinite(as)||hs<0||as<0) return false;
+  MANUAL_RESULTS[i] = { hs, as, status: status||'FT' };
+  saveManual(); applyOverlays(); rerenderViews();
+  return true;
+}
+function clearManualScore(i){ delete MANUAL_RESULTS[i]; saveManual(); applyOverlays(); rerenderViews(); }
+function clearAllManual(){ MANUAL_RESULTS = {}; saveManual(); applyOverlays(); rerenderViews(); }
+// download a results.json-shaped file of the manual scores, so they can be promoted into the repo
+function exportOverrides(){
+  const payload = { lastUpdated:new Date().toISOString().slice(0,10), source:"manual overrides exported from the app", matches:MANUAL_RESULTS };
+  const blob = new Blob([JSON.stringify(payload,null,2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob), a = document.createElement('a');
+  a.href=url; a.download='results.json'; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+
+/* AUTO layer , scores + resolved knockout teams from data/results.json.
+   Refreshable without touching this file (run scripts/fetch-results.mjs). */
 async function loadResults(){
   try{
     const res=await fetch('data/results.json'); if(!res.ok) return;
-    const data=await res.json(); const rs=data.matches||{};
-    let changed=false;
-    MATCHES.forEach(m=>{
-      const r=rs[m.i]; if(!r) return;
-      if(r.h && TEAMS[r.h]){ m.home=r.h; changed=true; }           // knockout slot decided
-      if(r.a && TEAMS[r.a]){ m.away=r.a; changed=true; }
-      if(r.hs!=null && r.as!=null){ m.homeScore=r.hs; m.awayScore=r.as; m.status=r.status||'FT'; changed=true; }
-    });
+    const data=await res.json();
+    AUTO_RESULTS = data.matches||{};
     if(data.lastUpdated) window.RESULTS_UPDATED=data.lastUpdated;
-    console.log('[results] loaded ·', data.lastUpdated||'(no date)', '·', Object.keys(rs).length, 'updates');
-    if(changed){ rerenderViews(); route(); }                       // refresh schedule/calendar + any open team page
+    console.log('[results] loaded ·', data.lastUpdated||'(no date)', '·', Object.keys(AUTO_RESULTS).length, 'updates');
+    applyOverlays(); rerenderViews(); route();                     // refresh every view + any open team page
   }catch(e){ console.log('[results] data/results.json not available yet (run scripts/fetch-results.mjs)'); }
 }
+
+// expose the pure standings + overlay helpers for headless verification
+window.WC_STANDINGS = { computeStandings, rankGroup, thirdPlaceRanking, h2hStats, applyOverlays,
+  setManualScore, clearManualScore, clearAllManual,
+  setAuto: o => { AUTO_RESULTS = o||{}; applyOverlays(); rerenderViews(); },
+  manual: () => MANUAL_RESULTS, auto: () => AUTO_RESULTS, match: i => MATCHES[i] };
 function route(){
   closeMatch();
   const m=/^#team\/([A-Z]{3})$/.exec(location.hash);
@@ -1399,7 +1617,7 @@ let collapsedGroups = new Set(JSON.parse(localStorage.getItem('wc2026.gfolds')||
 let MC=[], GTEAM=[], GMATCH=[], CAL=[], DAYS=[], BANNER=[];
 function cacheRefs(){
   MC=[...document.querySelectorAll('.mc')];
-  GTEAM=[...document.querySelectorAll('.gteam')];
+  GTEAM=[...document.querySelectorAll('.gst-row')];   // standings rows carry data-team (filter highlight + click-to-team)
   GMATCH=[...document.querySelectorAll('.gmatch')];
   CAL=[...document.querySelectorAll('.cal-entry')];
   DAYS=[...document.querySelectorAll('.day')];
@@ -1497,6 +1715,23 @@ function openMatch(i){
   const [y,mo,da]=m.date.split('-').map(Number);
   const wd=WD[new Date(Date.UTC(y,mo-1,da)).getUTCDay()];
   const stageLabel=m.stage==='GROUP'?`Group ${m.group} · Matchday ${m.md}`:`${STAGES[m.stage].label}${m.n?` · Match ${m.n}`:''}`;
+  // score editor , only when both sides are real teams (group matches now; knockouts once resolved)
+  const editable = isTeam(m.home) && isTeam(m.away);
+  const scoreEditor = editable ? `<div class="mm-score">
+      <div class="mm-score-lab">Enter score${m.manual?'<span class="mm-score-badge">Manual</span>':''}</div>
+      <div class="mm-score-row">
+        <span class="mm-score-tm">${TEAMS[m.home][1]} ${m.home}</span>
+        <input class="mm-sc-in" id="mmHome" type="number" min="0" inputmode="numeric" value="${m.homeScore!=null?m.homeScore:''}" aria-label="${TEAMS[m.home][0]} score">
+        <span class="mm-score-dash">-</span>
+        <input class="mm-sc-in" id="mmAway" type="number" min="0" inputmode="numeric" value="${m.awayScore!=null?m.awayScore:''}" aria-label="${TEAMS[m.away][0]} score">
+        <span class="mm-score-tm">${m.away} ${TEAMS[m.away][1]}</span>
+      </div>
+      <div class="mm-score-btns">
+        <button class="mm-sc-save" id="mmSave" data-mi="${m.i}">Save score</button>
+        ${m.manual?`<button class="mm-sc-clear" id="mmClear" data-mi="${m.i}">Clear</button>`:''}
+      </div>
+      ${m.stage!=='GROUP'?'<p class="mm-score-note">Knockout score , recorded for display; standings use group matches only.</p>':''}
+    </div>` : '';
   $("#match-modal").innerHTML=`<div class="mm-card" style="--accent:${matchColor(m)}">
     <button class="mm-x" data-mclose aria-label="Close">×</button>
     <div class="mm-stage">${stageLabel}</div>
@@ -1507,6 +1742,7 @@ function openMatch(i){
       ${v?`<div class="mm-row"><span>Stadium</span><b>${v.fifaName}</b></div>
       <div class="mm-row"><span></span><span class="mm-sub">${v.commonName} · ${v.city}, ${v.country} · ${v.capacity.toLocaleString()} seats</span></div>`:`<div class="mm-row"><span>Stadium</span><b>Venue TBC</b></div>`}
     </div>
+    ${scoreEditor}
     ${isTeam(m.home)||isTeam(m.away)?`<div class="mm-hint">Tap a team to open its page</div>`:''}
   </div>`;
   $("#match-modal").hidden=false; document.body.classList.add('modal-open');
@@ -1517,6 +1753,13 @@ function closeMatch(){ const mm=$("#match-modal"); if(mm){ mm.hidden=true; mm.in
 document.addEventListener('click', e=>{
   if(e.target.closest('.team-back')){ location.hash=''; return; }
   if(e.target.closest('[data-mclose]') || e.target.id==='match-modal'){ closeMatch(); return; }              // close popover
+  if(e.target.closest('#exportOverrides')){ exportOverrides(); return; }                                     // download manual scores as results.json
+  if(e.target.closest('#clearManual')){ if(Object.keys(MANUAL_RESULTS).length && confirm('Remove all manually entered scores?')) clearAllManual(); return; }
+  const mmSave=e.target.closest('#mmSave');
+  if(mmSave){ const i=+mmSave.dataset.mi, h=$("#mmHome")?.value??'', a=$("#mmAway")?.value??'';
+    if(h!==''&&a!==''&&setManualScore(i,h,a)) openMatch(i); return; }                                        // save score → recompute → refresh modal
+  const mmClear=e.target.closest('#mmClear');
+  if(mmClear){ const i=+mmClear.dataset.mi; clearManualScore(i); openMatch(i); return; }
   const tfo=e.target.closest('.tf-opt');
   if(tfo){ toggleTeam(tfo.dataset.team); return; }                    // filter-picker option = toggle team
   const rb=e.target.closest('[data-round]');
@@ -1542,6 +1785,7 @@ document.addEventListener('click', e=>{
 });
 document.addEventListener('keydown', e=>{
   if(e.key==='Escape'){ if(document.body.classList.contains('tf-open')){ tfOpen(false); return; } closeMatch(); return; }
+  if(e.key==='Enter' && e.target.classList?.contains('mm-sc-in')){ e.preventDefault(); $("#mmSave")?.click(); return; }   // Enter in a score field saves
   if(e.key==='Enter'||e.key===' '){ const t=e.target.closest('.stage-banner,[data-gcol],[data-hlteam]'); if(t){ e.preventDefault(); t.click(); } }
 });
 /* ---- team filter , custom multi-select dropdown ---- */
@@ -1819,6 +2063,7 @@ $("#venueToggle").addEventListener('click', ()=>{
   rerenderViews();
 });
 
+applyOverlays();                 // compose any saved manual scores onto MATCHES before first paint
 renderTeamFilter();
 renderLegend();
 renderSchedule();
