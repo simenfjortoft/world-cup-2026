@@ -1609,6 +1609,7 @@ function applyOverlays(){
    changed (RESULTS_SIG), so an idle poll costs nothing visible. */
 const RESULTS_POLL_MS = 60000;
 let RESULTS_SIG = '';
+let resultsTimer = 0;
 async function loadResults(){
   try{
     // cache-bust so the CDN edge serves fresh data on each poll, not a stale copy
@@ -1622,15 +1623,17 @@ async function loadResults(){
     if(data.lastUpdated) window.RESULTS_UPDATED=data.lastUpdated;
     console.log('[results]', first?'loaded':'refreshed', '·', data.lastUpdated||'(no date)', '·', Object.keys(AUTO_RESULTS).length, 'updates');
     if(Object.keys(AUTO_RESULTS).length){ applyOverlays(); rerenderViews(); route(); }   // only re-render when there are actual results (avoids a needless re-render flash pre-tournament)
+    // once every match is final the data is frozen , stop polling for good
+    if(resultsTimer && MATCHES.every(m=>m.status==='FT')){ clearInterval(resultsTimer); resultsTimer=0; console.log('[results] all matches final , polling stopped'); }
   }catch(e){ console.log('[results] data/results.json not available yet (run scripts/fetch-results.mjs)'); }
 }
 // poll while the tab is visible; refresh immediately on regaining focus (paused tabs skip work)
-setInterval(()=>{ if(!document.hidden) loadResults(); }, RESULTS_POLL_MS);
-document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) loadResults(); });
+resultsTimer=setInterval(()=>{ if(!document.hidden) loadResults(); }, RESULTS_POLL_MS);
+document.addEventListener('visibilitychange', ()=>{ if(resultsTimer && !document.hidden) loadResults(); });
 
 // expose the pure standings + overlay helpers for headless verification
 window.WC_STANDINGS = { computeStandings, rankGroup, thirdPlaceRanking, h2hStats, applyOverlays,
-  setAuto: o => { AUTO_RESULTS = o||{}; applyOverlays(); rerenderViews(); },
+  setAuto: o => { AUTO_RESULTS = o||{}; RESULTS_SIG = JSON.stringify(AUTO_RESULTS); applyOverlays(); rerenderViews(); },
   auto: () => AUTO_RESULTS, match: i => MATCHES[i] };
 /* hash router , the URL fragment is the single source of truth for the active sub-page:
      (empty)/#schedule · #groups · #calendar · #map · #team/CODE
