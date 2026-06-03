@@ -16,7 +16,14 @@ name: Update data (results)
 
 on:
   schedule:
-    - cron: '0 */3 * * *'        # every 3 hours (tighten on match days for fresher scores)
+    - cron: '0 */3 * * *'        # baseline: every 3 hours, all year
+    # World Cup 2026 window (UTC): poll every 5 min for near-live scores. The fetch
+    # script writes nothing when scores are unchanged, so off-match-hour runs make
+    # no commit and trigger no Pages rebuild. 5 min is GitHub's cron floor and may
+    # be delayed under load , combined with free-tier data + CDN cache, expect a
+    # few-minutes lag, not real-time.
+    - cron: '*/5 * 11-30 6 *'    # Jun 11-30
+    - cron: '*/5 * 1-19 7 *'     # Jul 1-19
   workflow_dispatch: {}          # manual "Run workflow" button
 
 permissions:

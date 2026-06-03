@@ -1603,17 +1603,30 @@ function applyOverlays(){
 }
 
 /* AUTO layer , scores + resolved knockout teams from data/results.json.
-   Refreshable without touching this file (run scripts/fetch-results.mjs). */
+   Refreshable without touching this file (run scripts/fetch-results.mjs).
+   Polled every 60s (RESULTS_POLL_MS) so an open page picks up new scores
+   without a manual reload; we only re-render when the payload actually
+   changed (RESULTS_SIG), so an idle poll costs nothing visible. */
+const RESULTS_POLL_MS = 60000;
+let RESULTS_SIG = '';
 async function loadResults(){
   try{
-    const res=await fetch('data/results.json'); if(!res.ok) return;
+    // cache-bust so the CDN edge serves fresh data on each poll, not a stale copy
+    const res=await fetch('data/results.json?t='+Date.now(), {cache:'no-store'}); if(!res.ok) return;
     const data=await res.json();
+    const sig=JSON.stringify(data.matches||{});
+    if(sig===RESULTS_SIG) return;                  // unchanged since last poll , nothing to do
+    const first=RESULTS_SIG==='';
+    RESULTS_SIG=sig;
     AUTO_RESULTS = data.matches||{};
     if(data.lastUpdated) window.RESULTS_UPDATED=data.lastUpdated;
-    console.log('[results] loaded ·', data.lastUpdated||'(no date)', '·', Object.keys(AUTO_RESULTS).length, 'updates');
+    console.log('[results]', first?'loaded':'refreshed', '·', data.lastUpdated||'(no date)', '·', Object.keys(AUTO_RESULTS).length, 'updates');
     if(Object.keys(AUTO_RESULTS).length){ applyOverlays(); rerenderViews(); route(); }   // only re-render when there are actual results (avoids a needless re-render flash pre-tournament)
   }catch(e){ console.log('[results] data/results.json not available yet (run scripts/fetch-results.mjs)'); }
 }
+// poll while the tab is visible; refresh immediately on regaining focus (paused tabs skip work)
+setInterval(()=>{ if(!document.hidden) loadResults(); }, RESULTS_POLL_MS);
+document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) loadResults(); });
 
 // expose the pure standings + overlay helpers for headless verification
 window.WC_STANDINGS = { computeStandings, rankGroup, thirdPlaceRanking, h2hStats, applyOverlays,
