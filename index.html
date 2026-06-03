@@ -701,7 +701,8 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 .mc-country{fill:#10201a;stroke:rgba(180,255,220,.10);stroke-width:.5;vector-effect:non-scaling-stroke}
 .map-fill{fill:var(--mk);fill-opacity:.82;stroke:var(--mk);stroke-width:.7;vector-effect:non-scaling-stroke;cursor:pointer;
   transition:fill-opacity .2s var(--ease),filter .2s var(--ease)}
-.map-fill:hover,.map-fill:focus-visible{fill-opacity:1;outline:none;stroke:#eafff5;stroke-width:1.1;filter:drop-shadow(0 0 7px color-mix(in srgb,var(--mk) 65%,transparent))}
+.map-fill:focus,.map-marker:focus{outline:none}   /* kill the browser's bounding-box focus ring on click */
+.map-fill:hover,.map-fill:focus-visible{fill-opacity:1;outline:none;stroke:#eafff5;stroke-width:1.2}
 .map-fill-multi{cursor:default}
 .map-fill-multi:hover{filter:none}
 .map-fill.dim{fill:#10201a;fill-opacity:1;stroke:rgba(180,255,220,.10);pointer-events:none;filter:none}
@@ -1530,8 +1531,8 @@ document.addEventListener('click', e=>{
   const mchip=e.target.closest('.mapchip');
   if(mchip){ const g=mchip.dataset.mgroup, cf=mchip.dataset.mconf;
     if(g){ mapGroups.has(g)?mapGroups.delete(g):mapGroups.add(g); } else { mapConfs.has(cf)?mapConfs.delete(cf):mapConfs.add(cf); }
-    applyMapFilter(); return; }                                       // map filter chip (group or confederation)
-  if(e.target.closest('#mapClear')){ mapGroups.clear(); mapConfs.clear(); applyMapFilter(); return; }
+    mapPinned=false; mapPinCode=null; mapPopHide(); applyMapFilter(); fitToSelection(); return; } // filter chip , reframe to the selection
+  if(e.target.closest('#mapClear')){ mapGroups.clear(); mapConfs.clear(); mapPinned=false; mapPinCode=null; mapPopHide(); applyMapFilter(); homeView(); return; }
   const hl=e.target.closest('[data-hlteam]');
   if(hl){ toggleTeam(hl.dataset.hlteam); setHlBtn(hl); return; }       // "show this team" on its page
   const team=e.target.closest('[data-team]');
@@ -1737,6 +1738,17 @@ function flyToCode(code){
   if(b){ const [[x0,y0],[x1,y1]]=b, bw=Math.max(x1-x0,1), bh=Math.max(y1-y0,1), cx=(x0+x1)/2, cy=(y0+y1)/2;
     const k=Math.max(1.5, Math.min(ZMAX, 0.42/Math.max(bw/mapW, bh/mapH))); setT({k, x:mapW/2-cx*k, y:mapH/2-cy*k}, true); }
   else { const xy=mapXY[code]; if(xy){ const k=4.5; setT({k, x:mapW/2-xy.x*k, y:mapH/2-xy.y*k}, true); } }
+}
+function fitToSelection(){   // frame the currently-matching nations (confederation / group filter); home when none
+  if(mapGroups.size===0 && mapConfs.size===0){ homeView(); return; }
+  let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity,n=0;
+  Object.keys(TEAM_GEO).forEach(c=>{ if(!matchTeam(c)) return; const b=mapFeatBounds[c], xy=mapXY[c];
+    if(b){ x0=Math.min(x0,b[0][0]); y0=Math.min(y0,b[0][1]); x1=Math.max(x1,b[1][0]); y1=Math.max(y1,b[1][1]); n++; }
+    else if(xy){ x0=Math.min(x0,xy.x-7); y0=Math.min(y0,xy.y-7); x1=Math.max(x1,xy.x+7); y1=Math.max(y1,xy.y+7); n++; } });
+  if(!n || !isFinite(x0)){ homeView(); return; }
+  const bw=Math.max(x1-x0,1), bh=Math.max(y1-y0,1), cx=(x0+x1)/2, cy=(y0+y1)/2;
+  const k=Math.max(1, Math.min(ZMAX, 0.78/Math.max(bw/mapW, bh/mapH)));
+  setT({k, x:mapW/2-cx*k, y:mapH/2-cy*k}, true);
 }
 function mapClickAt(el){
   if(!el) return;
