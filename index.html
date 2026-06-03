@@ -513,6 +513,15 @@ body.route-team .legend{display:none !important}
 .rb{appearance:none;border:1px solid var(--line);background:rgba(0,0,0,.22);color:var(--text-dim);font-family:inherit;font-weight:700;font-size:12px;padding:6px 12px;border-radius:8px;cursor:pointer;transition:color .15s var(--ease),border-color .15s var(--ease),background .15s var(--ease),transform .1s var(--ease)}
 .rb:hover{color:var(--text);border-color:var(--line-strong)}
 .rb[aria-pressed="true"]{background:var(--green);color:#062013;border-color:var(--green)}
+/* group filter chips (A-L) , toggle a whole group's teams in the shared selection */
+.groupbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:0 0 8px}
+.gb{appearance:none;border:1px solid var(--line);background:rgba(0,0,0,.22);color:var(--text-dim);
+  font-family:inherit;font-weight:800;font-size:12px;min-width:32px;padding:6px 9px;border-radius:8px;cursor:pointer;text-align:center;
+  transition:color .15s var(--ease),border-color .15s var(--ease),background .15s var(--ease),transform .1s var(--ease)}
+.gb:hover{color:var(--text);border-color:var(--line-strong)}
+.gb:active{transform:scale(.96)}
+.gb.partial{color:var(--green-bright);border-color:rgba(25,224,138,.5);background:rgba(25,224,138,.1)}
+.gb.on{background:var(--green);color:#062013;border-color:var(--green)}
 .rhide{display:none !important}
 .mc,.cal-entry{cursor:pointer}
 .team-hl{margin-left:auto;align-self:flex-start;appearance:none;border:1px solid var(--line-strong);background:rgba(0,0,0,.2);color:var(--text-dim);font-family:inherit;font-weight:700;font-size:13px;padding:9px 15px;border-radius:10px;cursor:pointer;white-space:nowrap;transition:color .16s var(--ease),border-color .16s var(--ease),background .16s var(--ease),box-shadow .16s var(--ease),transform .1s var(--ease)}
@@ -686,7 +695,8 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 .map-colorby:hover{color:var(--text);border-color:var(--line-strong)}
 .map-colorby:active{transform:scale(.96)}
 .map-wrap{position:relative;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
-  background:radial-gradient(120% 90% at 50% 0,rgba(25,224,138,.06),transparent 60%),var(--surface)}
+  background:radial-gradient(120% 90% at 50% 0,rgba(25,224,138,.06),transparent 60%),var(--surface);
+  box-shadow:inset 0 0 90px 12px rgba(0,0,0,.45)}   /* vignette for depth + focus */
 #worldSvg{display:block;width:100%;height:auto;cursor:grab;touch-action:none}
 #worldSvg:active{cursor:grabbing}
 .map-sphere{fill:url(#mapOcean);stroke:rgba(180,255,220,.12);stroke-width:.7;vector-effect:non-scaling-stroke}
@@ -700,8 +710,8 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 .mzb:hover{border-color:var(--green);color:var(--green-bright);background:rgba(25,224,138,.1)}
 .mzb:active{transform:scale(.96)}
 .mc-country{fill:#10201a;stroke:rgba(180,255,220,.10);stroke-width:.5;vector-effect:non-scaling-stroke}
-.map-fill{fill:var(--mk);fill-opacity:.82;stroke:var(--mk);stroke-width:.7;vector-effect:non-scaling-stroke;cursor:pointer;
-  transition:fill-opacity .2s var(--ease),filter .2s var(--ease),stroke .2s var(--ease),stroke-width .2s var(--ease)}
+.map-fill{fill:var(--mk);fill-opacity:.82;stroke:rgba(6,12,9,.55);stroke-width:.6;vector-effect:non-scaling-stroke;cursor:pointer;
+  transition:fill-opacity .2s var(--ease),filter .2s var(--ease),stroke .2s var(--ease),stroke-width .2s var(--ease)}   /* dark border so same-confederation neighbours stay distinct (no more single colour blob) */
 .map-fill:focus,.map-marker:focus{outline:none}   /* kill the browser's bounding-box focus ring on click */
 .map-fill:hover,.map-fill:focus-visible{fill-opacity:1;outline:none;stroke:#eafff5;stroke-width:1.2}
 .map-fill-multi{cursor:default}
@@ -732,14 +742,16 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 
 /* ---------------------------- STANDINGS (folded into Groups view) ---------------------------- */
 .gc-standings{padding:4px 10px 2px;overflow-x:auto}
-.gstand{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}
+.gstand{width:100%;table-layout:fixed;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}
 .gstand th{font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--text-faint);
   padding:7px 4px;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap}
 .gstand td{padding:8px 4px;text-align:center;border-bottom:1px solid var(--line);color:var(--text-dim);white-space:nowrap}
 .gstand tbody tr:last-child td{border-bottom:0}
-.gst-pos{width:18px;color:var(--text-faint);font-weight:800}
-.gst-team{text-align:left}
-.gst-team .fl{font-size:16px;line-height:1;vertical-align:-.12em;margin-right:7px;filter:saturate(1.05)}
+/* even, right-aligned numeric columns (cols 3+) so single/double digits and +/- line up */
+.gstand th:nth-child(n+3),.gstand td:nth-child(n+3){width:34px;text-align:right;padding-right:9px}
+.gst-pos{width:26px;text-align:center;color:var(--text-faint);font-weight:800}
+.gstand td.gst-team,.gstand th.gst-team{width:auto;text-align:left}   /* beat .gstand td/th center alignment */
+.gst-team .fl{display:inline-block;width:1.35em;text-align:center;font-size:16px;line-height:1;vertical-align:-.12em;margin-right:6px;filter:saturate(1.05)}
 .gst-nm{font-weight:700;color:var(--text);cursor:pointer}
 .gst-nm:hover{color:var(--green-bright)}
 .gst-pts{font-weight:800;color:var(--text)}
@@ -752,6 +764,7 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 .gst-row.on{background:rgba(25,224,138,.1)}
 .gst-row.on .gst-nm{color:var(--green-bright)}
 .gm-res{color:var(--text);font-weight:800}
+.gstand.is-pre td:not(.gst-team):not(.gst-pos){opacity:.4}   /* pre-tournament: fade the all-zero stat columns, keep teams legible */
 @media (max-width:560px){ .gst-wdl{display:none} }   /* drop W/D/L on phones; P/GF/GA/GD/Pts stay, table also scrolls */
 
 /* third-place ranking + manual-override actions */
@@ -759,13 +772,14 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
   background:linear-gradient(180deg,rgba(246,183,60,.05),transparent 42%),var(--surface);padding:16px 16px 14px}
 .tp-head{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:8px}
 .tp-title{font-family:"Anton",sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(18px,3vw,26px);
-  line-height:.95;margin:0;letter-spacing:.01em}
+  line-height:.95;margin:0;letter-spacing:.01em;text-wrap:balance}
 .tp-title span{display:block;font-family:"Hanken Grotesk",sans-serif;font-size:11px;font-weight:600;letter-spacing:.03em;
   text-transform:none;color:var(--text-faint);margin-top:5px}
 .tp-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
-.tp-btn{appearance:none;border:1px solid var(--line-strong);background:rgba(0,0,0,.22);color:var(--text-dim);
+.tp-btn{position:relative;appearance:none;border:1px solid var(--line-strong);background:rgba(0,0,0,.22);color:var(--text-dim);
   font-family:inherit;font-weight:700;font-size:11.5px;padding:7px 12px;border-radius:9px;cursor:pointer;
   transition:color .15s var(--ease),border-color .15s var(--ease),background .15s var(--ease),transform .1s var(--ease)}
+.tp-btn::after{content:"";position:absolute;top:-6px;bottom:-6px;left:0;right:0}   /* ~40px tall tap target; vertical-only so the 8px gap between buttons never overlaps */
 .tp-btn:hover{color:var(--text);border-color:var(--green);background:rgba(25,224,138,.08)}
 .tp-btn:active{transform:scale(.96)}
 .tp-grp{margin-left:7px;font-size:9.5px;font-weight:800;letter-spacing:.04em;color:var(--text-faint);
@@ -793,7 +807,7 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 .mm-sc-in{-moz-appearance:textfield}
 .mm-score-dash{color:var(--text-faint);font-weight:800}
 .mm-score-btns{display:flex;justify-content:center;gap:8px;margin-top:13px}
-.mm-sc-save,.mm-sc-clear{appearance:none;font-family:inherit;font-weight:700;font-size:12.5px;padding:9px 17px;
+.mm-sc-save,.mm-sc-clear{appearance:none;font-family:inherit;font-weight:700;font-size:12.5px;padding:12px 18px;
   border-radius:9px;cursor:pointer;transition:color .15s var(--ease),border-color .15s var(--ease),background .15s var(--ease),transform .1s var(--ease)}
 .mm-sc-save{border:0;background:var(--green);color:#062013;box-shadow:0 4px 16px rgba(25,224,138,.32)}
 .mm-sc-save:active,.mm-sc-clear:active{transform:scale(.96)}
@@ -875,6 +889,7 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
       <button class="rb" data-round="3RD" aria-pressed="false">3rd</button>
       <button class="rb" data-round="FINAL" aria-pressed="false">Final</button>
     </div>
+    <div class="groupbar" id="groupbar"></div>
     <p class="orient" id="orient">Tap any match for details &nbsp;·&nbsp; pick teams from <b>⚽ Filter teams</b> to narrow the whole schedule to them.</p>
   </div>
 </div>
@@ -1325,15 +1340,18 @@ function h2hStats(codes){
   return s;
 }
 function rankGroup(rows){
-  const sorted=rows.slice().sort((a,b)=> b.Pts-a.Pts || b.GD-a.GD || b.GF-a.GF);
+  // final fallback = official group draw order (meaningful pre-tournament), not alphabetical
+  const g = rows.length ? Object.keys(GROUPS).find(k=>GROUPS[k].includes(rows[0].code)) : null;
+  const drawIdx = c => g ? GROUPS[g].indexOf(c) : 0;
+  const sorted=rows.slice().sort((a,b)=> b.Pts-a.Pts || b.GD-a.GD || b.GF-a.GF || drawIdx(a.code)-drawIdx(b.code));
   const out=[]; let i=0;
   while(i<sorted.length){
     let j=i+1;                                                       // a cluster still tied on overall pts/GD/GF
     while(j<sorted.length && sorted[j].Pts===sorted[i].Pts && sorted[j].GD===sorted[i].GD && sorted[j].GF===sorted[i].GF) j++;
     const cluster=sorted.slice(i,j);
-    if(cluster.length>1){                                            // break it on head-to-head, then alphabetical
+    if(cluster.length>1){                                            // break it on head-to-head, then draw order
       const h=h2hStats(cluster.map(r=>r.code));
-      cluster.sort((a,b)=> h[b.code].Pts-h[a.code].Pts || h[b.code].GD-h[a.code].GD || h[b.code].GF-h[a.code].GF || a.name.localeCompare(b.name));
+      cluster.sort((a,b)=> h[b.code].Pts-h[a.code].Pts || h[b.code].GD-h[a.code].GD || h[b.code].GF-h[a.code].GF || drawIdx(a.code)-drawIdx(b.code));
     }
     cluster.forEach(r=>out.push(r));
     i=j;
@@ -1349,8 +1367,9 @@ function thirdPlaceRanking(ranked){
   return thirds;
 }
 function standingsTableHTML(g, ranked){
+  const anyPlayed = ranked[g].some(r=>r.P>0);   // no qualifying highlights until the group has results
   const tr=ranked[g].map((r,idx)=>{
-    const pos=idx+1, qual = pos<=2 ? 'gst-q' : (pos===3 ? 'gst-q3' : '');
+    const pos=idx+1, qual = anyPlayed ? (pos<=2 ? 'gst-q' : (pos===3 ? 'gst-q3' : '')) : '';
     return `<tr class="gst-row ${qual}" data-team="${r.code}">
       <td class="gst-pos">${pos}</td>
       <td class="gst-team"><span class="fl">${TEAMS[r.code][1]}</span><span class="gst-nm" data-team="${r.code}">${TEAMS[r.code][0]}</span></td>
@@ -1358,7 +1377,7 @@ function standingsTableHTML(g, ranked){
       <td class="gst-gf">${r.GF}</td><td class="gst-ga">${r.GA}</td><td>${r.GD>0?'+':''}${r.GD}</td>
       <td class="gst-pts">${r.Pts}</td></tr>`;
   }).join('');
-  return `<table class="gstand"><thead><tr>
+  return `<table class="gstand${anyPlayed?'':' is-pre'}"><thead><tr>
     <th class="gst-pos">#</th><th class="gst-team">Team</th><th title="Played">P</th>
     <th class="gst-wdl" title="Won">W</th><th class="gst-wdl" title="Drawn">D</th><th class="gst-wdl" title="Lost">L</th>
     <th class="gst-gf" title="Goals for">GF</th><th class="gst-ga" title="Goals against">GA</th>
@@ -1380,7 +1399,7 @@ function thirdPlaceHTML(ranked){
       <th class="gst-pos">#</th><th class="gst-team">Team</th><th title="Played">P</th><th title="Goal difference">GD</th>
       <th class="gst-gf" title="Goals for">GF</th><th class="gst-pts" title="Points">Pts</th><th class="tp-mark">R32</th>
     </tr></thead><tbody>${tr}</tbody></table>
-    <p class="tp-note">Ranks the 12 group third-place teams by points, goal difference, then goals scored , the top 8 advance. This is the qualification cut; the actual Round-of-32 bracket slots depend on which group combination qualifies and are filled by the results pipeline. Fair-play tiebreaker not included (data unavailable).${anyPlayed?'':' No group matches played yet , the table shows the seeded order.'}</p>
+    <p class="tp-note">Ranks the 12 group third-place teams by points, goal difference, then goals scored , the top 8 advance. This is the qualification cut; the actual Round-of-32 bracket slots depend on which group combination qualifies and are filled by the results pipeline. Fair-play tiebreaker not included (data unavailable).${anyPlayed?'':' No group matches played yet.'}</p>
   </div>`;
 }
 /* =====================================================================
@@ -1391,9 +1410,13 @@ function renderGroups(){
   const ranked = computeStandings();
   let html = thirdPlaceHTML(ranked) + '<div class="groups-grid">';
   Object.keys(GROUPS).forEach((g,gi)=>{
-    const matches = MATCHES.filter(m=>m.stage==="GROUP"&&m.group===g)
-      .sort((a,b)=>a.ts-b.ts)
-      .map(m=>{
+    const gms = MATCHES.filter(m=>m.stage==="GROUP"&&m.group===g).sort((a,b)=>a.ts-b.ts);
+    const playedN = gms.filter(m=>m.homeScore!=null).length;
+    const [fy,fmo,fda] = gms[0].date.split('-').map(Number);
+    const sub = playedN===0 ? `Not started · ${fda} ${MO[fmo-1]}`     // live group status replaces the static count
+              : playedN===gms.length ? 'Complete'
+              : `${playedN} / ${gms.length} played`;
+    const matches = gms.map(m=>{
         const [y,mo,da]=m.date.split('-').map(Number);
         return `<div class="gmatch" data-teams="${m.home} ${m.away}" data-mi="${m.i}">
           <div class="gm-teams">${gTeam(m.home)}<span class="x">v</span>${gTeam(m.away)}</div>
@@ -1402,7 +1425,7 @@ function renderGroups(){
       }).join("");
     html+=`<div class="gc anim" style="animation-delay:${Math.min(gi,11)*28}ms">
       <div class="gc-head" data-gcol="${g}" role="button" tabindex="0" aria-expanded="true" title="Collapse / expand Group ${g}"><span class="gc-letter">${g}</span>
-        <div><div class="lbl">Group ${g}</div><div class="sub">4 teams · 6 matches</div></div>
+        <div><div class="lbl">Group ${g}</div><div class="sub">${sub}</div></div>
         <svg class="gc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg></div>
       <div class="gc-standings">${standingsTableHTML(g, ranked)}</div>
       <div class="gc-matches">${matches}</div></div>`;
@@ -1633,8 +1656,15 @@ function syncFilterStatus(){
   const parts=[];
   if(roundFilter!=='ALL'){ const L=STAGES[roundFilter]; parts.push(`Round: <b>${L?L.label:roundFilter}</b>`); }
   if(selected.size){
-    const names=[...selected].map(c=>TEAMS[c][0]);
-    const who = names.length<=2 ? names.join(' & ') : `${names.length} teams`;
+    const fullGroups = Object.keys(GROUPS).filter(g=>GROUPS[g].every(c=>selected.has(c)));
+    const inFull = fullGroups.reduce((n,g)=>n+GROUPS[g].length,0);
+    let who;
+    if(fullGroups.length && selected.size===inFull){               // selection is exactly whole group(s) , name them
+      who = fullGroups.length===1 ? `Group ${fullGroups[0]}` : `Groups ${fullGroups.join(', ')}`;
+    } else {
+      const names=[...selected].map(c=>TEAMS[c][0]);
+      who = names.length<=2 ? names.join(' & ') : `${names.length} teams`;
+    }
     parts.push(`Showing <b>${who}</b> · <b>${countMatches()}</b> matches · other days hidden`);
   }
   el.innerHTML = parts.length ? parts.join(' &nbsp;·&nbsp; ')
@@ -1674,10 +1704,32 @@ function applyFilter(){
   });
   syncFilterStatus();
   syncPicker();
+  syncGroupChips();
+  if(mapRendered){ applyMapFilter(); if(!$("#view-map").hidden) fitToSelection(); }   // keep the map in sync with the shared selection
   localStorage.setItem('wc2026.sel', JSON.stringify([...selected]));
 }
 function toggleTeam(c){ selected.has(c)?selected.delete(c):selected.add(c); applyFilter(); }
 function setHlBtn(btn){ const on=selected.has(btn.dataset.hlteam); btn.classList.toggle('on',on); btn.textContent = on?'★ In filter':'☆ Show this team'; }
+
+/* group filter (A-L) , each chip toggles all 4 of that group's teams in the shared selection */
+function renderGroupFilter(){
+  const bar=$("#groupbar"); if(!bar) return;
+  bar.innerHTML = `<span class="rb-lab">Group</span>` +
+    Object.keys(GROUPS).map(g=>`<button class="gb" data-grp="${g}" aria-pressed="false" aria-label="Filter to Group ${g}" title="Filter to Group ${g}">${g}</button>`).join('');
+}
+function syncGroupChips(){                                            // reflect selection state (teams can also be picked via the dropdown)
+  document.querySelectorAll('#groupbar .gb').forEach(b=>{
+    const teams=GROUPS[b.dataset.grp], n=teams.filter(c=>selected.has(c)).length, all=n===teams.length;
+    b.classList.toggle('on', all);
+    b.classList.toggle('partial', n>0 && !all);
+    b.setAttribute('aria-pressed', all?'true':'false');
+  });
+}
+function toggleGroup(g){
+  const teams=GROUPS[g], allOn=teams.every(c=>selected.has(c));
+  teams.forEach(c=> allOn ? selected.delete(c) : selected.add(c));    // complete the group, or clear it if already whole
+  applyFilter();
+}
 
 // collapsible schedule stages + group cards (state persisted, reapplied after re-render)
 function applyStageFold(){
@@ -1764,6 +1816,8 @@ document.addEventListener('click', e=>{
   if(tfo){ toggleTeam(tfo.dataset.team); return; }                    // filter-picker option = toggle team
   const rb=e.target.closest('[data-round]');
   if(rb){ roundFilter=rb.dataset.round; localStorage.setItem('wc2026.round',roundFilter); applyRound(); return; } // round filter
+  const gbtn=e.target.closest('.gb');
+  if(gbtn){ toggleGroup(gbtn.dataset.grp); return; }                  // group filter chip = toggle the group's teams
   const sb=e.target.closest('.stage-banner');
   if(sb){ const s=sb.dataset.stage; collapsedStages.has(s)?collapsedStages.delete(s):collapsedStages.add(s); applyStageFold(); return; } // fold a stage
   const gcol=e.target.closest('[data-gcol]');
@@ -1772,10 +1826,9 @@ document.addEventListener('click', e=>{
   if(zb){ const z=zb.dataset.z; if(z==='in') zoomAt(mapW/2,mapH/2,1.6); else if(z==='out') zoomAt(mapW/2,mapH/2,1/1.6); else { mapPinned=false; mapPinCode=null; mapPopHide(); homeView(); } return; } // zoom controls
   if(e.target.closest('#mapColorBy')){ mapColorBy = mapColorBy==='conf'?'group':'conf'; recolorMap(); return; } // colour-by toggle
   const mchip=e.target.closest('.mapchip');
-  if(mchip){ const g=mchip.dataset.mgroup, cf=mchip.dataset.mconf;
-    if(g){ mapGroups.has(g)?mapGroups.delete(g):mapGroups.add(g); } else { mapConfs.has(cf)?mapConfs.delete(cf):mapConfs.add(cf); }
-    mapPinned=false; mapPinCode=null; mapPopHide(); applyMapFilter(); fitToSelection(); return; } // filter chip , reframe to the selection
-  if(e.target.closest('#mapClear')){ mapGroups.clear(); mapConfs.clear(); mapPinned=false; mapPinCode=null; mapPopHide(); applyMapFilter(); homeView(); return; }
+  if(mchip){ const cf=mchip.dataset.mconf; mapConfs.has(cf)?mapConfs.delete(cf):mapConfs.add(cf);
+    mapPinned=false; mapPinCode=null; mapPopHide(); applyMapFilter(); fitToSelection(); return; } // conf lens , reframe to the selection
+  if(e.target.closest('#mapClear')){ mapConfs.clear(); selected.clear(); mapPinned=false; mapPinCode=null; mapPopHide(); applyFilter(); homeView(); return; }  // full reset: global selection + conf lens
   const hl=e.target.closest('[data-hlteam]');
   if(hl){ toggleTeam(hl.dataset.hlteam); setHlBtn(hl); return; }       // "show this team" on its page
   const team=e.target.closest('[data-team]');
@@ -1820,7 +1873,7 @@ const VIEW_NAMES=['schedule','groups','calendar','map'];
 function selectTab(btn, focus){
   tabs.forEach(b=>{ const on=b===btn; b.setAttribute('aria-selected', on?'true':'false'); b.tabIndex=on?0:-1; });
   const v=btn.dataset.view;
-  if(v==='map') renderMap();                         // lazy-build the SVG world map on first open
+  if(v==='map'){ renderMap(); applyMapFilter(); fitToSelection(); }   // build on first open + honor the current global filter
   VIEW_NAMES.forEach(n=>{ const el=$("#view-"+n); if(el) el.hidden = v!==n; });
   localStorage.setItem('wc2026.view', v);
   if(focus) btn.focus();
@@ -1862,7 +1915,7 @@ const TEAM_GEO = {
 const groupOfTeam = c => Object.keys(GROUPS).find(g=>GROUPS[g].includes(c));
 function teamObj(c){ const g=TEAM_GEO[c]; return g?{code:c,name:TEAMS[c][0],flag:TEAMS[c][1],group:groupOfTeam(c),conf:g.conf,lat:g.lat,lng:g.lng}:null; }
 
-const mapGroups=new Set(), mapConfs=new Set();
+const mapConfs=new Set();   // map-only Confederation lens; group/team filtering is the shared global selection
 let mapPinned=false, mapRendered=false;
 
 // topojson country name per team (to match the inlined world map). ENG/SCO share the UK shape;
@@ -1913,11 +1966,9 @@ function renderMap(){
   const dots=dotTeams.map(c=>{ const t=teamObj(c), xy=mapXY[c]; if(!xy) return '';
     return `<circle class="map-marker" data-mteam="${c}" cx="${xy.x.toFixed(1)}" cy="${xy.y.toFixed(1)}" r="4.5" style="--mk:${mapColor(c)}" tabindex="0" role="button" aria-label="${t.name} , Group ${t.group} , ${CONF_META[t.conf].label}"></circle>`;
   }).join('');
-  const groupChips=Object.keys(GROUPS).map(g=>`<button class="mapchip" data-mgroup="${g}" style="--mk:${GCOL[g]}"><span class="mc-dot"></span>${g}</button>`).join('');
   const confChips=Object.keys(CONF_META).map(k=>`<button class="mapchip mapchip-conf" data-mconf="${k}" style="--mk:${CONF_META[k].color}"><span class="mc-dot"></span>${CONF_META[k].label}</button>`).join('');
   host.innerHTML=`<div class="map-filters">
-      <div class="mapfg"><span class="mapfg-l">Group</span>${groupChips}</div>
-      <div class="mapfg"><span class="mapfg-l">Conf</span>${confChips}</div>
+      <div class="mapfg"><span class="mapfg-l">Confederation lens</span>${confChips}</div>
       <button class="map-colorby" id="mapColorBy">Colour: <b>Confederation</b></button>
       <button class="map-clear" id="mapClear">Clear</button></div>
     <div class="map-wrap">
@@ -1942,18 +1993,19 @@ function recolorMap(){
   document.querySelectorAll('#view-map .map-marker').forEach(el=> el.style.setProperty('--mk', mapColor(el.dataset.mteam)));
   const b=$("#mapColorBy"); if(b) b.innerHTML='Colour: <b>'+(mapColorBy==='conf'?'Confederation':'Group')+'</b>';
 }
-const matchTeam = c => { const t=teamObj(c); return (mapGroups.size===0||mapGroups.has(t.group)) && (mapConfs.size===0||mapConfs.has(t.conf)); };
+// map honors the GLOBAL team/group selection (Filter teams + Group row), intersected with the map-only Confederation lens
+const matchTeam = c => { const t=teamObj(c); return (selected.size===0||selected.has(c)) && (mapConfs.size===0||mapConfs.has(t.conf)); };
 function applyMapFilter(){
-  const active=mapGroups.size>0 || mapConfs.size>0; let shown=0;
+  const active=selected.size>0 || mapConfs.size>0; let shown=0;
   document.querySelectorAll('#view-map .map-fill').forEach(el=>{
     const codes=el.dataset.mteams.split(' '), onCodes=codes.filter(matchTeam);
     el.classList.toggle('dim', onCodes.length===0);
     if(codes.length===1 && onCodes.length===1) shown++;          // unique-country teams
   });
   document.querySelectorAll('#view-map .map-marker').forEach(el=>{ const on=matchTeam(el.dataset.mteam); el.classList.toggle('dim', !on); if(on) shown++; });
-  document.querySelectorAll('#view-map .mapchip').forEach(ch=>{ ch.classList.toggle('on', ch.dataset.mgroup ? mapGroups.has(ch.dataset.mgroup) : mapConfs.has(ch.dataset.mconf)); });
+  document.querySelectorAll('#view-map .mapchip').forEach(ch=>{ ch.classList.toggle('on', mapConfs.has(ch.dataset.mconf)); });
   const note=$("#mapNote");
-  if(note) note.textContent=active?`Showing ${shown} of 48 nations`:`All 48 qualified nations · scroll to zoom, drag to pan, click a country to focus`;
+  if(note) note.textContent=active?`Showing ${shown} of 48 nations · coloured by ${mapColorBy==='conf'?'confederation':'group'}`:`All 48 qualified nations · scroll to zoom, drag to pan, click a country to focus`;
 }
 // ---------- popup (transform-aware) ----------
 function mapScreen(code){ const xy=mapXY[code]; return xy?{x:xy.x*mapT.k+mapT.x, y:xy.y*mapT.k+mapT.y}:null; }
@@ -1987,8 +2039,8 @@ function flyToCode(code){
     const k=Math.max(1.5, Math.min(ZMAX, 0.42/Math.max(bw/mapW, bh/mapH))); setT({k, x:mapW/2-cx*k, y:mapH/2-cy*k}, true); }
   else { const xy=mapXY[code]; if(xy){ const k=4.5; setT({k, x:mapW/2-xy.x*k, y:mapH/2-xy.y*k}, true); } }
 }
-function fitToSelection(){   // frame the currently-matching nations (confederation / group filter); home when none
-  if(mapGroups.size===0 && mapConfs.size===0){ homeView(); return; }
+function fitToSelection(){   // frame the currently-matching nations (global team/group + conf lens); home when none
+  if(selected.size===0 && mapConfs.size===0){ homeView(); return; }
   let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity,n=0;
   Object.keys(TEAM_GEO).forEach(c=>{ if(!matchTeam(c)) return; const b=mapFeatBounds[c], xy=mapXY[c];
     if(b){ x0=Math.min(x0,b[0][0]); y0=Math.min(y0,b[0][1]); x1=Math.max(x1,b[1][0]); y1=Math.max(y1,b[1][1]); n++; }
@@ -2065,6 +2117,7 @@ $("#venueToggle").addEventListener('click', ()=>{
 
 applyOverlays();                 // compose any saved manual scores onto MATCHES before first paint
 renderTeamFilter();
+renderGroupFilter();
 renderLegend();
 renderSchedule();
 renderGroups();
