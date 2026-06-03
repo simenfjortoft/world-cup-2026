@@ -3,7 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>World Cup 2026 · Match Schedule (Norwegian time)</title>
+<title>World Cup 2026 · Schedule (Norwegian time)</title>
+<meta name="description" content="Interactive 2026 FIFA World Cup hub: all 104 matches in Norwegian time (CEST) with venue-local kickoffs, live group standings, 48-team squads, and a world map of the qualified nations. Hosted by USA, Canada and Mexico, 11 Jun to 19 Jul 2026.">
+<meta name="theme-color" content="#070d0a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%23070d0a'/%3E%3Ctext%20x='16'%20y='23'%20font-family='Arial,sans-serif'%20font-size='17'%20font-weight='bold'%20fill='%235dffb2'%20text-anchor='middle'%3E26%3C/text%3E%3C/svg%3E">
+<link rel="canonical" href="https://simenfjortoft.github.io/world-cup-2026/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="World Cup 2026">
+<meta property="og:title" content="World Cup 2026 · Schedule, Standings & Map">
+<meta property="og:description" content="All 104 matches in Norwegian time, live group standings, 48-team squads, and a map of the qualified nations.">
+<meta property="og:url" content="https://simenfjortoft.github.io/world-cup-2026/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="World Cup 2026 · Schedule, Standings & Map">
+<meta name="twitter:description" content="All 104 matches in Norwegian time, live group standings, 48-team squads, and a map of the qualified nations.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet">
@@ -148,6 +160,18 @@ h1.title .yr{
 .segmented button:hover{color:var(--text)}
 .segmented button:active{transform:scale(.96)}
 .segmented button[aria-selected="true"]{background:var(--green);color:#062013;box-shadow:0 4px 16px rgba(25,224,138,.32)}
+
+/* date picker , jump to a match day (global rail) */
+.datejump{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border-radius:11px;cursor:pointer;
+  background:rgba(0,0,0,.28);border:1px solid var(--line);color:var(--text-dim);
+  transition:border-color .18s var(--ease),color .18s var(--ease),box-shadow .18s var(--ease)}
+.datejump:hover{border-color:var(--line-strong);color:var(--text)}
+.datejump:focus-within{border-color:var(--green);color:var(--text);box-shadow:0 0 0 3px rgba(25,224,138,.16)}
+.datejump svg{width:15px;height:15px;flex:none;color:var(--text-faint)}
+.datejump input[type="date"]{appearance:none;border:0;background:transparent;color:var(--text);
+  font-family:inherit;font-weight:700;font-size:13px;outline:none;cursor:pointer;min-width:118px;color-scheme:dark}
+.datejump input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(.7) sepia(1) saturate(4) hue-rotate(90deg);cursor:pointer;opacity:.8}
+@media (max-width:560px){ .datejump{flex:1 1 100%;order:4} .datejump input[type="date"]{flex:1} }
 
 .search{position:relative;flex:1 1 200px;max-width:300px;min-width:160px}
 .search input{
@@ -562,9 +586,27 @@ body.modal-open{overflow:hidden}
 footer{color:var(--text-faint);font-size:12.5px;line-height:1.7;padding:26px 0 50px;border-top:1px solid var(--line);margin-top:30px}
 footer b{color:var(--text-dim)}
 
-/* entrance */
+/* entrance / transition system
+   - first paint: staggered "rise" on stage banners + group cards (gated by body.anim-intro,
+     so data-driven re-renders and tab switches never replay it , no flash)
+   - tab switches: one subtle "viewIn" on the activated view container (.view-in, set in JS)
+   - team sub-page: its own staggered reveal · modal: soft fade-out exit */
 @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-.anim{animation:rise .5s var(--ease) both}
+@keyframes viewIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes revealFade{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+@keyframes mmOut{to{opacity:0}}
+@keyframes mmCardOut{to{opacity:0;transform:translateY(8px)}}
+@keyframes jumpFlash{from{box-shadow:0 0 0 2px var(--green),0 0 22px rgba(25,224,138,.45)}to{box-shadow:0 0 0 0 rgba(25,224,138,0)}}
+.jump-flash{animation:jumpFlash 1.6s var(--ease);border-radius:12px}
+body.anim-intro .anim{animation:rise .5s var(--ease) both}
+.view.view-in{animation:viewIn .3s var(--ease)}
+#view-team .team-back{animation:rise .42s var(--ease) both}
+#view-team .team-head{animation:rise .42s var(--ease) both;animation-delay:.05s}
+#view-team .team-cols>section{animation:rise .44s var(--ease) both}
+#view-team .team-cols>section:nth-child(1){animation-delay:.12s}
+#view-team .team-cols>section:nth-child(2){animation-delay:.19s}
+.match-modal.closing{animation:mmOut .15s var(--ease) forwards}
+.match-modal.closing .mm-card{animation:mmCardOut .15s var(--ease) forwards}
 
 @media (max-width:560px){
   .cards{grid-template-columns:1fr}
@@ -873,7 +915,10 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
         <div class="tf-foot"><span id="tfCount">No teams selected</span><button class="tf-clearbtn" id="tfClear">Clear</button></div>
       </div>
     </div>
-    <button id="venueToggle" class="vmode" title="Switch stadium names between FIFA tournament names and common names">Common names</button>
+    <label class="datejump" title="Jump to a date">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/></svg>
+      <input type="date" id="dateJump" min="2026-06-11" max="2026-07-19" aria-label="Jump to a match date">
+    </label>
   </div>
 </div>
 <div class="chips-shell">
@@ -1172,6 +1217,7 @@ const MATCHES = [
    HELPERS
    ===================================================================== */
 const $ = (s,el=document)=>el.querySelector(s);
+const REDUCE = matchMedia('(prefers-reduced-motion: reduce)');   // honor in JS-driven animations (map fly-to, modal exit)
 const WD=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const MO=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const SCOL = Object.fromEntries(Object.keys(STAGES).map(s=>[s, getComputedStyle(document.documentElement).getPropertyValue('--st-'+s).trim()]));
@@ -1188,12 +1234,12 @@ const isTeam = c => Object.prototype.hasOwnProperty.call(TEAMS,c);
 // derive per-match: absolute kickoff Date (reuses the CEST time core), sortable ts, resolved venue
 MATCHES.forEach((m,i) => { m.i = i; m.kickoffDate = kickoff(m.date, m.kickoffLocal, m.plus); m.ts = m.kickoffDate.getTime(); m.venue = VENUES[m.hostCity] || null; m.baseHome = m.home; m.baseAway = m.away; });
 const ALL = MATCHES;                                   // single source; every view derives from this
+const MATCH_DATES = [...new Set(MATCHES.map(m=>m.date))].sort();   // sorted unique match days (for the date picker)
 const STAGE_COUNT = ALL.reduce((acc,m)=>{ acc[m.stage]=(acc[m.stage]||0)+1; return acc; },{});
 const OPENER_TS = Math.min(...ALL.map(m=>m.ts));
 
 // stadium name mode , common names by default; both stored on the venue
-let VENUE_NAME_MODE = (localStorage.getItem('wc2026.venueMode')||'common');   // common names by default (Azteca, MetLife…)
-const venueName = v => VENUE_NAME_MODE==='common' ? v.commonName : v.fifaName;
+const venueName = v => v.commonName;   // common stadium names (Azteca, SoFi…); FIFA names still shown in the match detail
 // venue-local kickoff , format the SAME absolute instant in the stadium timezone (no new time logic)
 const fmtVenueTime = m => m.venue ? new Intl.DateTimeFormat('en-GB',{timeZone:m.venue.timezone,hour:'2-digit',minute:'2-digit',hour12:false}).format(m.kickoffDate) : '';
 
@@ -1240,7 +1286,7 @@ function venueLineHTML(m){
   if(!m.venue) return `<div class="mc-venue tbc">⚠ venue TBC</div>`;
   return `<div class="mc-venue">
     <span class="vn">${venueName(m.venue)}</span><span class="vc">${m.venue.city}</span>
-    <span class="vt">${m.kickoffLocal}<em>NOR</em> · ${fmtVenueTime(m)}<em>local</em></span></div>`;
+    <span class="vt">${fmtVenueTime(m)}<em>local</em></span></div>`;
 }
 function matchCardHTML(m){
   const col=stageColor(m.stage);
@@ -1284,7 +1330,7 @@ function renderSchedule(){
     const wd=WD[new Date(Date.UTC(y,mo-1,da)).getUTCDay()];
     const isToday=d===todayStr;
     const cards=day.map(matchCardHTML).join("");
-    html+=`<section class="day" data-stage="${stage}">
+    html+=`<section class="day" data-stage="${stage}" data-date="${d}">
       <div class="day-head">
         <span class="day-num">${da}</span>
         <span class="day-mwd"><span class="mo">${MO[mo-1]}</span><span class="wd">${wd}</span></span>
@@ -1464,7 +1510,7 @@ function monthGridHTML(year, month, label, byDate, todayStr){
     const ds=`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const day=(byDate[ds]||[]).slice().sort((a,b)=>a.ts-b.ts);
     const wd=CAL_DOW[(new Date(Date.UTC(year,month,d)).getUTCDay()+6)%7];   // weekday for the mobile agenda label
-    cells+=`<div class="cal-cell${day.length?'':' nomatch'}${ds===todayStr?' today':''}">
+    cells+=`<div class="cal-cell${day.length?'':' nomatch'}${ds===todayStr?' today':''}" data-date="${ds}">
       <div class="cal-d"><span class="cal-wd">${wd}</span>${d}<span class="cal-mo">${label.slice(0,3)}</span></div>${day.map(calEntryHTML).join("")}</div>`;
   }
   return `<section class="cal-month">
@@ -1602,7 +1648,7 @@ async function loadResults(){
     AUTO_RESULTS = data.matches||{};
     if(data.lastUpdated) window.RESULTS_UPDATED=data.lastUpdated;
     console.log('[results] loaded ·', data.lastUpdated||'(no date)', '·', Object.keys(AUTO_RESULTS).length, 'updates');
-    applyOverlays(); rerenderViews(); route();                     // refresh every view + any open team page
+    if(Object.keys(AUTO_RESULTS).length){ applyOverlays(); rerenderViews(); route(); }   // only re-render when there are actual results (avoids a needless re-render flash pre-tournament)
   }catch(e){ console.log('[results] data/results.json not available yet (run scripts/fetch-results.mjs)'); }
 }
 
@@ -1611,11 +1657,24 @@ window.WC_STANDINGS = { computeStandings, rankGroup, thirdPlaceRanking, h2hStats
   setManualScore, clearManualScore, clearAllManual,
   setAuto: o => { AUTO_RESULTS = o||{}; applyOverlays(); rerenderViews(); },
   manual: () => MANUAL_RESULTS, auto: () => AUTO_RESULTS, match: i => MATCHES[i] };
+/* hash router , the URL fragment is the single source of truth for the active sub-page:
+     (empty)/#schedule · #groups · #calendar · #map · #team/CODE
+   Each route sets the document title so tabs, history and bookmarks read correctly. */
+const SITE='World Cup 2026';
+const VIEW_LABELS={schedule:'Schedule',groups:'Groups',calendar:'Calendar',map:'Map'};
 function route(){
   closeMatch();
-  const m=/^#team\/([A-Z]{3})$/.exec(location.hash);
-  if(m && TEAMS[m[1]]){ renderTeam(m[1]); document.body.classList.add('route-team'); $("#view-team").hidden=false; window.scrollTo(0,0); }
-  else { document.body.classList.remove('route-team'); $("#view-team").hidden=true; }
+  const tm=/^#team\/([A-Z]{3})$/.exec(location.hash);
+  if(tm && TEAMS[tm[1]]){                                       // team sub-page
+    renderTeam(tm[1]); document.body.classList.add('route-team'); $("#view-team").hidden=false;
+    document.title=`${TEAMS[tm[1]][0]} · ${SITE}`;
+    window.scrollTo(0,0); return;
+  }
+  document.body.classList.remove('route-team'); $("#view-team").hidden=true;
+  let v=location.hash.replace(/^#/,'');                         // a view sub-page (default: schedule)
+  if(!VIEW_NAMES.includes(v)) v='schedule';
+  setActiveView(v);
+  document.title = v==='schedule' ? `${SITE} · Schedule (Norwegian time)` : `${VIEW_LABELS[v]} · ${SITE}`;
 }
 window.addEventListener('hashchange', route);
 
@@ -1763,6 +1822,7 @@ function mmSide(code){
 }
 function openMatch(i){
   const m=MATCHES[i]; if(!m) return;
+  clearTimeout(mmCloseTimer); $("#match-modal").classList.remove('closing');   // cancel any in-flight close (e.g. save→reopen)
   const v=m.venue;
   const [y,mo,da]=m.date.split('-').map(Number);
   const wd=WD[new Date(Date.UTC(y,mo-1,da)).getUTCDay()];
@@ -1799,11 +1859,21 @@ function openMatch(i){
   </div>`;
   $("#match-modal").hidden=false; document.body.classList.add('modal-open');
 }
-function closeMatch(){ const mm=$("#match-modal"); if(mm){ mm.hidden=true; mm.innerHTML=''; } document.body.classList.remove('modal-open'); }
+let mmCloseTimer=0;
+function closeMatch(){
+  const mm=$("#match-modal"); document.body.classList.remove('modal-open');
+  if(!mm || mm.hidden) return;
+  if(REDUCE.matches){ mm.hidden=true; mm.innerHTML=''; return; }     // instant for reduced motion
+  mm.classList.add('closing');                                       // soft fade-out, then hide
+  clearTimeout(mmCloseTimer);
+  mmCloseTimer=setTimeout(()=>{ mm.hidden=true; mm.innerHTML=''; mm.classList.remove('closing'); }, 150);
+}
+// quick fade on content revealed by expanding a stage / group (collapse stays instant; height anim is janky)
+function revealFade(nodes){ if(REDUCE.matches) return; nodes.forEach(el=>{ el.style.animation='revealFade .26s var(--ease)'; setTimeout(()=>{ el.style.animation=''; }, 320); }); }
 
 // delegate clicks across the app
 document.addEventListener('click', e=>{
-  if(e.target.closest('.team-back')){ location.hash=''; return; }
+  if(e.target.closest('.team-back')){ const sv=localStorage.getItem('wc2026.view')||'schedule'; location.hash = sv==='schedule'?'#schedule':'#'+sv; return; }   // back to the view you came from
   if(e.target.closest('[data-mclose]') || e.target.id==='match-modal'){ closeMatch(); return; }              // close popover
   if(e.target.closest('#exportOverrides')){ exportOverrides(); return; }                                     // download manual scores as results.json
   if(e.target.closest('#clearManual')){ if(Object.keys(MANUAL_RESULTS).length && confirm('Remove all manually entered scores?')) clearAllManual(); return; }
@@ -1819,9 +1889,9 @@ document.addEventListener('click', e=>{
   const gbtn=e.target.closest('.gb');
   if(gbtn){ toggleGroup(gbtn.dataset.grp); return; }                  // group filter chip = toggle the group's teams
   const sb=e.target.closest('.stage-banner');
-  if(sb){ const s=sb.dataset.stage; collapsedStages.has(s)?collapsedStages.delete(s):collapsedStages.add(s); applyStageFold(); return; } // fold a stage
+  if(sb){ const s=sb.dataset.stage, wasFolded=collapsedStages.has(s); wasFolded?collapsedStages.delete(s):collapsedStages.add(s); applyStageFold(); if(wasFolded) revealFade([...document.querySelectorAll(`.day[data-stage="${s}"]`)]); return; } // fold/expand a stage
   const gcol=e.target.closest('[data-gcol]');
-  if(gcol){ const g=gcol.dataset.gcol; collapsedGroups.has(g)?collapsedGroups.delete(g):collapsedGroups.add(g); applyGroupCollapse(); return; } // collapse a group card
+  if(gcol){ const g=gcol.dataset.gcol, wasCollapsed=collapsedGroups.has(g); wasCollapsed?collapsedGroups.delete(g):collapsedGroups.add(g); applyGroupCollapse(); if(wasCollapsed){ const gc=gcol.closest('.gc'); revealFade([...gc.querySelectorAll('.gc-standings,.gc-matches')]); } return; } // collapse/expand a group card
   const zb=e.target.closest('.mzb');
   if(zb){ const z=zb.dataset.z; if(z==='in') zoomAt(mapW/2,mapH/2,1.6); else if(z==='out') zoomAt(mapW/2,mapH/2,1/1.6); else { mapPinned=false; mapPinCode=null; mapPopHide(); homeView(); } return; } // zoom controls
   if(e.target.closest('#mapColorBy')){ mapColorBy = mapColorBy==='conf'?'group':'conf'; recolorMap(); return; } // colour-by toggle
@@ -1870,23 +1940,44 @@ $("#tfSearch")?.addEventListener('input', e=>{
 // view toggle (ARIA tablist: roving tabindex + arrow-key navigation)
 const tabs=[...document.querySelectorAll('.segmented button')];
 const VIEW_NAMES=['schedule','groups','calendar','map'];
-function selectTab(btn, focus){
-  tabs.forEach(b=>{ const on=b===btn; b.setAttribute('aria-selected', on?'true':'false'); b.tabIndex=on?0:-1; });
-  const v=btn.dataset.view;
+function setActiveView(v){                                      // pure activation; routing is driven by the hash
+  tabs.forEach(b=>{ const on=b.dataset.view===v; b.setAttribute('aria-selected', on?'true':'false'); b.tabIndex=on?0:-1; });
   if(v==='map'){ renderMap(); applyMapFilter(); fitToSelection(); }   // build on first open + honor the current global filter
   VIEW_NAMES.forEach(n=>{ const el=$("#view-"+n); if(el) el.hidden = v!==n; });
   localStorage.setItem('wc2026.view', v);
-  if(focus) btn.focus();
+  if(!document.body.classList.contains('anim-intro')){             // gentle entrance on user switches (not first paint or re-render)
+    const el=$("#view-"+v); if(el){ el.classList.remove('view-in'); void el.offsetWidth; el.classList.add('view-in'); }
+  }
 }
-tabs.forEach(btn=>btn.addEventListener('click', ()=>selectTab(btn)));
+function goTab(v){ location.hash = v==='schedule' ? '#schedule' : '#'+v; route(); }   // set the URL + activate now (hashchange also covers back/forward)
+tabs.forEach(btn=>btn.addEventListener('click', ()=>goTab(btn.dataset.view)));
 $(".segmented").addEventListener('keydown', e=>{
   const i=tabs.indexOf(document.activeElement); if(i<0) return;
   let j=null;
   if(e.key==='ArrowRight'||e.key==='ArrowDown') j=(i+1)%tabs.length;
   else if(e.key==='ArrowLeft'||e.key==='ArrowUp') j=(i-1+tabs.length)%tabs.length;
   else if(e.key==='Home') j=0; else if(e.key==='End') j=tabs.length-1;
-  if(j!==null){ e.preventDefault(); selectTab(tabs[j], true); }
+  if(j!==null){ e.preventDefault(); goTab(tabs[j].dataset.view); tabs[j].focus(); }
 });
+
+/* date picker , scroll the active date-view (Schedule, or Calendar if open) to a match day and flash it */
+function jumpToDate(dateStr){
+  if(!dateStr) return;
+  const target = MATCH_DATES.includes(dateStr) ? dateStr : (MATCH_DATES.find(d=>d>=dateStr) || MATCH_DATES[MATCH_DATES.length-1]);
+  if(!target) return;
+  const view = $("#view-calendar").hidden ? 'schedule' : 'calendar';   // act on Calendar if it's open, else Schedule
+  if(view==='schedule' && $("#view-schedule").hidden) goTab('schedule');   // from Groups/Map: switch to Schedule
+  requestAnimationFrame(()=>{
+    const el = $(`#view-${view} .${view==='calendar'?'cal-cell':'day'}[data-date="${target}"]`);
+    if(!el) return;
+    if(view==='schedule' && collapsedStages.has(el.dataset.stage)){ collapsedStages.delete(el.dataset.stage); applyStageFold(); }   // unfold so the day is visible
+    const far = Math.abs(el.getBoundingClientRect().top) > window.innerHeight*1.5;   // smooth for nearby, instant for far (avoid a long scroll)
+    el.scrollIntoView({behavior: (REDUCE.matches||far)?'auto':'smooth', block:'center'});
+    el.classList.remove('jump-flash'); void el.offsetWidth; el.classList.add('jump-flash');
+    setTimeout(()=>el.classList.remove('jump-flash'), 1700);
+  });
+}
+$("#dateJump")?.addEventListener('change', e=>jumpToDate(e.target.value));
 
 /* =====================================================================
    WORLD MAP , 48 nations on a d3-geo Natural Earth projection (inlined TopoJSON).
@@ -2024,7 +2115,7 @@ function applyTransform(){
 }
 function setT(t, animate){
   const target=clampT(t); cancelAnimationFrame(mapAnim);
-  if(!animate){ mapT=target; applyTransform(); return; }
+  if(!animate || REDUCE.matches){ mapT=target; applyTransform(); return; }   // jump instantly when reduced motion is requested
   const from={...mapT}, t0=performance.now(), dur=560;
   const step=now=>{ const p=Math.min(1,(now-t0)/dur), e=1-Math.pow(1-p,3);
     mapT=clampT({k:from.k+(target.k-from.k)*e, x:from.x+(target.x-from.x)*e, y:from.y+(target.y-from.y)*e}); applyTransform();
@@ -2050,16 +2141,18 @@ function fitToSelection(){   // frame the currently-matching nations (global tea
   const k=Math.max(1, Math.min(ZMAX, 0.78/Math.max(bw/mapW, bh/mapH)));
   setT({k, x:mapW/2-cx*k, y:mapH/2-cy*k}, true);
 }
+function mapUnpin(){ mapPinned=false; mapPinCode=null; mapPopHide(); fitToSelection(); }   // back to the active filter framing, or home when none
+function mapPin(c){ mapPinned=true; mapPinCode=c; flyToCode(c); mapPopFor(c); }
 function mapClickAt(el){
   if(!el) return;
   const fill=el.closest('.map-fill');
   if(fill){ const codes=fill.dataset.mteams.split(' ');
-    if(codes.length===1){ mapPinned=true; mapPinCode=codes[0]; flyToCode(codes[0]); mapPopFor(codes[0]); }
-    else { mapPinned=false; mapPinCode=null; mapPopHide(); flyToCode(codes[0]); }   // UK: zoom in, no single popup
+    if(codes.length===1){ codes[0]===mapPinCode ? mapUnpin() : mapPin(codes[0]); }   // click the pinned country again = unpin
+    else { mapPinned=false; mapPinCode=null; mapPopHide(); flyToCode(codes[0]); }     // UK: zoom in, no single popup
     return; }
   const mk=el.closest('.map-marker');
-  if(mk){ const c=mk.dataset.mteam; mapPinned=true; mapPinCode=c; flyToCode(c); mapPopFor(c); return; }
-  mapPinned=false; mapPinCode=null; mapPopHide(); homeView();   // empty ocean = reset
+  if(mk){ const c=mk.dataset.mteam; c===mapPinCode ? mapUnpin() : mapPin(c); return; }
+  mapUnpin();   // empty ocean = back to filter/home
 }
 function svgUnit(svg, cx, cy){ const r=svg.getBoundingClientRect(); return {x:(cx-r.left)/r.width*mapW, y:(cy-r.top)/r.height*mapH, sc:mapW/r.width}; }
 function bindMapInteractions(){
@@ -2107,14 +2200,8 @@ function tick(){
    INIT
    ===================================================================== */
 function rerenderViews(){ renderSchedule(); renderGroups(); renderCalendar(); cacheRefs(); applyFilter(); applyRound(); applyStageFold(); applyGroupCollapse(); }
-$("#venueToggle").textContent = VENUE_NAME_MODE==='fifa' ? 'FIFA names' : 'Common names';
-$("#venueToggle").addEventListener('click', ()=>{
-  VENUE_NAME_MODE = VENUE_NAME_MODE==='fifa' ? 'common' : 'fifa';
-  localStorage.setItem('wc2026.venueMode', VENUE_NAME_MODE);
-  $("#venueToggle").textContent = VENUE_NAME_MODE==='fifa' ? 'FIFA names' : 'Common names';
-  rerenderViews();
-});
 
+document.body.classList.add('anim-intro');   // staggered first-paint entrance; removed after it settles so re-renders/switches don't replay it
 applyOverlays();                 // compose any saved manual scores onto MATCHES before first paint
 renderTeamFilter();
 renderGroupFilter();
@@ -2123,9 +2210,8 @@ renderSchedule();
 renderGroups();
 renderCalendar();
 cacheRefs();
-const savedView=localStorage.getItem('wc2026.view');
-const sv=tabs.find(t=>t.dataset.view===savedView);
-if(sv && savedView!=='schedule'){ selectTab(sv); }
+// initial route: an explicit hash (deep link) wins; otherwise restore the last view into the URL
+if(!location.hash){ const saved=localStorage.getItem('wc2026.view'); if(saved && saved!=='schedule' && VIEW_NAMES.includes(saved)) location.hash='#'+saved; }
 applyFilter();
 applyRound();
 applyStageFold();
@@ -2134,6 +2220,7 @@ loadSquads();
 loadResults();
 route();
 tick(); cdTimer=setInterval(tick,1000);
+setTimeout(()=>document.body.classList.remove('anim-intro'), 1100);   // intro done , hand entrance duties to viewIn on tab switches
 </script>
 </body>
 </html>
