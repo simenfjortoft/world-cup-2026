@@ -148,22 +148,22 @@ h1.title .yr{
   position:sticky;top:0;z-index:40;margin-top:30px;
   background:linear-gradient(180deg, rgba(7,13,10,.92), rgba(7,13,10,.74));
   backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  border-bottom:1px solid rgba(255,255,255,.05);   /* soft hairline; no hard top border so the bar flows out of the hero */
 }
 .controls .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding-top:14px;padding-bottom:14px}
-.segmented{display:inline-flex;background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:11px;padding:4px}
+.segmented{display:inline-flex;background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:999px;padding:4px}
 .segmented button{
   appearance:none;border:0;background:transparent;color:var(--text-dim);
   font-family:inherit;font-weight:700;font-size:13px;letter-spacing:.02em;
-  padding:8px 16px;border-radius:8px;cursor:pointer;
+  padding:8px 16px;border-radius:999px;cursor:pointer;
   transition:color .18s var(--ease),background .18s var(--ease),box-shadow .18s var(--ease),transform .1s var(--ease);
 }
 .segmented button:hover{color:var(--text)}
 .segmented button:active{transform:scale(.96)}
-.segmented button[aria-selected="true"]{background:var(--green);color:#062013;box-shadow:0 4px 16px rgba(25,224,138,.32)}
+.segmented button[aria-selected="true"]{background:var(--green);color:#062013;box-shadow:0 2px 10px rgba(25,224,138,.22)}
 
 /* date picker , jump to a match day (global rail) */
-.datejump{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border-radius:11px;cursor:pointer;
+.datejump{position:relative;display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border-radius:999px;cursor:pointer;
   background:rgba(0,0,0,.28);border:1px solid var(--line);color:var(--text-dim);
   transition:border-color .18s var(--ease),color .18s var(--ease),box-shadow .18s var(--ease)}
 .datejump:hover{border-color:var(--line-strong);color:var(--text)}
@@ -172,6 +172,10 @@ h1.title .yr{
 .datejump input[type="date"]{appearance:none;border:0;background:transparent;color:var(--text);
   font-family:inherit;font-weight:700;font-size:13px;outline:none;cursor:pointer;min-width:118px;color-scheme:dark}
 .datejump input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(.7) sepia(1) saturate(4) hue-rotate(90deg);cursor:pointer;opacity:.8}
+/* show an intentional label while no date is picked, instead of the native dd.mm.yyyy placeholder */
+.dj-ph{position:absolute;left:35px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-faint);font-weight:600;font-size:13px;letter-spacing:.01em}
+.datejump.has-val .dj-ph{display:none}
+.datejump:not(.has-val) input[type="date"]::-webkit-datetime-edit{color:transparent}
 @media (max-width:560px){ .datejump{flex:1 1 100%;order:4} .datejump input[type="date"]{flex:1} }
 
 .search{position:relative;flex:1 1 200px;max-width:300px;min-width:160px}
@@ -377,7 +381,7 @@ body.filtering .gmatch:not(.on){display:none}
 
 /* --------------------------- TEAM FILTER (custom multi-select) --------------------------- */
 .teamfilter{position:relative}
-.tf-trigger{display:inline-flex;align-items:center;gap:9px;padding:10px 13px;border-radius:11px;
+.tf-trigger{display:inline-flex;align-items:center;gap:9px;padding:10px 15px;border-radius:999px;
   background:rgba(0,0,0,.28);border:1px solid var(--line);color:var(--text);
   font-family:inherit;font-weight:700;font-size:13px;line-height:1;cursor:pointer;white-space:nowrap;
   transition:border-color .18s var(--ease),background .18s var(--ease),color .18s var(--ease),transform .1s var(--ease),box-shadow .18s var(--ease)}
@@ -541,13 +545,13 @@ body.route-team .legend{display:none !important}
 [data-ghl]:focus-visible,.rb:focus-visible,.team-hl:focus-visible{outline:2px solid var(--green);outline-offset:2px}
 .roundbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:14px 0 4px}
 .rb-lab{font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--text-faint);margin-right:4px}
-.rb{appearance:none;border:1px solid var(--line);background:rgba(0,0,0,.22);color:var(--text-dim);font-family:inherit;font-weight:700;font-size:12px;padding:6px 12px;border-radius:8px;cursor:pointer;transition:color .15s var(--ease),border-color .15s var(--ease),background .15s var(--ease),transform .1s var(--ease)}
+.rb{appearance:none;border:1px solid var(--line);background:rgba(0,0,0,.22);color:var(--text-dim);font-family:inherit;font-weight:700;font-size:12px;padding:6px 13px;border-radius:999px;cursor:pointer;transition:color .15s var(--ease),border-color .15s var(--ease),background .15s var(--ease),transform .1s var(--ease)}
 .rb:hover{color:var(--text);border-color:var(--line-strong)}
 .rb[aria-pressed="true"]{background:var(--green);color:#062013;border-color:var(--green)}
 /* group filter chips (A-L) , toggle a whole group's teams in the shared selection */
 .groupbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:0 0 8px}
 .gb{appearance:none;border:1px solid var(--line);background:rgba(0,0,0,.22);color:var(--text-dim);
-  font-family:inherit;font-weight:800;font-size:12px;min-width:32px;padding:6px 9px;border-radius:8px;cursor:pointer;text-align:center;
+  font-family:inherit;font-weight:800;font-size:12px;min-width:32px;padding:6px 9px;border-radius:999px;cursor:pointer;text-align:center;
   transition:color .15s var(--ease),border-color .15s var(--ease),background .15s var(--ease),transform .1s var(--ease)}
 .gb:hover{color:var(--text);border-color:var(--line-strong)}
 .gb:active{transform:scale(.96)}
@@ -896,6 +900,7 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
     <label class="datejump" title="Jump to a date">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/></svg>
       <input type="date" id="dateJump" min="2026-06-11" max="2026-07-19" aria-label="Jump to a match date">
+      <span class="dj-ph" aria-hidden="true">Jump to date</span>
     </label>
   </div>
 </div>
@@ -1941,7 +1946,9 @@ function jumpToDate(dateStr, forceView){
     setTimeout(()=>el.classList.remove('jump-flash'), 1700);
   });
 }
-$("#dateJump")?.addEventListener('change', e=>jumpToDate(e.target.value));
+const dateJump=$("#dateJump");
+const syncDatePh=()=>dateJump.parentElement.classList.toggle('has-val', !!dateJump.value);   // hide "Jump to date" once a day is picked
+if(dateJump){ dateJump.addEventListener('change', e=>{ jumpToDate(e.target.value); syncDatePh(); }); dateJump.addEventListener('input', syncDatePh); syncDatePh(); }
 // on opening the Calendar, land on today (or the next upcoming match day) instead of the empty start of June
 function calScrollToFocus(){
   const target = nextMatchDate(todayDateStr()) || MATCH_DATES[0];   // today/next match day, else (post-tournament) the start
