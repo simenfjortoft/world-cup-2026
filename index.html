@@ -295,14 +295,15 @@ main{padding:18px 0 70px;position:relative}
 .mc.is-final .mc-body{justify-content:center}
 .mc.is-final .mc-time{position:absolute;top:18px;right:20px;margin:0}
 
-/* ---------- highlight / dim (filtering) ---------- */
-body.filtering .mc:not(.on){opacity:.26;filter:saturate(.45)}
-body.filtering .mc.on{
-  border-color:var(--green);
-  box-shadow:0 0 0 1px rgba(25,224,138,.45), 0 12px 36px rgba(25,224,138,.18);
-}
+/* ---------- filter: show ONLY selected teams' matches, drop empty days ----------
+   unresolved knockout fixtures (data-teams="") stay so a team's path is never hidden */
+body.filtering .mc:not(.on):not([data-teams=""]){display:none}
+body.filtering .day:not(:has(.mc.on)):not(:has(.mc[data-teams=""])){display:none}
+body.filtering .day-head .cnt{display:none}                    /* count would mislead while cards are hidden */
+.mc.on{box-shadow:0 0 0 1px rgba(25,224,138,.28), 0 10px 30px rgba(25,224,138,.12)}
 .mc.on .nm.sel{color:var(--green-bright)}
 .mc.on .fl.sel{filter:drop-shadow(0 0 10px rgba(93,255,178,.7))}
+body.filtering .cal-entry:not(.on):not([data-teams=""]){display:none}
 
 /* ---------------------------- GROUPS VIEW ---------------------------- */
 .groups-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;margin-top:8px}
@@ -327,16 +328,99 @@ body.filtering .mc.on{
 .gm-when{display:flex;align-items:center;gap:8px;color:var(--text-faint);font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
 .gm-when .md{padding:2px 6px;border:1px solid var(--line);border-radius:5px;font-size:9.5px;letter-spacing:.06em;color:var(--text-dim)}
 
-body.filtering .gteam:not(.on),
-body.filtering .gmatch:not(.on){opacity:.24}
+/* filter: only groups containing a picked team, and only their fixtures */
+body.filtering .gc:not(:has(.gteam.on)){display:none}
+body.filtering .gmatch:not(.on){display:none}
 .gteam.on{background:rgba(25,224,138,.1)}
 .gteam.on .nm{color:var(--green-bright)}
 .gmatch.on{background:rgba(25,224,138,.08)}
 .gmatch.on .tn.sel{color:var(--green-bright)}
+/* collapsible group card */
+.gc-head{cursor:pointer;user-select:none}
+.gc-head:hover{background:linear-gradient(180deg,rgba(25,224,138,.1),transparent)}
+.gc-chev{margin-left:auto;width:17px;height:17px;color:var(--text-faint);transition:transform .22s var(--ease);flex:none}
+.gc.collapsed .gc-chev{transform:rotate(-90deg)}
+.gc.collapsed .gc-teams,.gc.collapsed .gc-matches{display:none}
+.gc.collapsed .gc-head{border-bottom:0}
+.gc-head:focus-visible,.stage-banner:focus-visible{outline:2px solid var(--green);outline-offset:-2px;border-radius:6px}
 
 /* empty state */
 .empty{text-align:center;padding:70px 20px;color:var(--text-faint)}
 .empty .big{font-family:"Anton",sans-serif;font-size:30px;color:var(--text-dim);margin-bottom:8px}
+
+/* --------------------------- TEAM FILTER (custom multi-select) --------------------------- */
+.teamfilter{position:relative}
+.tf-trigger{display:inline-flex;align-items:center;gap:9px;padding:10px 13px;border-radius:11px;
+  background:rgba(0,0,0,.28);border:1px solid var(--line);color:var(--text);
+  font-family:inherit;font-weight:700;font-size:13px;line-height:1;cursor:pointer;white-space:nowrap;
+  transition:border-color .18s var(--ease),background .18s var(--ease),color .18s var(--ease),transform .1s var(--ease),box-shadow .18s var(--ease)}
+.tf-trigger:hover{border-color:var(--line-strong)}
+.tf-trigger:active{transform:scale(.96)}
+.tf-ball{font-size:15px;line-height:1}
+.tf-label{font-variant-numeric:tabular-nums}
+.tf-chev{width:13px;height:13px;color:var(--text-faint);transition:transform .22s var(--ease)}
+body.tf-open .tf-chev{transform:rotate(180deg)}
+.teamfilter.active .tf-trigger{border-color:var(--green);color:var(--green-bright);
+  background:linear-gradient(180deg,rgba(25,224,138,.18),rgba(25,224,138,.06));box-shadow:0 0 0 1px rgba(25,224,138,.35),0 6px 22px rgba(25,224,138,.18)}
+.teamfilter.active .tf-chev{color:var(--green-bright)}
+
+.tf-panel{position:absolute;top:calc(100% + 9px);left:0;z-index:55;width:min(340px,86vw);
+  background:linear-gradient(180deg,rgba(255,255,255,.035),transparent 26%),var(--surface-2);
+  border:1px solid var(--line-strong);border-radius:16px;padding:10px;
+  box-shadow:0 26px 70px rgba(0,0,0,.62),0 4px 14px rgba(0,0,0,.4),0 0 0 1px rgba(25,224,138,.12);
+  transform-origin:top left;opacity:0;transform:scale(.96) translateY(-6px);visibility:hidden;pointer-events:none;
+  transition:opacity .19s var(--ease),transform .19s var(--ease),visibility .19s}
+body.tf-open .tf-panel{opacity:1;transform:none;visibility:visible;pointer-events:auto}
+.tf-search{position:relative;margin-bottom:8px}
+.tf-search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text-faint)}
+.tf-search input{width:100%;padding:9px 12px 9px 33px;border-radius:10px;background:rgba(0,0,0,.32);
+  border:1px solid var(--line);color:var(--text);font-family:inherit;font-size:13px;outline:none;
+  transition:border-color .18s var(--ease),box-shadow .18s var(--ease)}
+.tf-search input::placeholder{color:var(--text-faint)}
+.tf-search input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(25,224,138,.16)}
+.tf-list{max-height:min(46vh,372px);overflow-y:auto;overscroll-behavior:contain;margin:0 -4px;padding:0 4px}
+.tf-group.hidden{display:none}
+.tf-glabel{position:sticky;top:0;background:var(--surface-2);font-size:9.5px;font-weight:800;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--text-faint);padding:9px 8px 4px;z-index:1}
+.tf-opt{display:flex;align-items:center;gap:10px;width:100%;padding:8px 9px;border-radius:9px;
+  border:1px solid transparent;background:none;color:var(--text-dim);font-family:inherit;font-weight:600;font-size:13.5px;
+  cursor:pointer;text-align:left;transition:background .14s var(--ease),color .14s var(--ease),border-color .14s var(--ease)}
+.tf-opt.hidden{display:none}
+.tf-opt:hover{background:rgba(255,255,255,.045);color:var(--text)}
+.tf-opt .fl{font-size:18px;line-height:1;flex:none}
+.tf-opt .flagsvg{width:1.2em;height:.78em}
+.tf-nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tf-cc{font-size:10.5px;font-weight:800;letter-spacing:.04em;color:var(--text-faint);transition:color .14s}
+.tf-check{width:17px;height:17px;flex:none;color:var(--green);fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;
+  opacity:0;transform:scale(.25);filter:blur(4px);transition:opacity .16s var(--ease),transform .16s var(--ease),filter .16s var(--ease)}
+.tf-opt[aria-selected="true"]{color:var(--green-bright);border-color:rgba(25,224,138,.3);
+  background:linear-gradient(180deg,rgba(25,224,138,.16),rgba(25,224,138,.05))}
+.tf-opt[aria-selected="true"] .tf-cc{color:var(--green)}
+.tf-opt[aria-selected="true"] .tf-check{opacity:1;transform:none;filter:blur(0)}
+.tf-empty{padding:18px 10px;text-align:center;color:var(--text-faint);font-size:12.5px}
+.tf-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px;padding:9px 6px 2px;
+  border-top:1px solid var(--line);font-size:11.5px;font-weight:600;color:var(--text-faint);font-variant-numeric:tabular-nums}
+.tf-clearbtn{appearance:none;border:1px solid var(--line-strong);background:transparent;color:var(--text-dim);
+  font-family:inherit;font-weight:700;font-size:11.5px;padding:6px 12px;border-radius:8px;cursor:pointer;transition:.16s var(--ease)}
+.tf-clearbtn:hover{color:var(--text);border-color:var(--green);background:rgba(25,224,138,.08)}
+.tf-clearbtn:active{transform:scale(.96)}
+
+/* --------------------------- collapsible schedule stages --------------------------- */
+.stage-banner{cursor:pointer;user-select:none}
+.sb-chev{margin-left:auto;width:18px;height:18px;color:var(--text-faint);transition:transform .22s var(--ease);flex:none;align-self:center}
+.stage-banner:hover .sb-chev{color:var(--text-dim)}
+.stage-banner.folded .sb-chev{transform:rotate(-90deg)}
+.stage-banner.folded{opacity:.7}
+.stage-banner.folded .sb-note{display:none}
+.day.stage-folded{display:none}
+
+body.filtering .orient,.orient b{color:var(--text-dim)}
+
+@media (max-width:560px){
+  .teamfilter{flex:1 1 100%;order:2}
+  .tf-trigger{width:100%;justify-content:space-between}
+  .tf-panel{width:100%}
+}
 
 /* ---------------------------- CALENDAR VIEW ---------------------------- */
 .cal-month{margin-top:26px}
@@ -617,22 +701,25 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
       <button role="tab" id="tab-groups" aria-controls="view-groups" aria-selected="false" tabindex="-1" data-view="groups">Groups</button>
       <button role="tab" id="tab-calendar" aria-controls="view-calendar" aria-selected="false" tabindex="-1" data-view="calendar">Calendar</button>
     </div>
-    <select id="teamPicker" class="team-picker" aria-label="Open a team's page"><option value="">⚽ Jump to your team…</option></select>
-    <button id="venueToggle" class="vmode" title="Switch stadium names between FIFA tournament names and common names">Common names</button>
-    <label class="search">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-      <input id="search" type="search" placeholder="Find a nation…" autocomplete="off" aria-label="Search nations">
-    </label>
-    <div class="filter-status">
-      <span id="status" role="status" aria-live="polite">Tap a flag to highlight a nation</span>
-      <button class="btn-clear btn-only" id="onlyToggle" aria-pressed="false" title="Show only your highlighted nations">Show only</button>
-      <button class="btn-clear" id="clear">Clear</button>
+    <div class="teamfilter" id="teamfilter">
+      <button class="tf-trigger" id="tfTrigger" aria-haspopup="true" aria-expanded="false">
+        <span class="tf-ball">⚽</span><span class="tf-label" id="tfLabel">Filter teams</span>
+        <svg class="tf-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <div class="tf-panel" id="tfPanel" role="dialog" aria-label="Filter by team">
+        <div class="tf-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input id="tfSearch" type="search" placeholder="Search nations…" autocomplete="off" aria-label="Search nations">
+        </div>
+        <div class="tf-list" id="tfList" role="listbox" aria-multiselectable="true"></div>
+        <div class="tf-foot"><span id="tfCount">No teams selected</span><button class="tf-clearbtn" id="tfClear">Clear</button></div>
+      </div>
     </div>
+    <button id="venueToggle" class="vmode" title="Switch stadium names between FIFA tournament names and common names">Common names</button>
   </div>
 </div>
 <div class="chips-shell">
   <div class="wrap">
-    <p class="orient">Tap any match for details &nbsp;·&nbsp; a flag to highlight a team &nbsp;·&nbsp; or use <b>⚽ Jump to your team</b> for one nation's full schedule.</p>
     <div class="roundbar" id="roundbar">
       <span class="rb-lab">Round</span>
       <button class="rb" data-round="ALL" aria-pressed="true">All</button>
@@ -644,9 +731,7 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
       <button class="rb" data-round="3RD" aria-pressed="false">3rd</button>
       <button class="rb" data-round="FINAL" aria-pressed="false">Final</button>
     </div>
-    <button id="chipsToggle" class="chips-toggle" aria-expanded="false" aria-controls="chips">Highlight a nation<span class="ct-n" id="chipsCount"></span><span class="chev">▾</span></button>
-    <div class="chips-head">Highlight nations<span class="ch-hint">, scroll to fixtures below, your picks stay lit</span></div>
-    <div class="chips" id="chips"></div>
+    <p class="orient" id="orient">Tap any match for details &nbsp;·&nbsp; pick teams from <b>⚽ Filter teams</b> to narrow the whole schedule to them.</p>
   </div>
 </div>
 
@@ -1010,9 +1095,10 @@ function renderSchedule(){
     const stage=day[0].stage;
     if(stage!==prevStage){
       const col=stageColor(stage), cnt=STAGE_COUNT[stage];
-      html+=`<div class="stage-banner anim" data-stage="${stage}" style="animation-delay:${Math.min(i,8)*30}ms">
+      html+=`<div class="stage-banner anim" data-stage="${stage}" role="button" tabindex="0" aria-expanded="true" title="Collapse / expand this stage" style="animation-delay:${Math.min(i,8)*30}ms">
         <div class="sb-row"><span class="sb-tick" style="background:${col}"></span>
-        <h2>${STAGES[stage].label}</h2><span class="sb-count">${cnt} ${cnt===1?'match':'matches'}</span></div>
+        <h2>${STAGES[stage].label}</h2><span class="sb-count">${cnt} ${cnt===1?'match':'matches'}</span>
+        <svg class="sb-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg></div>
         <p class="sb-note">${STAGES[stage].note}</p></div>`;
       prevStage=stage;
     }
@@ -1050,8 +1136,9 @@ function renderGroups(){
         </div>`;
       }).join("");
     html+=`<div class="gc anim" style="animation-delay:${Math.min(gi,11)*28}ms">
-      <div class="gc-head" data-ghl="${g}" role="button" tabindex="0" title="Highlight all of Group ${g}"><span class="gc-letter">${g}</span>
-        <div><div class="lbl">Group ${g}</div><div class="sub">4 teams · 6 matches</div></div></div>
+      <div class="gc-head" data-gcol="${g}" role="button" tabindex="0" aria-expanded="true" title="Collapse / expand Group ${g}"><span class="gc-letter">${g}</span>
+        <div><div class="lbl">Group ${g}</div><div class="sub">4 teams · 6 matches</div></div>
+        <svg class="gc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg></div>
       <div class="gc-teams">${teams}</div>
       <div class="gc-matches">${matches}</div></div>`;
   });
@@ -1137,7 +1224,7 @@ function renderTeam(code){
       <span class="team-flag">${flag}</span>
       <div><h2 class="team-name">${name}</h2>
         <div class="team-grp">Group ${group} · alongside ${mates.map(teamLink).join(', ')}</div></div>
-      <button class="team-hl${selected.has(code)?' on':''}" data-hlteam="${code}">${selected.has(code)?'★ Highlighted':'☆ Highlight this team'}</button>
+      <button class="team-hl${selected.has(code)?' on':''}" data-hlteam="${code}">${selected.has(code)?'★ In filter':'☆ Show this team'}</button>
     </div>
     <div class="team-cols">
       <section class="team-fx"><h3 class="team-h3">Fixtures<span>${fixtures.length} group matches · Norwegian + venue-local time</span></h3>${fx}</section>
@@ -1204,17 +1291,6 @@ window.addEventListener('hashchange', route);
 /* =====================================================================
    CHIPS + LEGEND
    ===================================================================== */
-function renderChips(){
-  const chip = c =>
-    `<button class="chip" role="switch" aria-pressed="false" data-team="${c}" title="${TEAMS[c][0]}">
-       <span class="fl">${TEAMS[c][1]}</span><span class="nm-c">${TEAMS[c][0]}</span><span class="cc">${c}</span>
-     </button>`;
-  $("#chips").innerHTML=Object.keys(GROUPS).map(g=>
-    `<div class="chipgroup" data-group="${g}">
-       <div class="cg-head" data-ghl="${g}" role="button" tabindex="0" title="Highlight all of Group ${g}"><span class="cg-l">${g}</span>Group ${g}</div>
-       ${GROUPS[g].map(chip).join("")}
-     </div>`).join("");
-}
 function renderLegend(){
   const stages=Object.keys(STAGES).map(s=>`<span class="lg"><span class="sq" style="background:${stageColor(s)}"></span>${STAGES[s].label}</span>`).join("");
   const groups=Object.keys(GCOL).map(g=>`<span class="lg"><span class="sq" style="background:${GCOL[g]}"></span>${g}</span>`).join("");
@@ -1226,44 +1302,47 @@ function renderLegend(){
    ===================================================================== */
 const selected = new Set();
 try{ JSON.parse(localStorage.getItem('wc2026.sel')||'[]').forEach(c=>TEAMS[c]&&selected.add(c)); }catch(e){}
-let showOnly = localStorage.getItem('wc2026.only')==='1';   // #3 , isolate lit nations instead of dimming
+let collapsedStages = new Set(JSON.parse(localStorage.getItem('wc2026.folds')||'[]'));
+let collapsedGroups = new Set(JSON.parse(localStorage.getItem('wc2026.gfolds')||'[]'));
 
-// cache node lists once after render (they never change) so filtering/search don't re-query the DOM
-let MC=[], GTEAM=[], GMATCH=[], CHIP=[], CG=[], CAL=[], GHL=[], DAYS=[], BANNER=[];
+// cache node lists once after render (they never change) so filtering doesn't re-query the DOM
+let MC=[], GTEAM=[], GMATCH=[], CAL=[], DAYS=[], BANNER=[];
 function cacheRefs(){
   MC=[...document.querySelectorAll('.mc')];
   GTEAM=[...document.querySelectorAll('.gteam')];
   GMATCH=[...document.querySelectorAll('.gmatch')];
-  CHIP=[...document.querySelectorAll('.chip')];
-  CG=[...document.querySelectorAll('.chipgroup')];
   CAL=[...document.querySelectorAll('.cal-entry')];
-  GHL=[...document.querySelectorAll('[data-ghl]')];
   DAYS=[...document.querySelectorAll('.day')];
   BANNER=[...document.querySelectorAll('.stage-banner')];
 }
 
 function countMatches(){
-  return MATCHES.filter(m=>isTeam(m.home)&&isTeam(m.away)&&(selected.has(m.home)||selected.has(m.away))).length;
+  return MATCHES.filter(m=>selected.has(m.home)||selected.has(m.away)).length;
 }
-// #3 , one status line + one Clear shared by nation highlight AND round filter
+// one status line shared by the team filter AND the round filter (lives in the .orient line)
 function syncFilterStatus(){
-  const st=$("#status"), clr=$("#clear");
+  const el=$("#orient"); if(!el) return;
   const parts=[];
   if(roundFilter!=='ALL'){ const L=STAGES[roundFilter]; parts.push(`Round: <b>${L?L.label:roundFilter}</b>`); }
   if(selected.size){
     const names=[...selected].map(c=>TEAMS[c][0]);
-    const who = names.length<=2?names.join(' & '):`${names.length} nations`;
-    parts.push(`Highlighting <b>${who}</b> · <b>${countMatches()}</b> matches`);
+    const who = names.length<=2 ? names.join(' & ') : `${names.length} teams`;
+    parts.push(`Showing <b>${who}</b> · <b>${countMatches()}</b> matches · other days hidden`);
   }
-  document.body.classList.toggle('has-filter', parts.length>0);   // any filter active (nation or round)
-  if(parts.length){ st.innerHTML=parts.join(' &nbsp;·&nbsp; '); clr.classList.add('show'); }
-  else { st.textContent="Tap a flag to highlight a nation"; clr.classList.remove('show'); }
+  el.innerHTML = parts.length ? parts.join(' &nbsp;·&nbsp; ')
+    : `Tap any match for details &nbsp;·&nbsp; pick teams from <b>⚽ Filter teams</b> to narrow the whole schedule to them.`;
+}
+function syncPicker(){
+  const n=selected.size, lbl=$("#tfLabel"), cnt=$("#tfCount");
+  if(lbl) lbl.textContent = n ? (n===1 ? TEAMS[[...selected][0]][0] : `${n} teams`) : 'Filter teams';
+  $("#teamfilter")?.classList.toggle('active', n>0);
+  if(cnt) cnt.textContent = n ? `${n} selected` : 'No teams selected';
+  $("#tfList")?.querySelectorAll('.tf-opt').forEach(o=> o.setAttribute('aria-selected', selected.has(o.dataset.team)?'true':'false'));
 }
 function applyFilter(){
   const active = selected.size>0;
   document.body.classList.toggle('filtering', active);
-
-  // match cards (schedule)
+  // mark the picked teams' matches; the rest are hidden by CSS (empty days drop out too)
   MC.forEach(card=>{
     const teams=(card.dataset.teams||"").split(' ').filter(Boolean);
     const on = active && teams.some(t=>selected.has(t));
@@ -1274,7 +1353,6 @@ function applyFilter(){
       side.querySelector('[data-nm]')?.classList.toggle('sel', sel&&on);
     });
   });
-  // groups view
   GTEAM.forEach(el=>el.classList.toggle('on', active&&selected.has(el.dataset.team)));
   GMATCH.forEach(el=>{
     const teams=(el.dataset.teams||"").split(' ').filter(Boolean);
@@ -1282,34 +1360,31 @@ function applyFilter(){
     el.classList.toggle('on', on);
     el.querySelectorAll('.tn').forEach(tn=>tn.classList.toggle('sel', selected.has(tn.dataset.team)&&on));
   });
-  // calendar entries
   CAL.forEach(el=>{
     const teams=(el.dataset.teams||"").split(' ').filter(Boolean);
     el.classList.toggle('on', active&&teams.some(t=>selected.has(t)));
   });
-  // chips
-  CHIP.forEach(ch=>{
-    const sel=selected.has(ch.dataset.team);
-    ch.setAttribute('aria-pressed', sel?'true':'false');
-  });
-  // group-highlight headers (active when all four of a group are selected)
-  GHL.forEach(el=>{ const ts=GROUPS[el.dataset.ghl]; el.classList.toggle('gh-on', active && ts.every(c=>selected.has(c))); });
-  // status , unified across nation highlight + round filter
   syncFilterStatus();
-  // #1/#3 , collapsed-panel count + show-only toggle state
-  document.body.classList.toggle('show-only', showOnly);
-  const only=$("#onlyToggle"), cc=$("#chipsCount");
-  if(only){ only.classList.toggle('show', active); only.setAttribute('aria-pressed', showOnly?'true':'false'); }
-  if(cc) cc.textContent = selected.size ? `${selected.size} lit` : '';
+  syncPicker();
   localStorage.setItem('wc2026.sel', JSON.stringify([...selected]));
 }
 function toggleTeam(c){ selected.has(c)?selected.delete(c):selected.add(c); applyFilter(); }
-function toggleGroup(g){
-  const ts=GROUPS[g], all=ts.every(c=>selected.has(c));
-  ts.forEach(c=> all ? selected.delete(c) : selected.add(c));
-  applyFilter();
+function setHlBtn(btn){ const on=selected.has(btn.dataset.hlteam); btn.classList.toggle('on',on); btn.textContent = on?'★ In filter':'☆ Show this team'; }
+
+// collapsible schedule stages + group cards (state persisted, reapplied after re-render)
+function applyStageFold(){
+  BANNER.forEach(b=>{ const f=collapsedStages.has(b.dataset.stage); b.classList.toggle('folded', f); b.setAttribute('aria-expanded', f?'false':'true'); });
+  DAYS.forEach(d=> d.classList.toggle('stage-folded', collapsedStages.has(d.dataset.stage)));
+  localStorage.setItem('wc2026.folds', JSON.stringify([...collapsedStages]));
 }
-function setHlBtn(btn){ const on=selected.has(btn.dataset.hlteam); btn.classList.toggle('on',on); btn.textContent=on?'★ Highlighted':'☆ Highlight this team'; }
+function applyGroupCollapse(){
+  document.querySelectorAll('.gc').forEach(gc=>{
+    const head=gc.querySelector('.gc-head'), g=head?.dataset.gcol, c=collapsedGroups.has(g);
+    gc.classList.toggle('collapsed', c);
+    head?.setAttribute('aria-expanded', c?'false':'true');
+  });
+  localStorage.setItem('wc2026.gfolds', JSON.stringify([...collapsedGroups]));
+}
 
 // round filter , narrows Schedule + Calendar to a single stage
 let roundFilter = localStorage.getItem('wc2026.round') || 'ALL';
@@ -1352,64 +1427,49 @@ function closeMatch(){ const mm=$("#match-modal"); if(mm){ mm.hidden=true; mm.in
 document.addEventListener('click', e=>{
   if(e.target.closest('.team-back')){ location.hash=''; return; }
   if(e.target.closest('[data-mclose]') || e.target.id==='match-modal'){ closeMatch(); return; }              // close popover
+  const tfo=e.target.closest('.tf-opt');
+  if(tfo){ toggleTeam(tfo.dataset.team); return; }                    // filter-picker option = toggle team
   const rb=e.target.closest('[data-round]');
   if(rb){ roundFilter=rb.dataset.round; localStorage.setItem('wc2026.round',roundFilter); applyRound(); return; } // round filter
+  const sb=e.target.closest('.stage-banner');
+  if(sb){ const s=sb.dataset.stage; collapsedStages.has(s)?collapsedStages.delete(s):collapsedStages.add(s); applyStageFold(); return; } // fold a stage
+  const gcol=e.target.closest('[data-gcol]');
+  if(gcol){ const g=gcol.dataset.gcol; collapsedGroups.has(g)?collapsedGroups.delete(g):collapsedGroups.add(g); applyGroupCollapse(); return; } // collapse a group card
   const hl=e.target.closest('[data-hlteam]');
-  if(hl){ toggleTeam(hl.dataset.hlteam); setHlBtn(hl); return; }       // highlight from team page
-  const gh=e.target.closest('[data-ghl]');
-  if(gh){ toggleGroup(gh.dataset.ghl); return; }                      // group header = highlight all four
-  const chip=e.target.closest('.chip');
-  if(chip){ toggleTeam(chip.dataset.team); return; }                  // chips = highlight nations
+  if(hl){ toggleTeam(hl.dataset.hlteam); setHlBtn(hl); return; }       // "show this team" on its page
   const team=e.target.closest('[data-team]');
-  if(team){ location.hash=`#team/${team.dataset.team}`; return; }     // team = open its sub-page
+  if(team){ location.hash=`#team/${team.dataset.team}`; return; }     // team name = open its sub-page
   const mi=e.target.closest('[data-mi]');
   if(mi){ openMatch(+mi.dataset.mi); }                                // match card/entry = detail popover
 });
 document.addEventListener('keydown', e=>{
-  if(e.key==='Escape'){ closeMatch(); return; }
-  if(e.key==='Enter'||e.key===' '){ const t=e.target.closest('[data-ghl],[data-hlteam]'); if(t){ e.preventDefault(); t.click(); } }
+  if(e.key==='Escape'){ if(document.body.classList.contains('tf-open')){ tfOpen(false); return; } closeMatch(); return; }
+  if(e.key==='Enter'||e.key===' '){ const t=e.target.closest('.stage-banner,[data-gcol],[data-hlteam]'); if(t){ e.preventDefault(); t.click(); } }
 });
-$("#clear").addEventListener('click', ()=>{   // #3 , Clear resets BOTH nation highlight and round filter
-  selected.clear();
-  roundFilter='ALL'; localStorage.setItem('wc2026.round','ALL');
-  applyFilter(); applyRound();
-});
-
-// search filters the chip list
-$("#search").addEventListener('input', e=>{
-  const q=e.target.value.trim().toLowerCase();
-  setChipsOpen(q.length>0);                        // #1 , reveal the panel while searching, recollapse when cleared
-  CHIP.forEach(ch=>{
-    const c=ch.dataset.team;
-    const hit = !q || TEAMS[c][0].toLowerCase().includes(q) || c.toLowerCase().includes(q);
-    ch.classList.toggle('hidden', !hit);
-  });
-  CG.forEach(g=>g.classList.toggle('hidden', ![...g.querySelectorAll('.chip')].some(ch=>!ch.classList.contains('hidden'))));
-});
-
-/* ---- first-wave mobile controls: collapsible chips, team picker, show-only ---- */
-const chipsToggle=$("#chipsToggle");
-function setChipsOpen(open){
-  document.body.classList.toggle('chips-open', open);
-  if(chipsToggle) chipsToggle.setAttribute('aria-expanded', open?'true':'false');
+/* ---- team filter , custom multi-select dropdown ---- */
+function renderTeamFilter(){
+  const list=$("#tfList"); if(!list) return;
+  list.innerHTML = Object.keys(GROUPS).map(g=>
+    `<div class="tf-group"><div class="tf-glabel">Group ${g}</div>`+
+    GROUPS[g].map(c=>`<button class="tf-opt" role="option" data-team="${c}" aria-selected="false">
+        <span class="fl">${TEAMS[c][1]}</span><span class="tf-nm">${TEAMS[c][0]}</span><span class="tf-cc">${c}</span>
+        <svg class="tf-check" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></button>`).join('')+
+    `</div>`).join('');
 }
-chipsToggle?.addEventListener('click', ()=> setChipsOpen(!document.body.classList.contains('chips-open')));
-
-function renderTeamPicker(){
-  const sel=$("#teamPicker"); if(!sel) return;
-  sel.insertAdjacentHTML('beforeend', Object.keys(GROUPS).map(g=>
-    `<optgroup label="Group ${g}">`+GROUPS[g].map(c=>`<option value="${c}">${TEAMS[c][0]}</option>`).join('')+`</optgroup>`
-  ).join(''));
+const tfTrigger=$("#tfTrigger");
+function tfOpen(open){
+  document.body.classList.toggle('tf-open', open);
+  tfTrigger?.setAttribute('aria-expanded', open?'true':'false');
+  if(open) requestAnimationFrame(()=>$("#tfSearch")?.focus());
 }
-$("#teamPicker")?.addEventListener('change', e=>{
-  const c=e.target.value;
-  if(c){ location.hash='#team/'+c; e.target.selectedIndex=0; }   // open that nation's page
-});
-
-$("#onlyToggle")?.addEventListener('click', ()=>{
-  showOnly=!showOnly;
-  localStorage.setItem('wc2026.only', showOnly?'1':'0');
-  applyFilter();
+tfTrigger?.addEventListener('click', e=>{ e.stopPropagation(); tfOpen(!document.body.classList.contains('tf-open')); });
+document.addEventListener('click', e=>{ if(document.body.classList.contains('tf-open') && !e.target.closest('#teamfilter')) tfOpen(false); });
+$("#tfClear")?.addEventListener('click', ()=>{ selected.clear(); applyFilter(); });
+$("#tfSearch")?.addEventListener('input', e=>{
+  const q=e.target.value.trim().toLowerCase(), list=$("#tfList");
+  list.querySelectorAll('.tf-opt').forEach(o=>{ const c=o.dataset.team;
+    o.classList.toggle('hidden', !(!q || TEAMS[c][0].toLowerCase().includes(q) || c.toLowerCase().includes(q))); });
+  list.querySelectorAll('.tf-group').forEach(g=> g.classList.toggle('hidden', ![...g.querySelectorAll('.tf-opt')].some(o=>!o.classList.contains('hidden'))));
 });
 
 // view toggle (ARIA tablist: roving tabindex + arrow-key navigation)
@@ -1452,7 +1512,7 @@ function tick(){
 /* =====================================================================
    INIT
    ===================================================================== */
-function rerenderViews(){ renderSchedule(); renderGroups(); renderCalendar(); cacheRefs(); applyFilter(); applyRound(); }
+function rerenderViews(){ renderSchedule(); renderGroups(); renderCalendar(); cacheRefs(); applyFilter(); applyRound(); applyStageFold(); applyGroupCollapse(); }
 $("#venueToggle").textContent = VENUE_NAME_MODE==='fifa' ? 'FIFA names' : 'Common names';
 $("#venueToggle").addEventListener('click', ()=>{
   VENUE_NAME_MODE = VENUE_NAME_MODE==='fifa' ? 'common' : 'fifa';
@@ -1461,8 +1521,7 @@ $("#venueToggle").addEventListener('click', ()=>{
   rerenderViews();
 });
 
-renderChips();
-renderTeamPicker();
+renderTeamFilter();
 renderLegend();
 renderSchedule();
 renderGroups();
@@ -1473,6 +1532,8 @@ const sv=tabs.find(t=>t.dataset.view===savedView);
 if(sv && savedView!=='schedule'){ selectTab(sv); }
 applyFilter();
 applyRound();
+applyStageFold();
+applyGroupCollapse();
 loadSquads();
 loadResults();
 route();
