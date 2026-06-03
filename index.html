@@ -1649,14 +1649,18 @@ function renderMap(){
   const featByName=new Map(); land.features.forEach(f=>featByName.set(norm(f.properties&&f.properties.name), f));
   const teamFeat={}, featTeams=new Map();   // team->feature ; feature id->teams on it
   Object.keys(TEAM_GEO).forEach(c=>{ const f=featByName.get(norm(TEAM_COUNTRY[c])); if(f){ teamFeat[c]=f; if(!featTeams.has(f.id)) featTeams.set(f.id,[]); featTeams.get(f.id).push(c); } });
+  // Natural Earth bundles French Guiana into France; drop polygons west of -20° so only mainland France + Corsica fill (and France zooms to Europe, not South America)
+  if(teamFeat.FRA && teamFeat.FRA.geometry.type==='MultiPolygon'){
+    teamFeat.FRA={...teamFeat.FRA, geometry:{...teamFeat.FRA.geometry, coordinates:teamFeat.FRA.geometry.coordinates.filter(poly=>{ const r=poly[0]; let s=0; for(const p of r) s+=p[0]; return s/r.length > -20; })}};
+  }
   mapXY={}; mapFeatBounds={};
   Object.keys(TEAM_GEO).forEach(c=>{ const t=teamObj(c), p=proj([t.lng,t.lat]); if(p) mapXY[c]={x:p[0],y:p[1]}; const f=teamFeat[c]; if(f) mapFeatBounds[c]=path.bounds(f); });
   // country paths , qualified nations filled in their colour
   const paths=land.features.map(f=>{
     const codes=featTeams.get(f.id);
     if(codes && codes.length){
-      const t0=teamObj(codes[0]), single=codes.length===1;
-      return `<path class="map-fill${single?'':' map-fill-multi'}" data-mteams="${codes.join(' ')}" style="--mk:${mapColor(codes[0])}" d="${path(f)}"${single?` tabindex="0" role="button" aria-label="${t0.name} , Group ${t0.group} , ${CONF_META[t0.conf].label}"`:''}></path>`;
+      const t0=teamObj(codes[0]), single=codes.length===1, draw=codes[0]==='FRA'?teamFeat.FRA:f;
+      return `<path class="map-fill${single?'':' map-fill-multi'}" data-mteams="${codes.join(' ')}" style="--mk:${mapColor(codes[0])}" d="${path(draw)}"${single?` tabindex="0" role="button" aria-label="${t0.name} , Group ${t0.group} , ${CONF_META[t0.conf].label}"`:''}></path>`;
     }
     return `<path class="mc-country" d="${path(f)}"></path>`;
   }).join('');
