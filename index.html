@@ -672,21 +672,36 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 .mapchip:hover{color:var(--text);border-color:var(--line-strong)}
 .mapchip:active{transform:scale(.96)}
 .mapchip .mc-dot{width:9px;height:9px;border-radius:50%;background:var(--mk);flex:none}
-.mapchip.on{color:#062013;background:var(--green);border-color:var(--green)}
-.mapchip-conf.on{color:#06120d;background:var(--mk);border-color:var(--mk)}
-.mapchip-conf.on .mc-dot{background:rgba(0,0,0,.45)}
+.mapchip.on{color:#06120d;background:var(--mk);border-color:var(--mk)}
+.mapchip.on .mc-dot{background:rgba(0,0,0,.45)}
 .map-clear{appearance:none;border:1px solid var(--line-strong);background:transparent;color:var(--text-dim);
   font-family:inherit;font-weight:700;font-size:12px;padding:6px 12px;border-radius:8px;cursor:pointer;margin-left:auto;
   transition:color .15s var(--ease),border-color .15s var(--ease),background .15s var(--ease),transform .1s var(--ease)}
 .map-clear:hover{color:var(--text);border-color:var(--green);background:rgba(25,224,138,.08)}
 .map-clear:active{transform:scale(.96)}
+.map-colorby{appearance:none;margin-left:auto;border:1px solid var(--line-strong);background:rgba(0,0,0,.22);color:var(--text-dim);
+  font-family:inherit;font-weight:700;font-size:12px;padding:6px 12px;border-radius:8px;cursor:pointer;
+  transition:color .15s var(--ease),border-color .15s var(--ease),background .15s var(--ease),transform .1s var(--ease)}
+.map-colorby b{color:var(--green-bright)}
+.map-colorby:hover{color:var(--text);border-color:var(--line-strong)}
+.map-colorby:active{transform:scale(.96)}
 .map-wrap{position:relative;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
   background:radial-gradient(120% 90% at 50% 0,rgba(25,224,138,.06),transparent 60%),var(--surface)}
-#worldSvg{display:block;width:100%;height:auto}
+#worldSvg{display:block;width:100%;height:auto;cursor:grab;touch-action:none}
+#worldSvg:active{cursor:grabbing}
+.map-sphere{fill:url(#mapOcean);stroke:rgba(180,255,220,.12);stroke-width:.7;vector-effect:non-scaling-stroke}
+.map-grat{fill:none;stroke:rgba(180,255,220,.05);stroke-width:.5;vector-effect:non-scaling-stroke;pointer-events:none}
+.map-zoomctl{position:absolute;right:12px;bottom:12px;display:flex;flex-direction:column;gap:6px;z-index:15}
+.mzb{width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--line-strong);border-radius:9px;
+  background:rgba(7,13,10,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:var(--text);
+  font-family:inherit;font-weight:800;font-size:17px;line-height:1;cursor:pointer;
+  transition:color .15s var(--ease),border-color .15s var(--ease),background .15s var(--ease),transform .1s var(--ease)}
+.mzb:hover{border-color:var(--green);color:var(--green-bright);background:rgba(25,224,138,.1)}
+.mzb:active{transform:scale(.92)}
 .mc-country{fill:#10201a;stroke:rgba(180,255,220,.10);stroke-width:.5;vector-effect:non-scaling-stroke}
 .map-fill{fill:var(--mk);fill-opacity:.82;stroke:var(--mk);stroke-width:.7;vector-effect:non-scaling-stroke;cursor:pointer;
   transition:fill-opacity .2s var(--ease),filter .2s var(--ease)}
-.map-fill:hover,.map-fill:focus-visible{fill-opacity:1;outline:none;filter:drop-shadow(0 0 5px color-mix(in srgb,var(--mk) 55%,transparent))}
+.map-fill:hover,.map-fill:focus-visible{fill-opacity:1;outline:none;stroke:#eafff5;stroke-width:1.1;filter:drop-shadow(0 0 7px color-mix(in srgb,var(--mk) 65%,transparent))}
 .map-fill-multi{cursor:default}
 .map-fill-multi:hover{filter:none}
 .map-fill.dim{fill:#10201a;fill-opacity:1;stroke:rgba(180,255,220,.10);pointer-events:none;filter:none}
@@ -1509,16 +1524,14 @@ document.addEventListener('click', e=>{
   if(sb){ const s=sb.dataset.stage; collapsedStages.has(s)?collapsedStages.delete(s):collapsedStages.add(s); applyStageFold(); return; } // fold a stage
   const gcol=e.target.closest('[data-gcol]');
   if(gcol){ const g=gcol.dataset.gcol; collapsedGroups.has(g)?collapsedGroups.delete(g):collapsedGroups.add(g); applyGroupCollapse(); return; } // collapse a group card
-  const fill=e.target.closest('.map-fill');
-  if(fill){ const codes=fill.dataset.mteams.split(' '); if(codes.length===1){ mapPinned=true; mapPopFor(codes[0]); } return; } // filled country = show/pin its popup
-  const mk=e.target.closest('.map-marker');
-  if(mk){ mapPinned=true; mapPopFor(mk.dataset.mteam); return; }       // marker = UK / island special cases
+  const zb=e.target.closest('.mzb');
+  if(zb){ const z=zb.dataset.z; if(z==='in') zoomAt(mapW/2,mapH/2,1.6); else if(z==='out') zoomAt(mapW/2,mapH/2,1/1.6); else { mapPinned=false; mapPinCode=null; mapPopHide(); homeView(); } return; } // zoom controls
+  if(e.target.closest('#mapColorBy')){ mapColorBy = mapColorBy==='conf'?'group':'conf'; recolorMap(); return; } // colour-by toggle
   const mchip=e.target.closest('.mapchip');
   if(mchip){ const g=mchip.dataset.mgroup, cf=mchip.dataset.mconf;
     if(g){ mapGroups.has(g)?mapGroups.delete(g):mapGroups.add(g); } else { mapConfs.has(cf)?mapConfs.delete(cf):mapConfs.add(cf); }
     applyMapFilter(); return; }                                       // map filter chip (group or confederation)
   if(e.target.closest('#mapClear')){ mapGroups.clear(); mapConfs.clear(); applyMapFilter(); return; }
-  if(mapPinned && !e.target.closest('.map-pop')){ mapPinned=false; mapPopHide(); }  // click off a pinned popup closes it
   const hl=e.target.closest('[data-hlteam]');
   if(hl){ toggleTeam(hl.dataset.hlteam); setHlBtn(hl); return; }       // "show this team" on its page
   const team=e.target.closest('[data-team]');
@@ -1617,7 +1630,10 @@ const TEAM_COUNTRY = {
   FRA:"France",SEN:"Senegal",IRQ:"Iraq",NOR:"Norway",ARG:"Argentina",ALG:"Algeria",AUT:"Austria",JOR:"Jordan",
   POR:"Portugal",COD:"Dem. Rep. Congo",UZB:"Uzbekistan",COL:"Colombia",ENG:"United Kingdom",CRO:"Croatia",GHA:"Ghana",PAN:"Panama"
 };
-let mapXY={};   // team code -> projected {x,y} for popup positioning
+const mapW=960, mapH=500, ZMIN=1, ZMAX=8;
+let mapXY={}, mapFeatBounds={}, mapColorBy='conf';
+let mapT={k:1,x:0,y:0}, mapAnim=0, mapPinCode=null, mapPanning=false;
+const mapColor = c => mapColorBy==='conf' ? CONF_META[teamObj(c).conf].color : GCOL[teamObj(c).group];
 
 function renderMap(){
   if(mapRendered) return;
@@ -1625,42 +1641,57 @@ function renderMap(){
   if(typeof d3==='undefined' || typeof topojson==='undefined' || typeof WORLD_TOPO==='undefined'){
     host.innerHTML='<div class="empty"><div class="big">Map unavailable</div>World map assets failed to load.</div>'; return;
   }
-  const W=960,H=500;
   const land=topojson.feature(WORLD_TOPO, WORLD_TOPO.objects.countries);
-  const proj=d3.geoNaturalEarth1().fitExtent([[8,8],[W-8,H-8]], land);
+  const proj=d3.geoNaturalEarth1().fitExtent([[8,8],[mapW-8,mapH-8]], land);
   const path=d3.geoPath(proj);
   const norm=s=>(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z]/g,'');
   const featByName=new Map(); land.features.forEach(f=>featByName.set(norm(f.properties&&f.properties.name), f));
   const teamFeat={}, featTeams=new Map();   // team->feature ; feature id->teams on it
   Object.keys(TEAM_GEO).forEach(c=>{ const f=featByName.get(norm(TEAM_COUNTRY[c])); if(f){ teamFeat[c]=f; if(!featTeams.has(f.id)) featTeams.set(f.id,[]); featTeams.get(f.id).push(c); } });
-  mapXY={}; Object.keys(TEAM_GEO).forEach(c=>{ const t=teamObj(c), p=proj([t.lng,t.lat]); if(p) mapXY[c]={x:p[0],y:p[1]}; });
-  // country paths , qualified nations filled in their confederation colour
+  mapXY={}; mapFeatBounds={};
+  Object.keys(TEAM_GEO).forEach(c=>{ const t=teamObj(c), p=proj([t.lng,t.lat]); if(p) mapXY[c]={x:p[0],y:p[1]}; const f=teamFeat[c]; if(f) mapFeatBounds[c]=path.bounds(f); });
+  // country paths , qualified nations filled in their colour
   const paths=land.features.map(f=>{
     const codes=featTeams.get(f.id);
     if(codes && codes.length){
       const t0=teamObj(codes[0]), single=codes.length===1;
-      return `<path class="map-fill${single?'':' map-fill-multi'}" data-mteams="${codes.join(' ')}" style="--mk:${CONF_META[t0.conf].color}" d="${path(f)}"${single?` tabindex="0" role="button" aria-label="${t0.name} , Group ${t0.group} , ${CONF_META[t0.conf].label}"`:''}></path>`;
+      return `<path class="map-fill${single?'':' map-fill-multi'}" data-mteams="${codes.join(' ')}" style="--mk:${mapColor(codes[0])}" d="${path(f)}"${single?` tabindex="0" role="button" aria-label="${t0.name} , Group ${t0.group} , ${CONF_META[t0.conf].label}"`:''}></path>`;
     }
     return `<path class="mc-country" d="${path(f)}"></path>`;
   }).join('');
   // markers only for teams without a unique fill (England/Scotland share the UK; Curaçao/Cape Verde absent at 110m)
   const dotTeams=Object.keys(TEAM_GEO).filter(c=>{ const f=teamFeat[c]; return !f || featTeams.get(f.id).length>1; });
   const dots=dotTeams.map(c=>{ const t=teamObj(c), xy=mapXY[c]; if(!xy) return '';
-    return `<circle class="map-marker" data-mteam="${c}" cx="${xy.x.toFixed(1)}" cy="${xy.y.toFixed(1)}" r="4.5" style="--mk:${CONF_META[t.conf].color}" tabindex="0" role="button" aria-label="${t.name} , Group ${t.group} , ${CONF_META[t.conf].label}"></circle>`;
+    return `<circle class="map-marker" data-mteam="${c}" cx="${xy.x.toFixed(1)}" cy="${xy.y.toFixed(1)}" r="4.5" style="--mk:${mapColor(c)}" tabindex="0" role="button" aria-label="${t.name} , Group ${t.group} , ${CONF_META[t.conf].label}"></circle>`;
   }).join('');
-  const groupChips=Object.keys(GROUPS).map(g=>`<button class="mapchip" data-mgroup="${g}">${g}</button>`).join('');
+  const groupChips=Object.keys(GROUPS).map(g=>`<button class="mapchip" data-mgroup="${g}" style="--mk:${GCOL[g]}"><span class="mc-dot"></span>${g}</button>`).join('');
   const confChips=Object.keys(CONF_META).map(k=>`<button class="mapchip mapchip-conf" data-mconf="${k}" style="--mk:${CONF_META[k].color}"><span class="mc-dot"></span>${CONF_META[k].label}</button>`).join('');
   host.innerHTML=`<div class="map-filters">
       <div class="mapfg"><span class="mapfg-l">Group</span>${groupChips}</div>
       <div class="mapfg"><span class="mapfg-l">Conf</span>${confChips}</div>
+      <button class="map-colorby" id="mapColorBy">Colour: <b>Confederation</b></button>
       <button class="map-clear" id="mapClear">Clear</button></div>
     <div class="map-wrap">
-      <svg id="worldSvg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="World map of the 48 qualified nations">
-        <g class="map-land">${paths}</g><g class="map-markers">${dots}</g></svg>
+      <svg id="worldSvg" viewBox="0 0 ${mapW} ${mapH}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="World map of the 48 qualified nations">
+        <defs><radialGradient id="mapOcean" cx="50%" cy="34%" r="80%"><stop offset="0" stop-color="#0e1e18"/><stop offset="1" stop-color="#070f0c"/></radialGradient></defs>
+        <g id="mapZoom">
+          <path class="map-sphere" d="${path({type:'Sphere'})}"></path>
+          <path class="map-grat" d="${path(d3.geoGraticule()())}"></path>
+          <g class="map-land">${paths}</g><g class="map-markers">${dots}</g>
+        </g></svg>
+      <div class="map-zoomctl">
+        <button class="mzb" data-z="in" aria-label="Zoom in">+</button>
+        <button class="mzb" data-z="out" aria-label="Zoom out">−</button>
+        <button class="mzb" data-z="home" aria-label="Reset view" title="Reset view">⤾</button></div>
       <div class="map-pop" id="mapPop" hidden></div></div>
     <p class="map-note" id="mapNote"></p>`;
-  mapRendered=true;
-  applyMapFilter();
+  mapRendered=true; mapT={k:1,x:0,y:0};
+  bindMapInteractions(); applyMapFilter();
+}
+function recolorMap(){
+  document.querySelectorAll('#view-map .map-fill').forEach(el=> el.style.setProperty('--mk', mapColor(el.dataset.mteams.split(' ')[0])));
+  document.querySelectorAll('#view-map .map-marker').forEach(el=> el.style.setProperty('--mk', mapColor(el.dataset.mteam)));
+  const b=$("#mapColorBy"); if(b) b.innerHTML='Colour: <b>'+(mapColorBy==='conf'?'Confederation':'Group')+'</b>';
 }
 const matchTeam = c => { const t=teamObj(c); return (mapGroups.size===0||mapGroups.has(t.group)) && (mapConfs.size===0||mapConfs.has(t.conf)); };
 function applyMapFilter(){
@@ -1670,26 +1701,78 @@ function applyMapFilter(){
     el.classList.toggle('dim', onCodes.length===0);
     if(codes.length===1 && onCodes.length===1) shown++;          // unique-country teams
   });
-  document.querySelectorAll('#view-map .map-marker').forEach(el=>{
-    const on=matchTeam(el.dataset.mteam); el.classList.toggle('dim', !on); if(on) shown++;   // marker teams
-  });
-  document.querySelectorAll('#view-map .mapchip').forEach(ch=>{
-    ch.classList.toggle('on', ch.dataset.mgroup ? mapGroups.has(ch.dataset.mgroup) : mapConfs.has(ch.dataset.mconf));
-  });
+  document.querySelectorAll('#view-map .map-marker').forEach(el=>{ const on=matchTeam(el.dataset.mteam); el.classList.toggle('dim', !on); if(on) shown++; });
+  document.querySelectorAll('#view-map .mapchip').forEach(ch=>{ ch.classList.toggle('on', ch.dataset.mgroup ? mapGroups.has(ch.dataset.mgroup) : mapConfs.has(ch.dataset.mconf)); });
   const note=$("#mapNote");
-  if(note) note.textContent=active?`Showing ${shown} of 48 nations`:`All 48 qualified nations · hover or tap a country for its team`;
+  if(note) note.textContent=active?`Showing ${shown} of 48 nations`:`All 48 qualified nations · scroll to zoom, drag to pan, click a country to focus`;
 }
+// ---------- popup (transform-aware) ----------
+function mapScreen(code){ const xy=mapXY[code]; return xy?{x:xy.x*mapT.k+mapT.x, y:xy.y*mapT.k+mapT.y}:null; }
 function mapPopFor(code){
-  const t=teamObj(code), pop=$("#mapPop"), xy=mapXY[code];
-  if(!t||!pop||!xy) return;
+  const t=teamObj(code), pop=$("#mapPop"), s=mapScreen(code); if(!t||!pop||!s) return;
   pop.innerHTML=`<span class="map-pop-flag">${t.flag}</span><div class="map-pop-body"><b>${t.name}</b><span class="map-pop-meta">Group ${t.group} · ${CONF_META[t.conf].label}</span><a class="map-pop-link" data-team="${code}">Open team page →</a></div>`;
-  pop.style.left=(xy.x/960*100)+'%'; pop.style.top=(xy.y/500*100)+'%';
-  pop.hidden=false;
+  pop.style.left=(s.x/mapW*100)+'%'; pop.style.top=(s.y/mapH*100)+'%'; pop.hidden=false;
 }
 function mapPopHide(){ const p=$("#mapPop"); if(p) p.hidden=true; }
-function mapHoverCode(el){ const fill=el.closest('.map-fill'); if(fill){ const c=fill.dataset.mteams.split(' '); return c.length===1?c[0]:null; } const mk=el.closest('.map-marker'); return mk?mk.dataset.mteam:null; }
-$("#view-map")?.addEventListener('pointerover', e=>{ if(mapPinned) return; const c=mapHoverCode(e.target); if(c) mapPopFor(c); });
-$("#view-map")?.addEventListener('pointerout',  e=>{ if(mapPinned) return; if(e.target.closest('.map-fill')||e.target.closest('.map-marker')) mapPopHide(); });
+function mapHoverCode(el){ if(!el||!el.closest) return null; const fill=el.closest('.map-fill'); if(fill){ const c=fill.dataset.mteams.split(' '); return c.length===1?c[0]:null; } const mk=el.closest('.map-marker'); return mk?mk.dataset.mteam:null; }
+// ---------- zoom / pan / fly-to ----------
+function clampT(t){ const k=Math.max(ZMIN,Math.min(ZMAX,t.k)); return {k, x:Math.max(mapW*(1-k),Math.min(0,t.x)), y:Math.max(mapH*(1-k),Math.min(0,t.y))}; }
+function applyTransform(){
+  const g=document.getElementById('mapZoom'); if(g) g.setAttribute('transform',`translate(${mapT.x.toFixed(2)},${mapT.y.toFixed(2)}) scale(${mapT.k.toFixed(4)})`);
+  if(mapPinCode){ const pop=$("#mapPop"); if(pop && !pop.hidden){ const s=mapScreen(mapPinCode); if(s){ pop.style.left=(s.x/mapW*100)+'%'; pop.style.top=(s.y/mapH*100)+'%'; } } }
+}
+function setT(t, animate){
+  const target=clampT(t); cancelAnimationFrame(mapAnim);
+  if(!animate){ mapT=target; applyTransform(); return; }
+  const from={...mapT}, t0=performance.now(), dur=560;
+  const step=now=>{ const p=Math.min(1,(now-t0)/dur), e=1-Math.pow(1-p,3);
+    mapT=clampT({k:from.k+(target.k-from.k)*e, x:from.x+(target.x-from.x)*e, y:from.y+(target.y-from.y)*e}); applyTransform();
+    if(p<1) mapAnim=requestAnimationFrame(step); };
+  mapAnim=requestAnimationFrame(step);
+}
+function zoomAt(px,py,factor){ const k=Math.max(ZMIN,Math.min(ZMAX,mapT.k*factor)); setT({k, x:px-(px-mapT.x)*(k/mapT.k), y:py-(py-mapT.y)*(k/mapT.k)}, true); }
+function homeView(){ setT({k:1,x:0,y:0}, true); }
+function flyToCode(code){
+  const b=mapFeatBounds[code];
+  if(b){ const [[x0,y0],[x1,y1]]=b, bw=Math.max(x1-x0,1), bh=Math.max(y1-y0,1), cx=(x0+x1)/2, cy=(y0+y1)/2;
+    const k=Math.max(1.5, Math.min(ZMAX, 0.42/Math.max(bw/mapW, bh/mapH))); setT({k, x:mapW/2-cx*k, y:mapH/2-cy*k}, true); }
+  else { const xy=mapXY[code]; if(xy){ const k=4.5; setT({k, x:mapW/2-xy.x*k, y:mapH/2-xy.y*k}, true); } }
+}
+function mapClickAt(el){
+  if(!el) return;
+  const fill=el.closest('.map-fill');
+  if(fill){ const codes=fill.dataset.mteams.split(' ');
+    if(codes.length===1){ mapPinned=true; mapPinCode=codes[0]; flyToCode(codes[0]); mapPopFor(codes[0]); }
+    else { mapPinned=false; mapPinCode=null; mapPopHide(); flyToCode(codes[0]); }   // UK: zoom in, no single popup
+    return; }
+  const mk=el.closest('.map-marker');
+  if(mk){ const c=mk.dataset.mteam; mapPinned=true; mapPinCode=c; flyToCode(c); mapPopFor(c); return; }
+  mapPinned=false; mapPinCode=null; mapPopHide(); homeView();   // empty ocean = reset
+}
+function svgUnit(svg, cx, cy){ const r=svg.getBoundingClientRect(); return {x:(cx-r.left)/r.width*mapW, y:(cy-r.top)/r.height*mapH, sc:mapW/r.width}; }
+function bindMapInteractions(){
+  const svg=document.getElementById('worldSvg'); if(!svg) return;
+  svg.style.touchAction='none';
+  svg.addEventListener('wheel', e=>{ e.preventDefault(); const u=svgUnit(svg,e.clientX,e.clientY); zoomAt(u.x,u.y, e.deltaY<0?1.3:1/1.3); }, {passive:false});
+  const pts=new Map(); let start=null, downEl=null, moved=false, pinch=null;
+  svg.addEventListener('pointerdown', e=>{ pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(pts.size===1){ start={x:e.clientX,y:e.clientY,tx:mapT.x,ty:mapT.y}; downEl=e.target; moved=false; }
+    else if(pts.size===2){ const a=[...pts.values()], u=svgUnit(svg,(a[0].x+a[1].x)/2,(a[0].y+a[1].y)/2); pinch={d:Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y), k:mapT.k, mx:u.x, my:u.y}; }
+  });
+  window.addEventListener('pointermove', e=>{ if(!pts.has(e.pointerId)) return; pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(pts.size>=2 && pinch){ const a=[...pts.values()], d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y), k=Math.max(ZMIN,Math.min(ZMAX,pinch.k*d/pinch.d));
+      setT({k, x:pinch.mx-(pinch.mx-mapT.x)*(k/mapT.k), y:pinch.my-(pinch.my-mapT.y)*(k/mapT.k)}, false); }
+    else if(start){ const u=svgUnit(svg,e.clientX,e.clientY);
+      if(Math.hypot(e.clientX-start.x,e.clientY-start.y)>4){ moved=true; mapPanning=true; mapPopHide(); }
+      setT({k:mapT.k, x:start.tx+(e.clientX-start.x)*u.sc, y:start.ty+(e.clientY-start.y)*u.sc}, false); }
+  });
+  const up=e=>{ pts.delete(e.pointerId); if(pts.size<2) pinch=null;
+    if(pts.size===0){ if(!moved) mapClickAt(downEl); start=null; downEl=null; mapPanning=false; } };
+  window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
+  // hover popup (suppressed while pinned or panning)
+  svg.addEventListener('pointerover', e=>{ if(mapPinned||mapPanning) return; const c=mapHoverCode(e.target); if(c) mapPopFor(c); });
+  svg.addEventListener('pointerout',  e=>{ if(mapPinned) return; if(!mapHoverCode(e.relatedTarget)) mapPopHide(); });
+}
 
 /* =====================================================================
    COUNTDOWN
