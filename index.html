@@ -459,23 +459,29 @@ body.filtering .orient,.orient b{color:var(--text-dim)}
 .cal-cell.empty{border:0;background:transparent;min-height:0}
 .cal-cell.nomatch{opacity:.38}
 .cal-cell.today{border-color:var(--green);box-shadow:0 0 0 1px var(--green)}
+.cal-cell.cal-wknd{background:var(--surface-2)}                        /* subtle weekend column shading */
+.cal-cell.cal-next{box-shadow:inset 0 0 0 1px rgba(25,224,138,.4)}    /* next upcoming match day (softer than today's ring) */
 .cal-d{font-size:12px;font-weight:800;color:var(--text-dim);font-variant-numeric:tabular-nums;line-height:1}
 .cal-cell.today .cal-d{color:var(--green)}
+.cal-next-tag{font-size:8px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#062013;background:var(--green);border-radius:3px;padding:1px 4px;margin-left:6px;vertical-align:1px}
 .cal-entry{display:flex;flex-direction:column;border-left:3px solid var(--c,var(--green));padding:2px 5px;border-radius:4px;
-  background:color-mix(in srgb, var(--c,var(--green)) 13%, transparent);font-size:10.5px;line-height:1.25;transition:opacity .24s,box-shadow .2s}
+  background:rgba(255,255,255,.03);font-size:10.5px;line-height:1.25;transition:opacity .24s,box-shadow .2s}   /* calm neutral fill; the coloured left border carries the group cue */
+.cal-entry.cal-ko{border-left-style:dashed}   /* knockout fixture , teams not yet decided */
 .cal-entry .ce-time{font-weight:800;color:var(--text);font-variant-numeric:tabular-nums}
-.cal-entry .ce-time i{font-style:normal;font-weight:600;color:var(--text-faint);margin-left:4px}
+.cal-entry .ce-time i{font-style:normal;font-weight:600;font-size:.82em;color:var(--text-faint);margin-left:4px}   /* venue-local time demoted under the Norwegian time */
 .cal-entry .ce-teams{color:var(--text-dim);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-entry .ce-fl{margin-right:3px}
+.cal-entry .ce-fl .flagsvg{width:1.1em;height:.72em}
 .cal-entry .ce-tm{cursor:pointer}
 .cal-entry .ce-tm:hover{color:var(--green-bright)}
-.cal-entry .ce-d{margin:0 2px;color:var(--text-faint)}
+.cal-entry .ce-d{margin:0 3px;color:var(--text-faint)}
 .cal-entry .ce-slot{color:var(--text-dim);font-weight:800;letter-spacing:.02em}
 body.filtering .cal-entry:not(.on){opacity:.2}
 .cal-entry.on{box-shadow:0 0 0 1px var(--c,var(--green))}
-@media (min-width:601px) and (max-width:680px){   /* tablet band keeps the 7-col scroll grid; phones use the agenda above */
-  .cal-grid{grid-template-columns:repeat(7,minmax(48px,1fr));overflow-x:auto}
-  .cal-entry .ce-time i{display:none}
-}
+.cal-extra{display:none}   /* desktop grid: surplus matches hidden behind "+N more" (shown in full on the mobile agenda) */
+.cal-more{appearance:none;border:0;background:none;cursor:pointer;text-align:left;font-family:inherit;
+  font-size:10px;font-weight:800;letter-spacing:.04em;color:var(--text-faint);padding:2px 5px;margin-top:1px;border-radius:4px;transition:color .15s var(--ease)}
+.cal-more:hover{color:var(--green-bright)}
 /* stadium-name toggle */
 .vmode{appearance:none;border:1px solid var(--line-strong);background:rgba(0,0,0,.22);color:var(--text-dim);
   font-family:inherit;font-weight:700;font-size:12px;padding:8px 13px;border-radius:9px;cursor:pointer;transition:color .18s var(--ease),border-color .18s var(--ease),background .18s var(--ease),transform .1s var(--ease)}
@@ -697,9 +703,9 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
   .team-picker{max-width:none;flex:1 1 100%}
 }
 
-/* #2 , calendar becomes a single-column day-agenda on phones */
+/* #2 , calendar becomes a single-column day-agenda on phones and tablets (the 7-col grid only reads well above ~820px) */
 .cal-wd,.cal-mo{display:none}
-@media (max-width:600px){
+@media (max-width:820px){
   .cal-month{margin-top:18px}
   .cal-grid{display:flex;flex-direction:column;gap:8px;overflow:visible}
   .cal-dow{display:none}
@@ -712,6 +718,8 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
   .cal-entry{flex-direction:row;align-items:baseline;gap:10px;font-size:13px;padding:7px 9px}
   .cal-entry .ce-time{flex:none}
   .cal-entry .ce-teams{flex:1;white-space:normal}
+  .cal-extra{display:flex}   /* agenda shows every match */
+  .cal-more{display:none}
 }
 /* ---------------------------- WORLD MAP VIEW ---------------------------- */
 .map-filters{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin:4px 0 14px}
@@ -810,7 +818,7 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 .gstand.is-pre td:not(.gst-team):not(.gst-pos){opacity:.4}   /* pre-tournament: fade the all-zero stat columns, keep teams legible */
 @media (max-width:560px){ .gst-wdl{display:none} }   /* drop W/D/L on phones; P/GF/GA/GD/Pts stay, table also scrolls */
 
-/* third-place ranking + manual-override actions */
+/* third-place ranking */
 .tp-wrap{margin:4px 0 22px;border:1px solid var(--line);border-radius:var(--radius);
   background:linear-gradient(180deg,rgba(246,183,60,.05),transparent 42%),var(--surface);padding:16px 16px 14px}
 .tp-head{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:8px}
@@ -818,13 +826,6 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
   line-height:.95;margin:0;letter-spacing:.01em;text-wrap:balance}
 .tp-title span{display:block;font-family:"Hanken Grotesk",sans-serif;font-size:11px;font-weight:600;letter-spacing:.03em;
   text-transform:none;color:var(--text-faint);margin-top:5px}
-.tp-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
-.tp-btn{position:relative;appearance:none;border:1px solid var(--line-strong);background:rgba(0,0,0,.22);color:var(--text-dim);
-  font-family:inherit;font-weight:700;font-size:11.5px;padding:7px 12px;border-radius:9px;cursor:pointer;
-  transition:color .15s var(--ease),border-color .15s var(--ease),background .15s var(--ease),transform .1s var(--ease)}
-.tp-btn::after{content:"";position:absolute;top:-6px;bottom:-6px;left:0;right:0}   /* ~40px tall tap target; vertical-only so the 8px gap between buttons never overlaps */
-.tp-btn:hover{color:var(--text);border-color:var(--green);background:rgba(25,224,138,.08)}
-.tp-btn:active{transform:scale(.96)}
 .tp-grp{margin-left:7px;font-size:9.5px;font-weight:800;letter-spacing:.04em;color:var(--text-faint);
   border:1px solid var(--line);border-radius:4px;padding:1px 5px}
 .tp-mark{font-weight:800}
@@ -833,30 +834,6 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 .tp-row.tp-out{opacity:.5}
 .tp-row.tp-out .tp-mark{color:var(--text-faint)}
 .tp-note{margin:10px 2px 0;font-size:11px;line-height:1.5;color:var(--text-faint);text-wrap:pretty}
-
-/* match-modal score editor */
-.mm-score{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
-.mm-score-lab{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint);
-  margin-bottom:11px;display:flex;align-items:center;gap:8px}
-.mm-score-badge{font-size:9px;font-weight:800;letter-spacing:.04em;color:var(--green-bright);
-  background:rgba(25,224,138,.14);border:1px solid rgba(25,224,138,.4);border-radius:4px;padding:1px 6px}
-.mm-score-row{display:flex;align-items:center;justify-content:center;gap:10px}
-.mm-score-tm{font-weight:700;font-size:13px;color:var(--text-dim)}
-.mm-sc-in{width:54px;padding:9px 8px;text-align:center;font-family:inherit;font-weight:800;font-size:18px;
-  font-variant-numeric:tabular-nums;background:rgba(0,0,0,.3);border:1px solid var(--line-strong);border-radius:9px;
-  color:var(--text);outline:none;transition:border-color .16s var(--ease),box-shadow .16s var(--ease)}
-.mm-sc-in:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(25,224,138,.16)}
-.mm-sc-in::-webkit-outer-spin-button,.mm-sc-in::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-.mm-sc-in{-moz-appearance:textfield}
-.mm-score-dash{color:var(--text-faint);font-weight:800}
-.mm-score-btns{display:flex;justify-content:center;gap:8px;margin-top:13px}
-.mm-sc-save,.mm-sc-clear{appearance:none;font-family:inherit;font-weight:700;font-size:12.5px;padding:12px 18px;
-  border-radius:9px;cursor:pointer;transition:color .15s var(--ease),border-color .15s var(--ease),background .15s var(--ease),transform .1s var(--ease)}
-.mm-sc-save{border:0;background:var(--green);color:#062013;box-shadow:0 4px 16px rgba(25,224,138,.32)}
-.mm-sc-save:active,.mm-sc-clear:active{transform:scale(.96)}
-.mm-sc-clear{border:1px solid var(--line-strong);background:transparent;color:var(--text-dim)}
-.mm-sc-clear:hover{color:var(--text);border-color:var(--green)}
-.mm-score-note{font-size:10.5px;color:var(--text-faint);text-align:center;margin:11px 0 0;text-wrap:pretty}
 </style>
 </head>
 <body>
@@ -1438,10 +1415,7 @@ function thirdPlaceHTML(ranked){
     <td>${r.P}</td><td>${r.GD>0?'+':''}${r.GD}</td><td class="gst-gf">${r.GF}</td><td class="gst-pts">${r.Pts}</td>
     <td class="tp-mark">${r.advancing?'✓':'·'}</td></tr>`).join('');
   return `<div class="tp-wrap">
-    <div class="tp-head"><h3 class="tp-title">Best third-placed teams <span>derived · top 8 advance to the Round of 32</span></h3>
-      <div class="tp-actions">
-        <button class="tp-btn" id="exportOverrides" title="Download a results.json-shaped file of your manual scores">Export overrides</button>
-        <button class="tp-btn" id="clearManual" title="Remove all manually entered scores">Clear manual</button></div></div>
+    <div class="tp-head"><h3 class="tp-title">Best third-placed teams <span>derived · top 8 advance to the Round of 32</span></h3></div>
     <table class="gstand tp-table"><thead><tr>
       <th class="gst-pos">#</th><th class="gst-team">Team</th><th title="Played">P</th><th title="Goal difference">GD</th>
       <th class="gst-gf" title="Goals for">GF</th><th class="gst-pts" title="Points">Pts</th><th class="tp-mark">R32</th>
@@ -1489,31 +1463,43 @@ const GCOL = {A:"#FF6B6B",B:"#FFA94D",C:"#FFD43B",D:"#A9E34B",E:"#51CF66",F:"#20
 const matchColor = m => m.stage==="GROUP" ? GCOL[m.group] : stageColor(m.stage);
 function slotText(code){ const L=slotLabel(code); return `${L.top} ${L.bot}`; }
 const CAL_DOW=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
-function calEntryHTML(m){
+function calEntryHTML(m, extra){
   const c=matchColor(m), local=fmtVenueTime(m);
   const teams = isTeam(m.home)
-    ? `<span class="ce-tm" data-team="${m.home}">${m.home}</span><span class="ce-d">-</span><span class="ce-tm" data-team="${m.away}">${m.away}</span>`
+    ? `<span class="ce-tm" data-team="${m.home}"><span class="ce-fl">${TEAMS[m.home][1]}</span>${m.home}</span><span class="ce-d">-</span><span class="ce-tm" data-team="${m.away}"><span class="ce-fl">${TEAMS[m.away][1]}</span>${m.away}</span>`
     : `<span class="ce-slot">${m.stage}${m.n?` #${m.n}`:''}</span>`;
   const nm=m.venue?`${venueName(m.venue)}, ${m.venue.city}`:'Venue TBC';
   const ha=`${isTeam(m.home)?TEAMS[m.home][0]:slotText(m.home)} vs ${isTeam(m.away)?TEAMS[m.away][0]:slotText(m.away)}`;
   const title=`${ha} · ${nm} · ${m.kickoffLocal} NOR / ${local||'?'} local`;
   const teamAttr=(isTeam(m.home)?m.home:"")+" "+(isTeam(m.away)?m.away:"");
-  return `<div class="cal-entry" style="--c:${c}" data-teams="${teamAttr.trim()}" data-mi="${m.i}" data-stage="${m.stage}" title="${title.replace(/"/g,'&quot;')}">
+  return `<div class="cal-entry${extra?' cal-extra':''}${isTeam(m.home)?'':' cal-ko'}" style="--c:${c}" data-teams="${teamAttr.trim()}" data-mi="${m.i}" data-stage="${m.stage}" title="${title.replace(/"/g,'&quot;')}">
     <span class="ce-time">${m.kickoffLocal}${m.plus?'+':''}<i>${local}</i></span>
     <span class="ce-teams">${teams}${m.homeScore!=null?`<span class="ce-res">${m.homeScore}-${m.awayScore}</span>`:''}</span></div>`;
 }
-function monthGridHTML(year, month, label, byDate, todayStr){
+const CAL_MAX=3;   // entries shown per day cell on the desktop grid; the rest fold into "+N more"
+function monthGridHTML(year, month, label, byDate, todayStr, nextDate){
   const startDow=(new Date(Date.UTC(year,month,1)).getUTCDay()+6)%7;
   const days=new Date(Date.UTC(year,month+1,0)).getUTCDate();
-  let cells="";
-  for(let i=0;i<startDow;i++) cells+=`<div class="cal-cell empty"></div>`;
+  const cellObjs=[];
+  for(let i=0;i<startDow;i++) cellObjs.push({has:false, html:`<div class="cal-cell empty"></div>`});
   for(let d=1; d<=days; d++){
     const ds=`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const day=(byDate[ds]||[]).slice().sort((a,b)=>a.ts-b.ts);
-    const wd=CAL_DOW[(new Date(Date.UTC(year,month,d)).getUTCDay()+6)%7];   // weekday for the mobile agenda label
-    cells+=`<div class="cal-cell${day.length?'':' nomatch'}${ds===todayStr?' today':''}" data-date="${ds}">
-      <div class="cal-d"><span class="cal-wd">${wd}</span>${d}<span class="cal-mo">${label.slice(0,3)}</span></div>${day.map(calEntryHTML).join("")}</div>`;
+    const dowIdx=(new Date(Date.UTC(year,month,d)).getUTCDay()+6)%7;
+    const wd=CAL_DOW[dowIdx];                                             // weekday label (mobile agenda)
+    const wknd=dowIdx>=5?' cal-wknd':'';                                  // Sat/Sun column shading
+    const isNext=ds===nextDate && ds!==todayStr;                         // next upcoming match day (when it isn't today)
+    const entries=day.map((m,idx)=>calEntryHTML(m, idx>=CAL_MAX)).join("");
+    const more=day.length>CAL_MAX ? `<button class="cal-more" type="button" data-date="${ds}">+${day.length-CAL_MAX} more</button>` : "";
+    cellObjs.push({has:day.length>0, html:`<div class="cal-cell${day.length?'':' nomatch'}${wknd}${ds===todayStr?' today':''}${isNext?' cal-next':''}" data-date="${ds}">
+      <div class="cal-d"><span class="cal-wd">${wd}</span>${d}<span class="cal-mo">${label.slice(0,3)}</span>${isNext?'<span class="cal-next-tag">Next</span>':''}</div>${entries}${more}</div>`});
   }
+  while(cellObjs.length%7) cellObjs.push({has:false, html:`<div class="cal-cell empty"></div>`});
+  // trim fully-empty leading/trailing weeks so the month opens on real fixtures, not dead grid
+  const weeks=[]; for(let i=0;i<cellObjs.length;i+=7) weeks.push(cellObjs.slice(i,i+7));
+  const first=weeks.findIndex(w=>w.some(c=>c.has));
+  const last=weeks.length-1-[...weeks].reverse().findIndex(w=>w.some(c=>c.has));
+  const cells=(first<0?weeks:weeks.slice(first,last+1)).flat().map(c=>c.html).join("");
   return `<section class="cal-month">
     <h3 class="cal-h">${label} <span>2026</span></h3>
     <div class="cal-grid">${CAL_DOW.map(w=>`<div class="cal-dow">${w}</div>`).join("")}${cells}</div></section>`;
@@ -1521,8 +1507,9 @@ function monthGridHTML(year, month, label, byDate, todayStr){
 function renderCalendar(){
   const byDate={}; MATCHES.forEach(m=>{ (byDate[m.date]=byDate[m.date]||[]).push(m); });
   const tn=new Date(), todayStr=`${tn.getFullYear()}-${String(tn.getMonth()+1).padStart(2,'0')}-${String(tn.getDate()).padStart(2,'0')}`;
+  const nextDate=MATCH_DATES.find(d=>d>=todayStr)||'';   // next upcoming match day (for the "Next" marker)
   $("#view-calendar").innerHTML =
-    monthGridHTML(2026,5,"June",byDate,todayStr) + monthGridHTML(2026,6,"July",byDate,todayStr);
+    monthGridHTML(2026,5,"June",byDate,todayStr,nextDate) + monthGridHTML(2026,6,"July",byDate,todayStr,nextDate);
 }
 
 /* =====================================================================
@@ -1594,50 +1581,25 @@ async function loadSquads(){
   }catch(e){ console.log('[squads] data/squads.json not available yet (run scripts/fetch-squads.mjs)'); }
 }
 /* =====================================================================
-   RESULTS OVERLAY + MANUAL SCORE OVERRIDES
-   Two independent layers compose onto MATCHES (the single source of truth):
-     AUTO   = data/results.json .matches   (fetched; knockout slot resolution + scores)
-     MANUAL = localStorage wc2026.manualResults   (scores only; takes precedence)
-   The cron only ever writes results.json (AUTO), so it can NEVER clobber a manual
-   edit , the two live in different places and applyOverlays() re-reads both every
-   time, recomputing from the pristine base (m.baseHome/baseAway). Idempotent.
-   Both share one shape: { "<matchIndex>": { hs, as, status, h?, a? } }
+   RESULTS OVERLAY
+   One layer composes onto MATCHES (the single source of truth):
+     AUTO = data/results.json .matches   (fetched; knockout slot resolution + scores)
+   The cron refreshes results.json; applyOverlays() re-reads it and recomputes
+   from the pristine base (m.baseHome/baseAway) every time. Idempotent.
+   Shape: { "<matchIndex>": { hs, as, status, h?, a? } }
    ===================================================================== */
 let AUTO_RESULTS = {};
-let MANUAL_RESULTS = {};
-try{ MANUAL_RESULTS = JSON.parse(localStorage.getItem('wc2026.manualResults')||'{}') || {}; }catch(e){ MANUAL_RESULTS = {}; }
 
-// recompute every match's resolved teams + score from base + both overlay layers
+// recompute every match's resolved teams + score from base + the AUTO overlay
 function applyOverlays(){
   MATCHES.forEach(m=>{
-    const a = AUTO_RESULTS[m.i] || {}, man = MANUAL_RESULTS[m.i] || {};
-    // knockout slot resolution is AUTO-only; otherwise fall back to the pristine slot code
+    const a = AUTO_RESULTS[m.i] || {};
+    // knockout slot resolution; otherwise fall back to the pristine slot code
     m.home = (a.h && TEAMS[a.h]) ? a.h : m.baseHome;
     m.away = (a.a && TEAMS[a.a]) ? a.a : m.baseAway;
-    // score: manual wins, then auto, then none
-    const manHas = man.hs!=null && man.as!=null, autoHas = a.hs!=null && a.as!=null;
-    if(manHas){ m.homeScore=man.hs; m.awayScore=man.as; m.status=man.status||'FT'; m.manual=true; }
-    else if(autoHas){ m.homeScore=a.hs; m.awayScore=a.as; m.status=a.status||'FT'; m.manual=false; }
-    else { m.homeScore=null; m.awayScore=null; m.status=undefined; m.manual=false; }
+    if(a.hs!=null && a.as!=null){ m.homeScore=a.hs; m.awayScore=a.as; m.status=a.status||'FT'; }
+    else { m.homeScore=null; m.awayScore=null; m.status=undefined; }
   });
-}
-function saveManual(){ localStorage.setItem('wc2026.manualResults', JSON.stringify(MANUAL_RESULTS)); }
-function setManualScore(i, hs, as, status){
-  hs=Number(hs); as=Number(as);
-  if(!Number.isFinite(hs)||!Number.isFinite(as)||hs<0||as<0) return false;
-  MANUAL_RESULTS[i] = { hs, as, status: status||'FT' };
-  saveManual(); applyOverlays(); rerenderViews();
-  return true;
-}
-function clearManualScore(i){ delete MANUAL_RESULTS[i]; saveManual(); applyOverlays(); rerenderViews(); }
-function clearAllManual(){ MANUAL_RESULTS = {}; saveManual(); applyOverlays(); rerenderViews(); }
-// download a results.json-shaped file of the manual scores, so they can be promoted into the repo
-function exportOverrides(){
-  const payload = { lastUpdated:new Date().toISOString().slice(0,10), source:"manual overrides exported from the app", matches:MANUAL_RESULTS };
-  const blob = new Blob([JSON.stringify(payload,null,2)], {type:'application/json'});
-  const url = URL.createObjectURL(blob), a = document.createElement('a');
-  a.href=url; a.download='results.json'; document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url), 1000);
 }
 
 /* AUTO layer , scores + resolved knockout teams from data/results.json.
@@ -1655,9 +1617,8 @@ async function loadResults(){
 
 // expose the pure standings + overlay helpers for headless verification
 window.WC_STANDINGS = { computeStandings, rankGroup, thirdPlaceRanking, h2hStats, applyOverlays,
-  setManualScore, clearManualScore, clearAllManual,
   setAuto: o => { AUTO_RESULTS = o||{}; applyOverlays(); rerenderViews(); },
-  manual: () => MANUAL_RESULTS, auto: () => AUTO_RESULTS, match: i => MATCHES[i] };
+  auto: () => AUTO_RESULTS, match: i => MATCHES[i] };
 /* hash router , the URL fragment is the single source of truth for the active sub-page:
      (empty)/#schedule · #groups · #calendar · #map · #team/CODE
    Each route sets the document title so tabs, history and bookmarks read correctly. */
@@ -1828,23 +1789,6 @@ function openMatch(i){
   const [y,mo,da]=m.date.split('-').map(Number);
   const wd=WD[new Date(Date.UTC(y,mo-1,da)).getUTCDay()];
   const stageLabel=m.stage==='GROUP'?`Group ${m.group} · Matchday ${m.md}`:`${STAGES[m.stage].label}${m.n?` · Match ${m.n}`:''}`;
-  // score editor , only when both sides are real teams (group matches now; knockouts once resolved)
-  const editable = isTeam(m.home) && isTeam(m.away);
-  const scoreEditor = editable ? `<div class="mm-score">
-      <div class="mm-score-lab">Enter score${m.manual?'<span class="mm-score-badge">Manual</span>':''}</div>
-      <div class="mm-score-row">
-        <span class="mm-score-tm">${TEAMS[m.home][1]} ${m.home}</span>
-        <input class="mm-sc-in" id="mmHome" type="number" min="0" inputmode="numeric" value="${m.homeScore!=null?m.homeScore:''}" aria-label="${TEAMS[m.home][0]} score">
-        <span class="mm-score-dash">-</span>
-        <input class="mm-sc-in" id="mmAway" type="number" min="0" inputmode="numeric" value="${m.awayScore!=null?m.awayScore:''}" aria-label="${TEAMS[m.away][0]} score">
-        <span class="mm-score-tm">${m.away} ${TEAMS[m.away][1]}</span>
-      </div>
-      <div class="mm-score-btns">
-        <button class="mm-sc-save" id="mmSave" data-mi="${m.i}">Save score</button>
-        ${m.manual?`<button class="mm-sc-clear" id="mmClear" data-mi="${m.i}">Clear</button>`:''}
-      </div>
-      ${m.stage!=='GROUP'?'<p class="mm-score-note">Knockout score , recorded for display; standings use group matches only.</p>':''}
-    </div>` : '';
   $("#match-modal").innerHTML=`<div class="mm-card" style="--accent:${matchColor(m)}">
     <button class="mm-x" data-mclose aria-label="Close">×</button>
     <div class="mm-stage">${stageLabel}</div>
@@ -1855,7 +1799,6 @@ function openMatch(i){
       ${v?`<div class="mm-row"><span>Stadium</span><b>${v.fifaName}</b></div>
       <div class="mm-row"><span></span><span class="mm-sub">${v.commonName} · ${v.city}, ${v.country} · ${v.capacity.toLocaleString()} seats</span></div>`:`<div class="mm-row"><span>Stadium</span><b>Venue TBC</b></div>`}
     </div>
-    ${scoreEditor}
     ${isTeam(m.home)||isTeam(m.away)?`<div class="mm-hint">Tap a team to open its page</div>`:''}
   </div>`;
   $("#match-modal").hidden=false; document.body.classList.add('modal-open');
@@ -1876,13 +1819,6 @@ function revealFade(nodes){ if(REDUCE.matches) return; nodes.forEach(el=>{ el.st
 document.addEventListener('click', e=>{
   if(e.target.closest('.team-back')){ const sv=localStorage.getItem('wc2026.view')||'schedule'; location.hash = sv==='schedule'?'#schedule':'#'+sv; return; }   // back to the view you came from
   if(e.target.closest('[data-mclose]') || e.target.id==='match-modal'){ closeMatch(); return; }              // close popover
-  if(e.target.closest('#exportOverrides')){ exportOverrides(); return; }                                     // download manual scores as results.json
-  if(e.target.closest('#clearManual')){ if(Object.keys(MANUAL_RESULTS).length && confirm('Remove all manually entered scores?')) clearAllManual(); return; }
-  const mmSave=e.target.closest('#mmSave');
-  if(mmSave){ const i=+mmSave.dataset.mi, h=$("#mmHome")?.value??'', a=$("#mmAway")?.value??'';
-    if(h!==''&&a!==''&&setManualScore(i,h,a)) openMatch(i); return; }                                        // save score → recompute → refresh modal
-  const mmClear=e.target.closest('#mmClear');
-  if(mmClear){ const i=+mmClear.dataset.mi; clearManualScore(i); openMatch(i); return; }
   const tfo=e.target.closest('.tf-opt');
   if(tfo){ toggleTeam(tfo.dataset.team); return; }                    // filter-picker option = toggle team
   const rb=e.target.closest('[data-round]');
@@ -1900,6 +1836,8 @@ document.addEventListener('click', e=>{
   if(mchip){ const cf=mchip.dataset.mconf; mapConfs.has(cf)?mapConfs.delete(cf):mapConfs.add(cf);
     mapPinned=false; mapPinCode=null; mapPopHide(); applyMapFilter(); fitToSelection(); return; } // conf lens , reframe to the selection
   if(e.target.closest('#mapClear')){ mapConfs.clear(); selected.clear(); mapPinned=false; mapPinCode=null; mapPopHide(); applyFilter(); homeView(); return; }  // full reset: global selection + conf lens
+  const calMore=e.target.closest('.cal-more');
+  if(calMore){ jumpToDate(calMore.dataset.date, 'schedule'); return; } // "+N more" = open that day's full list on the Schedule
   const hl=e.target.closest('[data-hlteam]');
   if(hl){ toggleTeam(hl.dataset.hlteam); setHlBtn(hl); return; }       // "show this team" on its page
   const team=e.target.closest('[data-team]');
@@ -1909,7 +1847,6 @@ document.addEventListener('click', e=>{
 });
 document.addEventListener('keydown', e=>{
   if(e.key==='Escape'){ if(document.body.classList.contains('tf-open')){ tfOpen(false); return; } closeMatch(); return; }
-  if(e.key==='Enter' && e.target.classList?.contains('mm-sc-in')){ e.preventDefault(); $("#mmSave")?.click(); return; }   // Enter in a score field saves
   if(e.key==='Enter'||e.key===' '){ const t=e.target.closest('.stage-banner,[data-gcol],[data-hlteam]'); if(t){ e.preventDefault(); t.click(); } }
 });
 /* ---- team filter , custom multi-select dropdown ---- */
@@ -1945,6 +1882,7 @@ function setActiveView(v){                                      // pure activati
   tabs.forEach(b=>{ const on=b.dataset.view===v; b.setAttribute('aria-selected', on?'true':'false'); b.tabIndex=on?0:-1; });
   if(v==='map'){ renderMap(); applyMapFilter(); fitToSelection(); }   // build on first open + honor the current global filter
   VIEW_NAMES.forEach(n=>{ const el=$("#view-"+n); if(el) el.hidden = v!==n; });
+  if(v==='calendar') requestAnimationFrame(calScrollToFocus);         // land on today / next match, not the empty start of June
   localStorage.setItem('wc2026.view', v);
   if(!document.body.classList.contains('anim-intro')){             // gentle entrance on user switches (not first paint or re-render)
     const el=$("#view-"+v); if(el){ el.classList.remove('view-in'); void el.offsetWidth; el.classList.add('view-in'); }
@@ -1962,11 +1900,11 @@ $(".segmented").addEventListener('keydown', e=>{
 });
 
 /* date picker , scroll the active date-view (Schedule, or Calendar if open) to a match day and flash it */
-function jumpToDate(dateStr){
+function jumpToDate(dateStr, forceView){
   if(!dateStr) return;
   const target = MATCH_DATES.includes(dateStr) ? dateStr : (MATCH_DATES.find(d=>d>=dateStr) || MATCH_DATES[MATCH_DATES.length-1]);
   if(!target) return;
-  const view = $("#view-calendar").hidden ? 'schedule' : 'calendar';   // act on Calendar if it's open, else Schedule
+  const view = forceView || ($("#view-calendar").hidden ? 'schedule' : 'calendar');   // act on Calendar if open, else Schedule
   if(view==='schedule' && $("#view-schedule").hidden) goTab('schedule');   // from Groups/Map: switch to Schedule
   requestAnimationFrame(()=>{
     const el = $(`#view-${view} .${view==='calendar'?'cal-cell':'day'}[data-date="${target}"]`);
@@ -1979,6 +1917,15 @@ function jumpToDate(dateStr){
   });
 }
 $("#dateJump")?.addEventListener('change', e=>jumpToDate(e.target.value));
+// on opening the Calendar, land on today (or the next upcoming match day) instead of the empty start of June
+function calScrollToFocus(){
+  const tn=new Date(), todayStr=`${tn.getFullYear()}-${String(tn.getMonth()+1).padStart(2,'0')}-${String(tn.getDate()).padStart(2,'0')}`;
+  const target = MATCH_DATES.includes(todayStr) ? todayStr : (MATCH_DATES.find(d=>d>=todayStr) || MATCH_DATES[0]);
+  const el = $(`#view-calendar .cal-cell[data-date="${target}"]`);
+  if(!el) return;
+  const far = Math.abs(el.getBoundingClientRect().top) > window.innerHeight*1.5;
+  el.scrollIntoView({behavior:(REDUCE.matches||far)?'auto':'smooth', block:'center'});
+}
 
 /* =====================================================================
    WORLD MAP , 48 nations on a d3-geo Natural Earth projection (inlined TopoJSON).
