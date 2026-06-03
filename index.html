@@ -1213,6 +1213,9 @@ const isTeam = c => Object.prototype.hasOwnProperty.call(TEAMS,c);
 MATCHES.forEach((m,i) => { m.i = i; m.kickoffDate = kickoff(m.date, m.kickoffLocal, m.plus); m.ts = m.kickoffDate.getTime(); m.venue = VENUES[m.hostCity] || null; m.baseHome = m.home; m.baseAway = m.away; });
 const ALL = MATCHES;                                   // single source; every view derives from this
 const MATCH_DATES = [...new Set(MATCHES.map(m=>m.date))].sort();   // sorted unique match days (for the date picker)
+// today as local YYYY-MM-DD; and the first scheduled match day on/after `from` (undefined past the last match)
+const todayDateStr = () => { const t=new Date(); return `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`; };
+const nextMatchDate = from => MATCH_DATES.find(d=>d>=from);
 const STAGE_COUNT = ALL.reduce((acc,m)=>{ acc[m.stage]=(acc[m.stage]||0)+1; return acc; },{});
 const OPENER_TS = Math.min(...ALL.map(m=>m.ts));
 
@@ -1288,7 +1291,7 @@ function matchCardHTML(m){
    RENDER , SCHEDULE
    ===================================================================== */
 function renderSchedule(){
-  const tn=new Date(), todayStr=`${tn.getFullYear()}-${String(tn.getMonth()+1).padStart(2,'0')}-${String(tn.getDate()).padStart(2,'0')}`;
+  const todayStr=todayDateStr();
   const byDate={}; MATCHES.forEach(m=>{ (byDate[m.date]=byDate[m.date]||[]).push(m); });
   const dates=Object.keys(byDate).sort();
   let html="", prevStage=null;
@@ -1506,8 +1509,8 @@ function monthGridHTML(year, month, label, byDate, todayStr, nextDate){
 }
 function renderCalendar(){
   const byDate={}; MATCHES.forEach(m=>{ (byDate[m.date]=byDate[m.date]||[]).push(m); });
-  const tn=new Date(), todayStr=`${tn.getFullYear()}-${String(tn.getMonth()+1).padStart(2,'0')}-${String(tn.getDate()).padStart(2,'0')}`;
-  const nextDate=MATCH_DATES.find(d=>d>=todayStr)||'';   // next upcoming match day (for the "Next" marker)
+  const todayStr=todayDateStr();
+  const nextDate=nextMatchDate(todayStr)||'';   // next upcoming match day (for the "Next" marker)
   $("#view-calendar").innerHTML =
     monthGridHTML(2026,5,"June",byDate,todayStr,nextDate) + monthGridHTML(2026,6,"July",byDate,todayStr,nextDate);
 }
@@ -1608,6 +1611,7 @@ function applyOverlays(){
    without a manual reload; we only re-render when the payload actually
    changed (RESULTS_SIG), so an idle poll costs nothing visible. */
 const RESULTS_POLL_MS = 60000;
+const RESULTS_FROZEN_AFTER = '2026-07-20';   // day after the final , the cron stops, so results.json no longer changes
 let RESULTS_SIG = '';
 let resultsTimer = 0;
 async function loadResults(){
@@ -1627,8 +1631,13 @@ async function loadResults(){
     if(resultsTimer && MATCHES.every(m=>m.status==='FT')){ clearInterval(resultsTimer); resultsTimer=0; console.log('[results] all matches final , polling stopped'); }
   }catch(e){ console.log('[results] data/results.json not available yet (run scripts/fetch-results.mjs)'); }
 }
-// poll while the tab is visible; refresh immediately on regaining focus (paused tabs skip work)
-resultsTimer=setInterval(()=>{ if(!document.hidden) loadResults(); }, RESULTS_POLL_MS);
+// poll while the tab is visible; refresh immediately on regaining focus (paused tabs skip work).
+// the timer self-stops once the tournament is over , a backstop for the all-final check inside
+// loadResults(), which can't fire if a feed gap leaves one match without an 'FT' status.
+resultsTimer=setInterval(()=>{
+  if(todayDateStr()>=RESULTS_FROZEN_AFTER){ clearInterval(resultsTimer); resultsTimer=0; console.log('[results] tournament over , polling stopped'); return; }
+  if(!document.hidden) loadResults();
+}, RESULTS_POLL_MS);
 document.addEventListener('visibilitychange', ()=>{ if(resultsTimer && !document.hidden) loadResults(); });
 
 // expose the pure standings + overlay helpers for headless verification
@@ -1918,7 +1927,7 @@ $(".segmented").addEventListener('keydown', e=>{
 /* date picker , scroll the active date-view (Schedule, or Calendar if open) to a match day and flash it */
 function jumpToDate(dateStr, forceView){
   if(!dateStr) return;
-  const target = MATCH_DATES.includes(dateStr) ? dateStr : (MATCH_DATES.find(d=>d>=dateStr) || MATCH_DATES[MATCH_DATES.length-1]);
+  const target = nextMatchDate(dateStr) || MATCH_DATES[MATCH_DATES.length-1];   // first match day on/after the pick, else clamp to the last
   if(!target) return;
   const view = forceView || ($("#view-calendar").hidden ? 'schedule' : 'calendar');   // act on Calendar if open, else Schedule
   if(view==='schedule' && $("#view-schedule").hidden) goTab('schedule');   // from Groups/Map: switch to Schedule
@@ -1935,8 +1944,7 @@ function jumpToDate(dateStr, forceView){
 $("#dateJump")?.addEventListener('change', e=>jumpToDate(e.target.value));
 // on opening the Calendar, land on today (or the next upcoming match day) instead of the empty start of June
 function calScrollToFocus(){
-  const tn=new Date(), todayStr=`${tn.getFullYear()}-${String(tn.getMonth()+1).padStart(2,'0')}-${String(tn.getDate()).padStart(2,'0')}`;
-  const target = MATCH_DATES.includes(todayStr) ? todayStr : (MATCH_DATES.find(d=>d>=todayStr) || MATCH_DATES[0]);
+  const target = nextMatchDate(todayDateStr()) || MATCH_DATES[0];   // today/next match day, else (post-tournament) the start
   const el = $(`#view-calendar .cal-cell[data-date="${target}"]`);
   if(!el) return;
   const far = Math.abs(el.getBoundingClientRect().top) > window.innerHeight*1.5;
