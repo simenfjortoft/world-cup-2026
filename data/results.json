@@ -1,6 +1,5 @@
 {
-  "lastUpdated": "2026-06-03",
-  "source": "manual placeholder , populated during the tournament by scripts/fetch-results.mjs",
-  "_format": "matches keyed by match index (the data-mi on each fixture, 0-103). Per match: h/a = resolved 3-letter team codes for a knockout slot (optional); hs/as = home/away score (optional); status = FT | HT | LIVE (optional). Example: { \"72\": { \"h\": \"NOR\", \"a\": \"BRA\", \"hs\": 2, \"as\": 1, \"status\": \"FT\" } }",
-  "matches": {}
+ "lastUpdated": "2026-06-03",
+ "source": "football-data.org , competition WC",
+ "matches": {}
 }
