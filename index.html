@@ -23,7 +23,7 @@
   --line-strong: rgba(180,255,220,.17);
   --text:      #e8f1ec;
   --text-dim:  #92a89d;
-  --text-faint:#5e7268;
+  --text-faint:#748a7d;   /* AA: ~5:1 on --bg (was #5e7268 ≈ 3.8:1) */
 
   /* primary floodlight green + glow */
   --green:        #19e08a;
@@ -361,7 +361,7 @@ body.filtering .gmatch:not(.on){opacity:.24}
 .cal-entry .ce-slot{color:var(--text-dim);font-weight:800;letter-spacing:.02em}
 body.filtering .cal-entry:not(.on){opacity:.2}
 .cal-entry.on{box-shadow:0 0 0 1px var(--c,var(--green))}
-@media (max-width:680px){
+@media (min-width:601px) and (max-width:680px){   /* tablet band keeps the 7-col scroll grid; phones use the agenda above */
   .cal-grid{grid-template-columns:repeat(7,minmax(48px,1fr));overflow-x:auto}
   .cal-entry .ce-time i{display:none}
 }
@@ -479,6 +479,100 @@ footer b{color:var(--text-dim)}
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.001ms!important;transition-duration:.001ms!important}
 }
+
+/* ============================================================
+   FIRST WAVE , mobile ease-of-use (desktop unchanged)
+   ============================================================ */
+
+/* #3 , team picker: jump straight to a nation's page */
+.team-picker{
+  background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:11px;color:var(--text);
+  font-family:inherit;font-weight:700;font-size:13px;padding:9px 12px;cursor:pointer;max-width:210px;
+  transition:border-color .18s var(--ease),box-shadow .18s var(--ease);
+}
+.team-picker:hover{border-color:var(--line-strong)}
+.team-picker:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(25,224,138,.16)}
+.team-picker option,.team-picker optgroup{background:var(--surface-2);color:var(--text)}
+
+/* #3 , show-only toggle , shares the .btn-clear base; only the pressed state is unique */
+.btn-only[aria-pressed="true"]{
+  background:linear-gradient(180deg,rgba(25,224,138,.2),rgba(25,224,138,.08));
+  border-color:var(--green);color:var(--green-bright);box-shadow:0 0 0 1px rgba(25,224,138,.4);
+}
+
+/* #3 , show-only behaviour: isolate lit nations (Schedule + Calendar).
+   Unresolved knockout fixtures (data-teams="") stay visible so a team's path is
+   never hidden; once results decide them they isolate like any other match. */
+body.show-only.filtering .mc:not(.on):not([data-teams=""]){display:none}
+body.show-only.filtering .day:not(:has(.mc.on)):not(:has(.mc[data-teams=""])){display:none}
+body.show-only.filtering .day-head .cnt{display:none}        /* the count would be misleading while cards are hidden */
+body.show-only.filtering .cal-entry:not(.on):not([data-teams=""]){display:none}
+
+/* results overlay , scores (data/results.json) + squad availability (squads.json status) */
+.vs.score{font-family:"Anton",sans-serif;color:var(--text);font-size:20px;letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.vs.score i{font-style:normal;color:var(--text-faint);margin:0 3px}
+.mc-time .nxt.res{color:var(--green-bright);border-color:var(--green)}
+.ce-res{font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;margin-left:6px}
+.tfx-score{font-weight:800;color:var(--text);font-variant-numeric:tabular-nums}
+.sq-st{font-size:9px;font-weight:800;letter-spacing:.04em;padding:1px 5px;border-radius:4px;margin-left:6px;vertical-align:1px}
+.sq-injured{background:rgba(239,83,80,.16);color:#ff8a85;border:1px solid rgba(239,83,80,.4)}
+.sq-suspended{background:rgba(244,200,75,.14);color:#f4c84b;border:1px solid rgba(244,200,75,.4)}
+.sq-doubtful{background:rgba(146,168,157,.14);color:var(--text-dim);border:1px solid var(--line-strong)}
+
+/* #1 , collapsible nation panel (mobile only) */
+.chips-toggle{
+  display:none;width:100%;align-items:center;gap:10px;
+  margin:14px 0 4px;padding:12px 15px;border-radius:11px;cursor:pointer;
+  background:var(--surface);border:1px solid var(--line);color:var(--text);
+  font-family:inherit;font-weight:700;font-size:13.5px;
+}
+.chips-toggle .ct-n{margin-left:auto;font-size:11px;font-weight:800;color:var(--green-bright);font-variant-numeric:tabular-nums}
+.chips-toggle .chev{color:var(--green);font-size:11px;transition:transform .2s var(--ease)}
+body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
+
+/* #2/#4 , cold-open orientation + discoverability line */
+.orient{margin:14px 0 2px;font-size:11.5px;line-height:1.5;color:var(--text-faint);font-weight:500}
+.orient b{color:var(--text-dim);font-weight:700}
+
+@media (max-width:560px){
+  .chips-toggle{display:flex}
+  .chips-shell .chips-head,.chips-shell .chips{display:none}
+  body.chips-open .chips-shell .chips{display:grid}   /* the toggle label is the header; keep chips-head hidden */
+
+  /* tighter sticky controls: trim padding + drop the redundant default status row */
+  .controls .wrap{gap:10px;padding-top:10px;padding-bottom:10px}
+  body:not(.has-filter) .filter-status{display:none}
+
+  /* lift fixtures: compact hero + countdown */
+  header.hero{padding:20px 0 12px}
+  h1.title{font-size:46px}
+  .subline{margin-top:14px;gap:8px 14px}
+  .countdown{margin-top:16px;border-radius:11px}
+  .cd-label{padding:0 12px;font-size:10px}
+  .cd-unit{padding:9px 10px 8px;min-width:46px}
+  .cd-num{font-size:22px}
+  .cd-u{font-size:8.5px}
+
+  /* prominent full-width team picker under the tabs */
+  .team-picker{max-width:none;flex:1 1 100%}
+}
+
+/* #2 , calendar becomes a single-column day-agenda on phones */
+.cal-wd,.cal-mo{display:none}
+@media (max-width:600px){
+  .cal-month{margin-top:18px}
+  .cal-grid{display:flex;flex-direction:column;gap:8px;overflow:visible}
+  .cal-dow{display:none}
+  .cal-cell{min-height:0;border-radius:12px;padding:11px 13px;gap:7px}
+  .cal-cell:not(:has(.cal-entry:not(.rhide))){display:none}                          /* drop empty + round-filtered-out days */
+  body.show-only.filtering .cal-cell:not(:has(.cal-entry.on)):not(:has(.cal-entry[data-teams=""])){display:none}
+  .cal-d{display:flex;align-items:baseline;gap:7px;font-size:15px;color:var(--text)}
+  .cal-wd,.cal-mo{display:inline;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+  .cal-wd{color:var(--green)} .cal-mo{color:var(--text-dim)}
+  .cal-entry{flex-direction:row;align-items:baseline;gap:10px;font-size:13px;padding:7px 9px}
+  .cal-entry .ce-time{flex:none}
+  .cal-entry .ce-teams{flex:1;white-space:normal}
+}
 </style>
 </head>
 <body>
@@ -523,19 +617,22 @@ footer b{color:var(--text-dim)}
       <button role="tab" id="tab-groups" aria-controls="view-groups" aria-selected="false" tabindex="-1" data-view="groups">Groups</button>
       <button role="tab" id="tab-calendar" aria-controls="view-calendar" aria-selected="false" tabindex="-1" data-view="calendar">Calendar</button>
     </div>
-    <button id="venueToggle" class="vmode" title="Switch stadium names between FIFA tournament names and common names">FIFA names</button>
+    <select id="teamPicker" class="team-picker" aria-label="Open a team's page"><option value="">⚽ Jump to your team…</option></select>
+    <button id="venueToggle" class="vmode" title="Switch stadium names between FIFA tournament names and common names">Common names</button>
     <label class="search">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
       <input id="search" type="search" placeholder="Find a nation…" autocomplete="off" aria-label="Search nations">
     </label>
     <div class="filter-status">
       <span id="status" role="status" aria-live="polite">Tap a flag to highlight a nation</span>
+      <button class="btn-clear btn-only" id="onlyToggle" aria-pressed="false" title="Show only your highlighted nations">Show only</button>
       <button class="btn-clear" id="clear">Clear</button>
     </div>
   </div>
 </div>
 <div class="chips-shell">
   <div class="wrap">
+    <p class="orient">Tap any match for details &nbsp;·&nbsp; a flag to highlight a team &nbsp;·&nbsp; or use <b>⚽ Jump to your team</b> for one nation's full schedule.</p>
     <div class="roundbar" id="roundbar">
       <span class="rb-lab">Round</span>
       <button class="rb" data-round="ALL" aria-pressed="true">All</button>
@@ -547,6 +644,7 @@ footer b{color:var(--text-dim)}
       <button class="rb" data-round="3RD" aria-pressed="false">3rd</button>
       <button class="rb" data-round="FINAL" aria-pressed="false">Final</button>
     </div>
+    <button id="chipsToggle" class="chips-toggle" aria-expanded="false" aria-controls="chips">Highlight a nation<span class="ct-n" id="chipsCount"></span><span class="chev">▾</span></button>
     <div class="chips-head">Highlight nations<span class="ch-hint">, scroll to fixtures below, your picks stay lit</span></div>
     <div class="chips" id="chips"></div>
   </div>
@@ -830,8 +928,8 @@ const ALL = MATCHES;                                   // single source; every v
 const STAGE_COUNT = ALL.reduce((acc,m)=>{ acc[m.stage]=(acc[m.stage]||0)+1; return acc; },{});
 const OPENER_TS = Math.min(...ALL.map(m=>m.ts));
 
-// stadium name mode , FIFA tournament names by default; both stored on the venue
-let VENUE_NAME_MODE = (localStorage.getItem('wc2026.venueMode')||'fifa');
+// stadium name mode , common names by default; both stored on the venue
+let VENUE_NAME_MODE = (localStorage.getItem('wc2026.venueMode')||'common');   // common names by default (Azteca, MetLife…)
 const venueName = v => VENUE_NAME_MODE==='common' ? v.commonName : v.fifaName;
 // venue-local kickoff , format the SAME absolute instant in the stadium timezone (no new time logic)
 const fmtVenueTime = m => m.venue ? new Intl.DateTimeFormat('en-GB',{timeZone:m.venue.timezone,hour:'2-digit',minute:'2-digit',hour12:false}).format(m.kickoffDate) : '';
@@ -889,12 +987,12 @@ function matchCardHTML(m){
     : `<span class="badge" style="--accent:${col}"><span class="sq"></span>${STAGES[m.stage].label}</span>`
       + (m.n?`<span class="mc-no">#${m.n}</span>`:"");
   const nxt = m.plus?`<span class="nxt">+1</span>`:"";
-  const time = `<div class="mc-time">${nxt}<span class="t">${m.kickoffLocal}</span></div>`;
+  const time = `<div class="mc-time">${m.status?`<span class="nxt res">${m.status}</span>`:""}${nxt}<span class="t">${m.kickoffLocal}</span></div>`;
   const trophy = isFinal?`<span class="trophy">🏆</span>`:"";
   const teamAttr = (isTeam(m.home)?m.home:"")+" "+(isTeam(m.away)?m.away:"");
   return `<article class="mc${isFinal?' is-final':''}" style="--accent:${col}" data-teams="${teamAttr.trim()}" data-mi="${m.i}">
     ${trophy}<div class="mc-top">${badge}${time}</div>
-    <div class="mc-body">${sideHTML(m.home,false)}<span class="vs">${isFinal?'VS':'-'}</span>${sideHTML(m.away,true)}</div>
+    <div class="mc-body">${sideHTML(m.home,false)}${m.homeScore!=null?`<span class="vs score">${m.homeScore}<i>-</i>${m.awayScore}</span>`:`<span class="vs">${isFinal?'VS':'-'}</span>`}${sideHTML(m.away,true)}</div>
     ${venueLineHTML(m)}
   </article>`;
 }
@@ -980,7 +1078,7 @@ function calEntryHTML(m){
   const teamAttr=(isTeam(m.home)?m.home:"")+" "+(isTeam(m.away)?m.away:"");
   return `<div class="cal-entry" style="--c:${c}" data-teams="${teamAttr.trim()}" data-mi="${m.i}" data-stage="${m.stage}" title="${title.replace(/"/g,'&quot;')}">
     <span class="ce-time">${m.kickoffLocal}${m.plus?'+':''}<i>${local}</i></span>
-    <span class="ce-teams">${teams}</span></div>`;
+    <span class="ce-teams">${teams}${m.homeScore!=null?`<span class="ce-res">${m.homeScore}-${m.awayScore}</span>`:''}</span></div>`;
 }
 function monthGridHTML(year, month, label, byDate, todayStr){
   const startDow=(new Date(Date.UTC(year,month,1)).getUTCDay()+6)%7;
@@ -990,8 +1088,9 @@ function monthGridHTML(year, month, label, byDate, todayStr){
   for(let d=1; d<=days; d++){
     const ds=`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const day=(byDate[ds]||[]).slice().sort((a,b)=>a.ts-b.ts);
+    const wd=CAL_DOW[(new Date(Date.UTC(year,month,d)).getUTCDay()+6)%7];   // weekday for the mobile agenda label
     cells+=`<div class="cal-cell${day.length?'':' nomatch'}${ds===todayStr?' today':''}">
-      <div class="cal-d">${d}</div>${day.map(calEntryHTML).join("")}</div>`;
+      <div class="cal-d"><span class="cal-wd">${wd}</span>${d}<span class="cal-mo">${label.slice(0,3)}</span></div>${day.map(calEntryHTML).join("")}</div>`;
   }
   return `<section class="cal-month">
     <h3 class="cal-h">${label} <span>2026</span></h3>
@@ -1029,7 +1128,7 @@ function renderTeam(code){
         <span class="tfx-opp">vs ${teamLink(opp)}</span>
         <span class="tfx-badge" style="--accent:${matchColor(m)}">${m.stage==='GROUP'?'Group '+m.group+' · MD'+m.md:STAGES[m.stage].label}</span>
       </div>
-      <div class="tfx-meta"><span>${venueNm}</span><span class="tfx-time">${m.kickoffLocal}${m.plus?'+':''} NOR · ${fmtVenueTime(m)} local</span></div>
+      <div class="tfx-meta"><span>${venueNm}</span><span class="tfx-time">${m.homeScore!=null?`<b class="tfx-score">${m.homeScore}-${m.awayScore}</b> · `:''}${m.kickoffLocal}${m.plus?'+':''} NOR · ${fmtVenueTime(m)} local</span></div>
     </div>`;
   }).join("");
   $("#view-team").innerHTML=`
@@ -1061,7 +1160,7 @@ function renderSquad(code){
     const list=byPos[pos].slice().sort((a,b)=>(a.number||99)-(b.number||99));
     if(!list.length) return '';
     return `<div class="sq-group"><div class="sq-pos">${label[pos]} <span style="color:var(--text-faint);font-weight:700">${list.length}</span></div>${list.map(p=>
-      `<div class="sq-row"><span class="sq-no">${p.number||''}</span><span class="sq-nm">${p.name}</span><span class="sq-cl">${p.club||''}</span></div>`).join("")}</div>`;
+      `<div class="sq-row"><span class="sq-no">${p.number||''}</span><span class="sq-nm">${p.name}${p.status?` <span class="sq-st sq-${p.status}">${({injured:'INJ',suspended:'SUSP',doubtful:'?'})[p.status]||p.status}</span>`:''}</span><span class="sq-cl">${p.club||''}</span></div>`).join("")}</div>`;
   }).join("");
 }
 async function loadSquads(){
@@ -1071,6 +1170,28 @@ async function loadSquads(){
     console.log('[squads] loaded ·', window.SQUADS.lastUpdated, '·', Object.keys(window.SQUADS.teams||{}).length, 'teams');
     const m=/^#team\/([A-Z]{3})$/.exec(location.hash); if(m && TEAMS[m[1]]) renderSquad(m[1]);
   }catch(e){ console.log('[squads] data/squads.json not available yet (run scripts/fetch-squads.mjs)'); }
+}
+/* results overlay , scores + resolved knockout teams from data/results.json.
+   Refreshable without touching this file (run scripts/fetch-results.mjs); MATCHES
+   stays the single source of truth, this just patches it in place then re-renders.
+   Shape: { lastUpdated, source, matches: { "<matchIndex>": { h, a, hs, as, status } } }
+     h/a  = resolved 3-letter codes for a knockout slot (optional)
+     hs/as = final/live scores (optional)   status = e.g. "FT", "HT", "LIVE" */
+async function loadResults(){
+  try{
+    const res=await fetch('data/results.json'); if(!res.ok) return;
+    const data=await res.json(); const rs=data.matches||{};
+    let changed=false;
+    MATCHES.forEach(m=>{
+      const r=rs[m.i]; if(!r) return;
+      if(r.h && TEAMS[r.h]){ m.home=r.h; changed=true; }           // knockout slot decided
+      if(r.a && TEAMS[r.a]){ m.away=r.a; changed=true; }
+      if(r.hs!=null && r.as!=null){ m.homeScore=r.hs; m.awayScore=r.as; m.status=r.status||'FT'; changed=true; }
+    });
+    if(data.lastUpdated) window.RESULTS_UPDATED=data.lastUpdated;
+    console.log('[results] loaded ·', data.lastUpdated||'(no date)', '·', Object.keys(rs).length, 'updates');
+    if(changed){ rerenderViews(); route(); }                       // refresh schedule/calendar + any open team page
+  }catch(e){ console.log('[results] data/results.json not available yet (run scripts/fetch-results.mjs)'); }
 }
 function route(){
   closeMatch();
@@ -1105,6 +1226,7 @@ function renderLegend(){
    ===================================================================== */
 const selected = new Set();
 try{ JSON.parse(localStorage.getItem('wc2026.sel')||'[]').forEach(c=>TEAMS[c]&&selected.add(c)); }catch(e){}
+let showOnly = localStorage.getItem('wc2026.only')==='1';   // #3 , isolate lit nations instead of dimming
 
 // cache node lists once after render (they never change) so filtering/search don't re-query the DOM
 let MC=[], GTEAM=[], GMATCH=[], CHIP=[], CG=[], CAL=[], GHL=[], DAYS=[], BANNER=[];
@@ -1122,6 +1244,20 @@ function cacheRefs(){
 
 function countMatches(){
   return MATCHES.filter(m=>isTeam(m.home)&&isTeam(m.away)&&(selected.has(m.home)||selected.has(m.away))).length;
+}
+// #3 , one status line + one Clear shared by nation highlight AND round filter
+function syncFilterStatus(){
+  const st=$("#status"), clr=$("#clear");
+  const parts=[];
+  if(roundFilter!=='ALL'){ const L=STAGES[roundFilter]; parts.push(`Round: <b>${L?L.label:roundFilter}</b>`); }
+  if(selected.size){
+    const names=[...selected].map(c=>TEAMS[c][0]);
+    const who = names.length<=2?names.join(' & '):`${names.length} nations`;
+    parts.push(`Highlighting <b>${who}</b> · <b>${countMatches()}</b> matches`);
+  }
+  document.body.classList.toggle('has-filter', parts.length>0);   // any filter active (nation or round)
+  if(parts.length){ st.innerHTML=parts.join(' &nbsp;·&nbsp; '); clr.classList.add('show'); }
+  else { st.textContent="Tap a flag to highlight a nation"; clr.classList.remove('show'); }
 }
 function applyFilter(){
   const active = selected.size>0;
@@ -1158,17 +1294,13 @@ function applyFilter(){
   });
   // group-highlight headers (active when all four of a group are selected)
   GHL.forEach(el=>{ const ts=GROUPS[el.dataset.ghl]; el.classList.toggle('gh-on', active && ts.every(c=>selected.has(c))); });
-  // status
-  const st=$("#status"), clr=$("#clear");
-  if(active){
-    const names=[...selected].map(c=>TEAMS[c][0]);
-    const who = names.length<=2?names.join(' & '):`${names.length} nations`;
-    st.innerHTML=`Highlighting <b>${who}</b> · <b>${countMatches()}</b> group matches`;
-    clr.classList.add('show');
-  }else{
-    st.textContent="Tap a flag to highlight a nation";
-    clr.classList.remove('show');
-  }
+  // status , unified across nation highlight + round filter
+  syncFilterStatus();
+  // #1/#3 , collapsed-panel count + show-only toggle state
+  document.body.classList.toggle('show-only', showOnly);
+  const only=$("#onlyToggle"), cc=$("#chipsCount");
+  if(only){ only.classList.toggle('show', active); only.setAttribute('aria-pressed', showOnly?'true':'false'); }
+  if(cc) cc.textContent = selected.size ? `${selected.size} lit` : '';
   localStorage.setItem('wc2026.sel', JSON.stringify([...selected]));
 }
 function toggleTeam(c){ selected.has(c)?selected.delete(c):selected.add(c); applyFilter(); }
@@ -1185,6 +1317,7 @@ function applyRound(){
   const r=roundFilter, hide=el=>el.classList.toggle('rhide', r!=='ALL' && el.dataset.stage!==r);
   DAYS.forEach(hide); BANNER.forEach(hide); CAL.forEach(hide);
   document.querySelectorAll('#roundbar .rb').forEach(b=>b.setAttribute('aria-pressed', b.dataset.round===r?'true':'false'));
+  syncFilterStatus();   // #3 , keep the shared status + Clear in sync with the round filter
 }
 
 // match detail popover
@@ -1202,7 +1335,7 @@ function openMatch(i){
   $("#match-modal").innerHTML=`<div class="mm-card" style="--accent:${matchColor(m)}">
     <button class="mm-x" data-mclose aria-label="Close">×</button>
     <div class="mm-stage">${stageLabel}</div>
-    <div class="mm-teams">${mmSide(m.home)}<span class="mm-vs">${m.stage==='FINAL'?'VS':'-'}</span>${mmSide(m.away)}</div>
+    <div class="mm-teams">${mmSide(m.home)}<span class="mm-vs">${m.homeScore!=null?`${m.homeScore}-${m.awayScore}`:(m.stage==='FINAL'?'VS':'-')}</span>${mmSide(m.away)}</div>
     <div class="mm-kick"><b>${m.kickoffLocal}${m.plus?'+1':''}</b> Norwegian${v?` &nbsp;·&nbsp; <b>${fmtVenueTime(m)}</b> ${v.city} local`:''}</div>
     <div class="mm-meta">
       <div class="mm-row"><span>Date</span><b>${wd} ${da} ${MO[mo-1]} 2026</b></div>
@@ -1236,17 +1369,47 @@ document.addEventListener('keydown', e=>{
   if(e.key==='Escape'){ closeMatch(); return; }
   if(e.key==='Enter'||e.key===' '){ const t=e.target.closest('[data-ghl],[data-hlteam]'); if(t){ e.preventDefault(); t.click(); } }
 });
-$("#clear").addEventListener('click', ()=>{ selected.clear(); applyFilter(); });
+$("#clear").addEventListener('click', ()=>{   // #3 , Clear resets BOTH nation highlight and round filter
+  selected.clear();
+  roundFilter='ALL'; localStorage.setItem('wc2026.round','ALL');
+  applyFilter(); applyRound();
+});
 
 // search filters the chip list
 $("#search").addEventListener('input', e=>{
   const q=e.target.value.trim().toLowerCase();
+  setChipsOpen(q.length>0);                        // #1 , reveal the panel while searching, recollapse when cleared
   CHIP.forEach(ch=>{
     const c=ch.dataset.team;
     const hit = !q || TEAMS[c][0].toLowerCase().includes(q) || c.toLowerCase().includes(q);
     ch.classList.toggle('hidden', !hit);
   });
   CG.forEach(g=>g.classList.toggle('hidden', ![...g.querySelectorAll('.chip')].some(ch=>!ch.classList.contains('hidden'))));
+});
+
+/* ---- first-wave mobile controls: collapsible chips, team picker, show-only ---- */
+const chipsToggle=$("#chipsToggle");
+function setChipsOpen(open){
+  document.body.classList.toggle('chips-open', open);
+  if(chipsToggle) chipsToggle.setAttribute('aria-expanded', open?'true':'false');
+}
+chipsToggle?.addEventListener('click', ()=> setChipsOpen(!document.body.classList.contains('chips-open')));
+
+function renderTeamPicker(){
+  const sel=$("#teamPicker"); if(!sel) return;
+  sel.insertAdjacentHTML('beforeend', Object.keys(GROUPS).map(g=>
+    `<optgroup label="Group ${g}">`+GROUPS[g].map(c=>`<option value="${c}">${TEAMS[c][0]}</option>`).join('')+`</optgroup>`
+  ).join(''));
+}
+$("#teamPicker")?.addEventListener('change', e=>{
+  const c=e.target.value;
+  if(c){ location.hash='#team/'+c; e.target.selectedIndex=0; }   // open that nation's page
+});
+
+$("#onlyToggle")?.addEventListener('click', ()=>{
+  showOnly=!showOnly;
+  localStorage.setItem('wc2026.only', showOnly?'1':'0');
+  applyFilter();
 });
 
 // view toggle (ARIA tablist: roving tabindex + arrow-key navigation)
@@ -1299,6 +1462,7 @@ $("#venueToggle").addEventListener('click', ()=>{
 });
 
 renderChips();
+renderTeamPicker();
 renderLegend();
 renderSchedule();
 renderGroups();
@@ -1310,6 +1474,7 @@ if(sv && savedView!=='schedule'){ selectTab(sv); }
 applyFilter();
 applyRound();
 loadSquads();
+loadResults();
 route();
 tick(); cdTimer=setInterval(tick,1000);
 </script>
