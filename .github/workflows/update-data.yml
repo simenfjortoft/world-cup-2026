@@ -1,18 +1,22 @@
-name: Update data (results + availability)
+name: Update data (results)
 
-# Refreshes data/results.json and squad availability on a schedule, then
-# commits any changes. GitHub Pages redeploys automatically on push.
+# Refreshes data/results.json on a schedule, then commits any changes.
+# GitHub Pages redeploys automatically on push.
 #
 # Setup (one time):
-#   1. Create a free key at https://www.api-football.com/
-#   2. Repo → Settings → Secrets and variables → Actions → New secret
-#      Name: APISPORTS_KEY   Value: <your key>
-# The fetch scripts no-op (exit 0) if the secret is missing, so this workflow
-# is safe to enable before the key is configured.
+#   1. Free key at https://www.football-data.org/client/register
+#   2. Repo → Settings → Secrets and variables → Actions → New repository secret
+#      Name: FOOTBALL_DATA_TOKEN   Value: <your token>
+# The fetch script no-ops (exit 0) if the secret is missing, so this workflow
+# is safe to enable before the token is configured.
+#
+# Injuries & suspensions are NOT automated here (no free source). scripts/
+# fetch-availability.mjs (API-Football, needs a paid plan) is kept for later;
+# until then, edit player `status` in data/squads.json by hand if desired.
 
 on:
   schedule:
-    - cron: '0 */3 * * *'        # every 3 hours (tighten on match days if you want fresher scores)
+    - cron: '0 */3 * * *'        # every 3 hours (tighten on match days for fresher scores)
   workflow_dispatch: {}          # manual "Run workflow" button
 
 permissions:
@@ -34,13 +38,8 @@ jobs:
 
       - name: Fetch results
         env:
-          APISPORTS_KEY: ${{ secrets.APISPORTS_KEY }}
+          FOOTBALL_DATA_TOKEN: ${{ secrets.FOOTBALL_DATA_TOKEN }}
         run: node scripts/fetch-results.mjs
-
-      - name: Fetch availability (injuries + suspensions)
-        env:
-          APISPORTS_KEY: ${{ secrets.APISPORTS_KEY }}
-        run: node scripts/fetch-availability.mjs
 
       - name: Commit & push if changed
         run: |
@@ -50,6 +49,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "No data changes."
           else
-            git commit -m "data: auto-update results + availability [skip ci]"
+            git commit -m "data: auto-update results [skip ci]"
             git push
           fi

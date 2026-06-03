@@ -41,31 +41,33 @@ node scripts/fetch-squads.mjs
 
 It pulls all 48 final 26-man squads from Wikipedia ("2026 FIFA World Cup squads") via the MediaWiki API (no API key), parses name / position / club / shirt number, maps each country to its 3-letter code, and writes `data/squads.json` with a `lastUpdated` date (shown on every team page). Requires Node 18+ (uses built-in `fetch`); no dependencies.
 
-## Live data , results, injuries & suspensions (automatic)
+## Live data , results (automatic) + injuries/suspensions (optional)
 
-During the tournament the app updates itself. Three Node scripts (Node 18+, no dependencies) write the refreshable JSON, and a GitHub Action runs them on a schedule and commits any changes , Pages redeploys on push.
+During the tournament the app updates itself. Node scripts (Node 18+, no dependencies) write the refreshable JSON, and a GitHub Action runs the results fetcher on a schedule and commits any changes , Pages redeploys on push.
 
 | Script | Source | Writes | Updates |
 |---|---|---|---|
 | `scripts/fetch-squads.mjs` | Wikipedia (no key) | `data/squads.json` | the 26-man squads |
-| `scripts/fetch-results.mjs` | API-Football | `data/results.json` | scores + resolved knockout teams |
-| `scripts/fetch-availability.mjs` | API-Football | player `status` in `data/squads.json` | injuries + suspensions |
+| `scripts/fetch-results.mjs` | **football-data.org** (free) | `data/results.json` | scores + resolved knockout teams |
+| `scripts/fetch-availability.mjs` | API-Football (**paid** for 2026) | player `status` in `data/squads.json` | injuries + suspensions |
 
-**One-time setup** (for the API-Football scripts):
+**Results , one-time setup** (free, automated):
 
-1. Create a free key at <https://www.api-football.com/>.
-2. Repo → **Settings → Secrets and variables → Actions → New repository secret**: name `APISPORTS_KEY`, value your key.
-3. Enable Actions if prompted. The workflow `.github/workflows/update-data.yml` then runs every 3 hours (and on demand via *Run workflow*). The scripts no-op safely if the key is missing, so nothing breaks before step 2.
+1. Free token at <https://www.football-data.org/client/register> (the free tier includes the World Cup).
+2. Repo → **Settings → Secrets and variables → Actions → New repository secret**: name `FOOTBALL_DATA_TOKEN`, value your token.
+3. Enable Actions if prompted. `.github/workflows/update-data.yml` then runs every 3 hours (and on demand via *Run workflow*). The script no-ops safely if the token is missing, so nothing breaks before step 2.
 
-**Run any of them manually:**
+**Injuries & suspensions** are not automated , no free feed carries live international injury/suspension data. `fetch-availability.mjs` is wired for **API-Football** but their free tier only serves seasons 2022-2024, so 2026 needs a paid plan (set `APISPORTS_KEY` and add it back to the workflow). Until then, the app already renders an optional per-player `status` (`injured`/`suspended`/`doubtful`) , set it by hand in `data/squads.json` if you want a badge.
+
+**Run manually:**
 
 ```bash
-APISPORTS_KEY=… node scripts/fetch-results.mjs        # or fetch-availability.mjs
+FOOTBALL_DATA_TOKEN=… node scripts/fetch-results.mjs
 node scripts/fetch-squads.mjs                          # no key needed
 # add --dry-run (with --mock <file>) to preview without writing
 ```
 
-Mapping is by team pair for group games and by kickoff instant for knockouts; both fetchers log anything they can't map. `data/results.json` is keyed by match index (the `data-mi` on each fixture).
+Mapping is by team pair for group games and by kickoff instant for knockouts; the fetcher logs anything it can't map. `data/results.json` is keyed by match index (the `data-mi` on each fixture).
 
 ## Structure
 
