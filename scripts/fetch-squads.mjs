@@ -43,6 +43,12 @@ const clean = s => (s||'')
   .replace(/<[^>]+>/g,'').replace(/'''?/g,'').replace(/&nbsp;/g,' ').trim();
 const normPos = p => ({GK:'GK',DF:'DEF',MF:'MID',FW:'FWD'}[String(p||'').toUpperCase().trim()] || String(p||'').toUpperCase().trim());
 
+// Corrections to Wikipedia's squad-list `pos` (Wikipedia errors). Key: "CODE|Exact Name".
+// Survives re-fetches. Add entries here as miscategorisations are confirmed.
+const POS_OVERRIDE = {
+  "NOR|Julian Ryerson": "DEF",   // right-back; Wikipedia squad list wrongly tags him FW
+};
+
 // pull one |key=value out of a template body (value runs to the next top-level | )
 function field(body, key){
   const m = new RegExp(`\\|\\s*${key}\\s*=`, 'i').exec(body);
@@ -81,7 +87,10 @@ for(let h=0; h<heads.length; h++){
     }
     const no = parseInt(field(body,'no'), 10);
     const nm = clean(field(body,'name'));
-    if(nm) players.push({ name: nm, position: normPos(field(body,'pos')), club: clean(field(body,'club')), number: Number.isFinite(no)?no:null });
+    if(nm){
+      const position = POS_OVERRIDE[`${code}|${nm}`] || normPos(field(body,'pos'));
+      players.push({ name: nm, position, club: clean(field(body,'club')), number: Number.isFinite(no)?no:null });
+    }
   }
   if(players.length){ teams[code] = { group: groupOf(code), players }; playerCount += players.length; }
 }
