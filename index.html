@@ -145,12 +145,13 @@ h1.title .yr{
 
 /* ------------------------- CONTROL RAIL ------------------------- */
 .controls{
-  position:sticky;top:0;z-index:40;margin-top:30px;
-  background:linear-gradient(180deg, rgba(7,13,10,.92), rgba(7,13,10,.74));
+  position:sticky;top:0;z-index:40;margin-top:22px;
+  background:transparent;                                   /* the surface lives on the inner card, not a full-bleed band */
   backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border-bottom:1px solid rgba(255,255,255,.05);   /* soft hairline; no hard top border so the bar flows out of the hero */
 }
-.controls .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding-top:14px;padding-bottom:14px}
+/* controls + chips read as two stacked cards that echo the hero's countdown card (same border/radius/fill) */
+.controls .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding-top:14px;padding-bottom:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.025),transparent);border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 34px rgba(0,0,0,.4)}
 .segmented{display:inline-flex;background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:999px;padding:4px}
 .segmented button{
   appearance:none;border:0;background:transparent;color:var(--text-dim);
@@ -160,7 +161,7 @@ h1.title .yr{
 }
 .segmented button:hover{color:var(--text)}
 .segmented button:active{transform:scale(.96)}
-.segmented button[aria-selected="true"]{background:var(--green);color:#062013;box-shadow:0 2px 10px rgba(25,224,138,.22)}
+.segmented button[aria-selected="true"]{background:rgba(25,224,138,.10);color:var(--green-bright);box-shadow:inset 0 0 0 1px rgba(25,224,138,.55)}
 
 /* date picker , jump to a match day (global rail) */
 .datejump{position:relative;display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border-radius:999px;cursor:pointer;
@@ -199,7 +200,8 @@ h1.title .yr{
 .btn-clear:hover{color:var(--text);border-color:var(--green);background:rgba(25,224,138,.08)}
 
 /* nation chips */
-.chips-shell{border-bottom:1px solid var(--line);background:rgba(6,10,8,.5)}
+.chips-shell{background:transparent}
+.chips-shell .wrap{background:linear-gradient(180deg,rgba(255,255,255,.018),transparent);border:1px solid var(--line);border-radius:14px;margin-top:8px;box-shadow:0 12px 34px rgba(0,0,0,.4)}
 .chips-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px;padding:13px 0 0;color:var(--text-faint);
   font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
 .ch-hint{text-transform:none;letter-spacing:.01em;font-weight:500;font-size:11.5px;color:var(--text-faint);opacity:.8}
@@ -547,7 +549,7 @@ body.route-team .legend{display:none !important}
 .rb-lab{font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--text-faint);margin-right:4px}
 .rb{appearance:none;border:1px solid var(--line);background:rgba(0,0,0,.22);color:var(--text-dim);font-family:inherit;font-weight:700;font-size:12px;padding:6px 13px;border-radius:999px;cursor:pointer;transition:color .15s var(--ease),border-color .15s var(--ease),background .15s var(--ease),transform .1s var(--ease)}
 .rb:hover{color:var(--text);border-color:var(--line-strong)}
-.rb[aria-pressed="true"]{background:var(--green);color:#062013;border-color:var(--green)}
+.rb[aria-pressed="true"]{background:rgba(25,224,138,.10);color:var(--green-bright);border-color:rgba(25,224,138,.55)}
 /* group filter chips (A-L) , toggle a whole group's teams in the shared selection */
 .groupbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:0 0 8px}
 .gb{appearance:none;border:1px solid var(--line);background:rgba(0,0,0,.22);color:var(--text-dim);
@@ -556,7 +558,7 @@ body.route-team .legend{display:none !important}
 .gb:hover{color:var(--text);border-color:var(--line-strong)}
 .gb:active{transform:scale(.96)}
 .gb.partial{color:var(--green-bright);border-color:rgba(25,224,138,.5);background:rgba(25,224,138,.1)}
-.gb.on{background:var(--green);color:#062013;border-color:var(--green)}
+.gb.on{background:rgba(25,224,138,.2);color:var(--green-bright);border-color:var(--green);box-shadow:inset 0 0 0 1px var(--green)}   /* stronger than .partial so the two stay distinct */
 .rhide{display:none !important}
 .mc,.cal-entry{cursor:pointer}
 .team-hl{margin-left:auto;align-self:flex-start;appearance:none;border:1px solid var(--line-strong);background:rgba(0,0,0,.2);color:var(--text-dim);font-family:inherit;font-weight:700;font-size:13px;padding:9px 15px;border-radius:10px;cursor:pointer;white-space:nowrap;transition:color .16s var(--ease),border-color .16s var(--ease),background .16s var(--ease),box-shadow .16s var(--ease),transform .1s var(--ease)}
