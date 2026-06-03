@@ -93,7 +93,8 @@ a{color:inherit}
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(16px,4vw,40px)}
 
 /* ----------------------------- HERO ----------------------------- */
-header.hero{padding:clamp(34px,7vw,76px) 0 clamp(20px,3vw,30px);position:relative}
+header.hero{padding:clamp(34px,7vw,76px) 0 clamp(20px,3vw,30px);position:relative;text-align:center}
+/* centered masthead: kicker, title, stats and countdown are inline-level / centered flex, so text-align centers them */
 .kicker{
   display:inline-flex;align-items:center;gap:10px;
   font-weight:700;letter-spacing:.34em;text-transform:uppercase;
@@ -112,7 +113,7 @@ h1.title .yr{
   paint-order:stroke fill;
 }
 .subline{
-  display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 22px;
   margin-top:clamp(20px,3vw,30px);color:var(--text-dim);
   font-size:clamp(13px,1.6vw,15.5px);font-weight:500;
 }
