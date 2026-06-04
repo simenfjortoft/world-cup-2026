@@ -856,6 +856,11 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 .tp-row.tp-out .tp-mark{color:var(--text-faint)}
 .tp-note{margin:10px 2px 0;font-size:11px;line-height:1.5;color:var(--text-faint);text-wrap:pretty}
 
+/* ---------------------------- TV BADGE ---------------------------- */
+.tv-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;color:var(--text-dim)}
+.mc .tv-badge{margin-top:5px;font-size:10px;color:var(--text-faint)}
+.tv-badge.tbc{opacity:.62;font-style:italic;font-weight:600}
+
 /* ---------------------------- SCORERS VIEW ---------------------------- */
 .sc-head{display:flex;align-items:baseline;gap:10px;margin:2px 0 18px}
 .sc-title{font-family:"Anton",sans-serif;font-weight:400;font-size:30px;text-transform:uppercase;letter-spacing:.02em;margin:0;color:var(--text)}
@@ -1178,7 +1183,7 @@ const MATCHES = [
   {stage:"GROUP",group:"H",md:1,date:"2026-06-15",kickoffLocal:"00:00",plus:true,home:"KSA",away:"URU",hostCity:"Miami"},
   {stage:"GROUP",group:"G",md:1,date:"2026-06-15",kickoffLocal:"03:00",plus:true,home:"IRN",away:"NZL",hostCity:"Los Angeles"},
   {stage:"GROUP",group:"I",md:1,date:"2026-06-16",kickoffLocal:"21:00",home:"FRA",away:"SEN",hostCity:"New York/New Jersey"},
-  {stage:"GROUP",group:"I",md:1,date:"2026-06-16",kickoffLocal:"00:00",plus:true,home:"IRQ",away:"NOR",hostCity:"Boston"},
+  {stage:"GROUP",group:"I",md:1,date:"2026-06-16",kickoffLocal:"00:00",plus:true,home:"IRQ",away:"NOR",hostCity:"Boston",tv:"TV 2"},
   {stage:"GROUP",group:"J",md:1,date:"2026-06-16",kickoffLocal:"03:00",plus:true,home:"ARG",away:"ALG",hostCity:"Kansas City"},
   {stage:"GROUP",group:"J",md:1,date:"2026-06-16",kickoffLocal:"06:00",plus:true,home:"AUT",away:"JOR",hostCity:"SF Bay Area"},
   {stage:"GROUP",group:"K",md:1,date:"2026-06-17",kickoffLocal:"19:00",home:"POR",away:"COD",hostCity:"Houston"},
@@ -1204,7 +1209,7 @@ const MATCHES = [
   {stage:"GROUP",group:"G",md:2,date:"2026-06-21",kickoffLocal:"03:00",plus:true,home:"NZL",away:"EGY",hostCity:"Vancouver"},
   {stage:"GROUP",group:"J",md:2,date:"2026-06-22",kickoffLocal:"19:00",home:"ARG",away:"AUT",hostCity:"Dallas"},
   {stage:"GROUP",group:"I",md:2,date:"2026-06-22",kickoffLocal:"23:00",home:"FRA",away:"IRQ",hostCity:"Philadelphia"},
-  {stage:"GROUP",group:"I",md:2,date:"2026-06-22",kickoffLocal:"02:00",plus:true,home:"NOR",away:"SEN",hostCity:"New York/New Jersey"},
+  {stage:"GROUP",group:"I",md:2,date:"2026-06-22",kickoffLocal:"02:00",plus:true,home:"NOR",away:"SEN",hostCity:"New York/New Jersey",tv:"NRK1"},
   {stage:"GROUP",group:"J",md:2,date:"2026-06-22",kickoffLocal:"05:00",plus:true,home:"JOR",away:"ALG",hostCity:"SF Bay Area"},
   {stage:"GROUP",group:"K",md:2,date:"2026-06-23",kickoffLocal:"19:00",home:"POR",away:"UZB",hostCity:"Houston"},
   {stage:"GROUP",group:"L",md:2,date:"2026-06-23",kickoffLocal:"22:00",home:"ENG",away:"GHA",hostCity:"Boston"},
@@ -1223,7 +1228,7 @@ const MATCHES = [
   {stage:"GROUP",group:"F",md:3,date:"2026-06-25",kickoffLocal:"01:00",plus:true,home:"JPN",away:"SWE",hostCity:"Dallas"},
   {stage:"GROUP",group:"D",md:3,date:"2026-06-25",kickoffLocal:"04:00",plus:true,home:"TUR",away:"USA",hostCity:"Los Angeles"},
   {stage:"GROUP",group:"D",md:3,date:"2026-06-25",kickoffLocal:"04:00",plus:true,home:"PAR",away:"AUS",hostCity:"SF Bay Area"},
-  {stage:"GROUP",group:"I",md:3,date:"2026-06-26",kickoffLocal:"21:00",home:"NOR",away:"FRA",hostCity:"Boston"},
+  {stage:"GROUP",group:"I",md:3,date:"2026-06-26",kickoffLocal:"21:00",home:"NOR",away:"FRA",hostCity:"Boston",tv:"NRK1"},
   {stage:"GROUP",group:"I",md:3,date:"2026-06-26",kickoffLocal:"21:00",home:"SEN",away:"IRQ",hostCity:"Toronto"},
   {stage:"GROUP",group:"H",md:3,date:"2026-06-26",kickoffLocal:"02:00",plus:true,home:"CPV",away:"KSA",hostCity:"Houston"},
   {stage:"GROUP",group:"H",md:3,date:"2026-06-26",kickoffLocal:"02:00",plus:true,home:"URU",away:"ESP",hostCity:"Guadalajara"},
@@ -1267,11 +1272,11 @@ const MATCHES = [
   {stage:"QF",n:99,date:"2026-07-11",kickoffLocal:"23:00",home:"W91",away:"W92",hostCity:"Miami"},
   {stage:"QF",n:100,date:"2026-07-11",kickoffLocal:"03:00",plus:true,home:"W95",away:"W96",hostCity:"Kansas City"},
   // Semi-finals
-  {stage:"SF",n:101,date:"2026-07-14",kickoffLocal:"21:00",home:"W97",away:"W98",hostCity:"Dallas"},
-  {stage:"SF",n:102,date:"2026-07-15",kickoffLocal:"21:00",home:"W99",away:"W100",hostCity:"Atlanta"},
+  {stage:"SF",n:101,date:"2026-07-14",kickoffLocal:"21:00",home:"W97",away:"W98",hostCity:"Dallas",tv:"TV 2"},
+  {stage:"SF",n:102,date:"2026-07-15",kickoffLocal:"21:00",home:"W99",away:"W100",hostCity:"Atlanta",tv:"TV 2"},
   // Third-place play-off & Final
   {stage:"3RD",n:103,date:"2026-07-18",kickoffLocal:"23:00",home:"L101",away:"L102",hostCity:"Miami"},
-  {stage:"FINAL",n:104,date:"2026-07-19",kickoffLocal:"21:00",home:"W101",away:"W102",hostCity:"New York/New Jersey"}
+  {stage:"FINAL",n:104,date:"2026-07-19",kickoffLocal:"21:00",home:"W101",away:"W102",hostCity:"New York/New Jersey",tv:"NRK1"}
 ];
 
 /* =====================================================================
@@ -1352,6 +1357,12 @@ function venueLineHTML(m){
     <span class="vn">${venueName(m.venue)}</span><span class="vc">${m.venue.city}</span>
     <span class="vt">${fmtVenueTime(m)}<em>local</em></span></div>`;
 }
+// Norwegian broadcaster badge (static schedule data). Muted "TBC" when unassigned.
+function tvBadge(m){
+  return m.tv
+    ? `<span class="tv-badge" title="Norwegian broadcaster">📺 ${m.tv}</span>`
+    : `<span class="tv-badge tbc" title="Norwegian broadcaster to be confirmed">📺 NRK / TV 2 TBC</span>`;
+}
 function matchCardHTML(m){
   const col=stageColor(m.stage);
   const isFinal = m.stage==="FINAL";
@@ -1366,7 +1377,7 @@ function matchCardHTML(m){
   return `<article class="mc${isFinal?' is-final':''}" style="--accent:${col}" data-teams="${teamAttr.trim()}" data-mi="${m.i}">
     ${trophy}<div class="mc-top">${badge}${time}</div>
     <div class="mc-body">${sideHTML(m.home,false)}${m.homeScore!=null?`<span class="vs score">${m.homeScore}<i>-</i>${m.awayScore}</span>`:`<span class="vs">${isFinal?'VS':'-'}</span>`}${sideHTML(m.away,true)}</div>
-    ${venueLineHTML(m)}
+    ${venueLineHTML(m)}${tvBadge(m)}
   </article>`;
 }
 
@@ -1755,7 +1766,7 @@ function renderTeam(code){
         <span class="tfx-opp">vs ${teamLink(opp)}</span>
         <span class="tfx-badge" style="--accent:${matchColor(m)}">${m.stage==='GROUP'?'Group '+m.group+' · MD'+m.md:STAGES[m.stage].label}</span>
       </div>
-      <div class="tfx-meta"><span>${venueNm}</span><span class="tfx-time">${m.homeScore!=null?`<b class="tfx-score">${m.homeScore}-${m.awayScore}</b> · `:''}${m.kickoffLocal}${m.plus?'+':''} NOR · ${fmtVenueTime(m)} local</span></div>
+      <div class="tfx-meta"><span>${venueNm} · ${tvBadge(m)}</span><span class="tfx-time">${m.homeScore!=null?`<b class="tfx-score">${m.homeScore}-${m.awayScore}</b> · `:''}${m.kickoffLocal}${m.plus?'+':''} NOR · ${fmtVenueTime(m)} local</span></div>
     </div>`;
   }).join("");
   const gs=teamGoalStats(code);
@@ -2065,6 +2076,7 @@ function openMatch(i){
       <div class="mm-row"><span>Date</span><b>${wd} ${da} ${MO[mo-1]} 2026</b></div>
       ${v?`<div class="mm-row"><span>Stadium</span><b>${v.fifaName}</b></div>
       <div class="mm-row"><span></span><span class="mm-sub">${v.commonName} · ${v.city}, ${v.country} · ${v.capacity.toLocaleString()} seats</span></div>`:`<div class="mm-row"><span>Stadium</span><b>Venue TBC</b></div>`}
+      <div class="mm-row"><span>TV (Norway)</span><b>${m.tv||'NRK / TV 2 TBC'}</b></div>
     </div>
     ${isTeam(m.home)||isTeam(m.away)?`<div class="mm-hint">Tap a team to open its page</div>`:''}
   </div>`;
