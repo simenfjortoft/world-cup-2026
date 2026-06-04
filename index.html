@@ -305,7 +305,8 @@ main{padding:18px 0 70px;position:relative}
 .side{display:flex;align-items:center;gap:11px;min-width:0}
 .side.away{flex-direction:row-reverse;text-align:right}
 .fl{font-size:30px;line-height:1;flex:none;filter:drop-shadow(0 2px 5px rgba(0,0,0,.4))}
-.flagsvg{width:1.25em;height:.82em;border-radius:2px;vertical-align:-.1em;display:inline-block;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.flagsvg{width:1.25em;height:.9375em;border-radius:2px;vertical-align:-.1em;display:inline-block;object-fit:cover;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.flag-fallback{display:inline-block;font-size:.7em;font-weight:800;letter-spacing:.02em;color:var(--text-faint);vertical-align:middle}
 .nm{font-weight:700;font-size:15.5px;letter-spacing:.005em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:color .2s}
 .vs{font-family:"Anton",sans-serif;color:var(--text-faint);font-size:15px;letter-spacing:.04em}
 
@@ -428,7 +429,7 @@ body.tf-open .tf-panel{opacity:1;transform:none;visibility:visible;pointer-event
 .tf-opt.hidden{display:none}
 .tf-opt:hover{background:rgba(255,255,255,.045);color:var(--text)}
 .tf-opt .fl{font-size:18px;line-height:1;flex:none}
-.tf-opt .flagsvg{width:1.2em;height:.78em}
+.tf-opt .flagsvg{width:1.2em;height:.9em}
 .tf-nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tf-cc{font-size:10.5px;font-weight:800;letter-spacing:.04em;color:var(--text-faint);transition:color .14s}
 .tf-check{width:17px;height:17px;flex:none;color:var(--green);fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;
@@ -484,7 +485,7 @@ body.filtering .orient,.orient b{color:var(--text-dim)}
 .cal-entry .ce-time i{font-style:normal;font-weight:600;font-size:.82em;color:var(--text-faint);margin-left:4px}   /* venue-local time demoted under the Norwegian time */
 .cal-entry .ce-teams{color:var(--text-dim);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cal-entry .ce-fl{margin-right:3px}
-.cal-entry .ce-fl .flagsvg{width:1.1em;height:.72em}
+.cal-entry .ce-fl .flagsvg{width:1.1em;height:.825em}
 .cal-entry .ce-tm{cursor:pointer}
 .cal-entry .ce-tm:hover{color:var(--green-bright)}
 .cal-entry .ce-d{margin:0 3px;color:var(--text-faint)}
@@ -511,7 +512,7 @@ body.route-team .legend{display:none !important}
 .team-back:hover{color:var(--text);border-color:var(--green);background:rgba(25,224,138,.07)}
 .team-head{display:flex;align-items:center;gap:20px;padding-bottom:22px;border-bottom:1px solid var(--line)}
 .team-flag{font-size:52px;line-height:1;flex:none;filter:drop-shadow(0 3px 10px rgba(0,0,0,.5))}
-.team-flag .flagsvg{width:1.3em;height:.85em}
+.team-flag .flagsvg{width:1.3em;height:.975em}
 .team-name{font-family:"Anton",sans-serif;font-weight:400;font-size:clamp(34px,7vw,64px);line-height:.88;margin:0;text-transform:uppercase;text-wrap:balance}
 .team-grp{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:13px;color:var(--text-faint);font-size:13px}
 .grp-tag{display:inline-flex;align-items:center;font-weight:800;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--gc,var(--text-dim));background:color-mix(in srgb, var(--gc,#888) 16%, transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--gc,#888) 38%, transparent);padding:4px 9px;border-radius:7px}
@@ -596,7 +597,7 @@ body.route-team .legend{display:none !important}
 .mm-teams{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:6px}
 .mm-team{display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:var(--text);cursor:pointer;flex:1;min-width:0}
 .mm-team .fl{font-size:38px}
-.mm-team .flagsvg{width:1.25em;height:.82em}
+.mm-team .flagsvg{width:1.25em;height:.9375em}
 .mm-team .nm2{font-weight:700;font-size:14px;text-align:center}
 .mm-team:hover .nm2{color:var(--green-bright)}
 .mm-team.slot{color:var(--text-dim);font-weight:700;font-size:13px;cursor:default}
@@ -810,7 +811,7 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 .map-pop::after{content:"";position:absolute;left:50%;bottom:-6px;width:11px;height:11px;transform:translateX(-50%) rotate(45deg);
   background:var(--surface-2);border-right:1px solid var(--line-strong);border-bottom:1px solid var(--line-strong)}
 .map-pop-flag{font-size:23px;line-height:1;flex:none}
-.map-pop-flag .flagsvg{width:1.3em;height:.85em}
+.map-pop-flag .flagsvg{width:1.3em;height:.975em}
 .map-pop-body{display:flex;flex-direction:column;gap:2px;min-width:0}
 .map-pop-body b{font-size:14px;text-wrap:balance}
 .map-pop-meta{font-size:11px;color:var(--text-dim);font-weight:600}
@@ -938,15 +939,6 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 </head>
 <body>
 
-<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false"><defs>
-  <path id="s" d="M0,-1 0.225,-0.309 0.951,-0.309 0.363,0.118 0.588,0.809 0,0.382 -0.588,0.809 -0.363,0.118 -0.951,-0.309 -0.225,-0.309Z"/>
-  <g id="uj">
-    <path d="M0 0 9 6M9 0 0 6" fill="none" stroke="#fff" stroke-width="1.5"/>
-    <path d="M0 0 9 6M9 0 0 6" fill="none" stroke="#cf142b" stroke-width=".6"/>
-    <rect x="3.5" width="2" height="6" fill="#fff"/><rect y="2" width="9" height="2" fill="#fff"/>
-    <rect x="3.9" width="1.2" height="6" fill="#cf142b"/><rect y="2.4" width="9" height="1.2" fill="#cf142b"/>
-  </g>
-</defs></svg>
 
 <header class="hero">
   <div class="wrap">
@@ -1067,7 +1059,7 @@ window.WORLD_TOPO={"type":"Topology","objects":{"countries":{"type":"GeometryCol
 const TEAMS = {
   MEX:["Mexico","🇲🇽"], RSA:["South Africa","🇿🇦"], KOR:["South Korea","🇰🇷"], CZE:["Czechia","🇨🇿"],
   CAN:["Canada","🇨🇦"], BIH:["Bosnia & Herz.","🇧🇦"], QAT:["Qatar","🇶🇦"], SUI:["Switzerland","🇨🇭"],
-  BRA:["Brazil","🇧🇷"], MAR:["Morocco","🇲🇦"], HAI:["Haiti","🇭🇹"], SCO:["Scotland","<svg class='flagsvg' viewBox='0 0 60 36'><rect width='60' height='36' fill='#0065bd'/><path d='M0 0 60 36 M60 0 0 36' stroke='#fff' stroke-width='7'/></svg>"],
+  BRA:["Brazil","🇧🇷"], MAR:["Morocco","🇲🇦"], HAI:["Haiti","🇭🇹"], SCO:["Scotland","🏴󠁧󠁢󠁳󠁣󠁴󠁿"],
   USA:["United States","🇺🇸"], PAR:["Paraguay","🇵🇾"], AUS:["Australia","🇦🇺"], TUR:["Türkiye","🇹🇷"],
   GER:["Germany","🇩🇪"], CUR:["Curaçao","🇨🇼"], CIV:["Côte d'Ivoire","🇨🇮"], ECU:["Ecuador","🇪🇨"],
   NED:["Netherlands","🇳🇱"], JPN:["Japan","🇯🇵"], SWE:["Sweden","🇸🇪"], TUN:["Tunisia","🇹🇳"],
@@ -1076,65 +1068,25 @@ const TEAMS = {
   FRA:["France","🇫🇷"], SEN:["Senegal","🇸🇳"], IRQ:["Iraq","🇮🇶"], NOR:["Norway","🇳🇴"],
   ARG:["Argentina","🇦🇷"], ALG:["Algeria","🇩🇿"], AUT:["Austria","🇦🇹"], JOR:["Jordan","🇯🇴"],
   POR:["Portugal","🇵🇹"], COD:["DR Congo","🇨🇩"], UZB:["Uzbekistan","🇺🇿"], COL:["Colombia","🇨🇴"],
-  ENG:["England","<svg class='flagsvg' viewBox='0 0 60 36'><rect width='60' height='36' fill='#fff'/><rect x='25' width='10' height='36' fill='#ce1124'/><rect y='13' width='60' height='10' fill='#ce1124'/></svg>"], CRO:["Croatia","🇭🇷"], GHA:["Ghana","🇬🇭"], PAN:["Panama","🇵🇦"]
+  ENG:["England","🏴󠁧󠁢󠁥󠁮󠁧󠁿"], CRO:["Croatia","🇭🇷"], GHA:["Ghana","🇬🇭"], PAN:["Panama","🇵🇦"]
 };
 
-/* Inline SVG flags , render identically on every platform (Windows shows letter-codes for emoji). Emoji above stays as a fallback. */
-const FL = i => `<svg class='flagsvg' viewBox='0 0 9 6'>${i}</svg>`;
-const HT = (...c) => FL(c.map((x,i)=>`<rect y='${(i*6/c.length).toFixed(3)}' width='9' height='${(6/c.length).toFixed(3)}' fill='${x}'/>`).join(''));
-const VT = (...c) => FL(c.map((x,i)=>`<rect x='${(i*9/c.length).toFixed(3)}' width='${(9/c.length).toFixed(3)}' height='6' fill='${x}'/>`).join(''));
-const st = (x,y,r,c) => `<use href='#s' transform='translate(${x} ${y}) scale(${r})' fill='${c}'/>`;
-const FLAGS = {
-  MEX: FL(`<rect width='3' height='6' fill='#006847'/><rect x='3' width='3' height='6' fill='#fff'/><rect x='6' width='3' height='6' fill='#ce1126'/><g transform='translate(4.5 3)'><path d='M.05 -.5C.4 -.45 .55 -.2 .5 .05C.35 -.05 .2 -.05 .1 .05C.3 .1 .35 .35 .2 .55C.1 .35 -.05 .3 -.15 .4C-.2 .2 -.35 .15 -.55 .2C-.35 0 -.3 -.25 -.1 -.3C-.25 -.35 -.3 -.45 -.45 -.45C-.25 -.55 -.05 -.55 .05 -.5Z' fill='#5a3a1a'/><path d='M-.6 .72Q0 .98 .6 .72' fill='none' stroke='#2e6b34' stroke-width='.14'/></g>`),
-  RSA: FL(`<rect width='9' height='3' fill='#e03c31'/><rect y='3' width='9' height='3' fill='#001489'/><path d='M0 0H1.2L4.4 2.1H9V3.9H4.4L1.2 6H0Z' fill='#fff'/><path d='M0 .35H1L4.4 2.45H9V3.55H4.4L1 5.65H0Z' fill='#007749'/><path d='M0 0L3.4 3 0 6Z' fill='#fff'/><path d='M0 .5L2.55 3 0 5.5Z' fill='#ffb81c'/><path d='M0 1L1.9 3 0 5Z' fill='#000'/>`),
-  KOR: FL(`<rect width='9' height='6' fill='#fff'/><circle cx='4.5' cy='3' r='1.3' fill='#cd2e3a'/><path d='M4.5 1.7a1.3 1.3 0 0 1 0 2.6 .65 .65 0 0 0 0-1.3 .65 .65 0 0 1 0-1.3Z' fill='#0047a0'/><g fill='#000'><g transform='translate(3.12 1.62) rotate(-45)'><rect x='-.42' y='-.3' width='.84' height='.13'/><rect x='-.42' y='-.065' width='.84' height='.13'/><rect x='-.42' y='.17' width='.84' height='.13'/></g><g transform='translate(3.12 4.38) rotate(45)'><rect x='-.42' y='-.3' width='.84' height='.13'/><rect x='-.42' y='-.065' width='.32' height='.13'/><rect x='.1' y='-.065' width='.32' height='.13'/><rect x='-.42' y='.17' width='.84' height='.13'/></g><g transform='translate(5.88 1.62) rotate(45)'><rect x='-.42' y='-.3' width='.32' height='.13'/><rect x='.1' y='-.3' width='.32' height='.13'/><rect x='-.42' y='-.065' width='.84' height='.13'/><rect x='-.42' y='.17' width='.32' height='.13'/><rect x='.1' y='.17' width='.32' height='.13'/></g><g transform='translate(5.88 4.38) rotate(-45)'><rect x='-.42' y='-.3' width='.32' height='.13'/><rect x='.1' y='-.3' width='.32' height='.13'/><rect x='-.42' y='-.065' width='.32' height='.13'/><rect x='.1' y='-.065' width='.32' height='.13'/><rect x='-.42' y='.17' width='.32' height='.13'/><rect x='.1' y='.17' width='.32' height='.13'/></g></g>`),
-  CZE: FL(`<rect width='9' height='3' fill='#fff'/><rect y='3' width='9' height='3' fill='#d7141a'/><path d='M0 0L4.2 3 0 6Z' fill='#11457e'/>`),
-  CAN: FL(`<rect width='9' height='6' fill='#fff'/><rect width='2.25' height='6' fill='#d52b1e'/><rect x='6.75' width='2.25' height='6' fill='#d52b1e'/><path d='M4.5 1.55 4.78 2.5 5.55 2.05 5.25 3 6.1 3 5.45 3.55 6 4 5 4.05 5.15 4.7 4.5 4.35 3.85 4.7 4 4.05 3 4 3.55 3.55 2.9 3 3.75 3 3.45 2.05 4.22 2.5Z' fill='#d52b1e'/>`),
-  BIH: FL(`<rect width='9' height='6' fill='#001489'/><path d='M2 0H7.2L2 6Z' fill='#fecb00'/>${[0,1,2,3,4,5].map(i=>st(1.55+i*0.9,0.6+i*0.9,0.26,'#fff')).join('')}`),
-  QAT: FL(`<rect width='9' height='6' fill='#8a1538'/><path d='M0 0H3L1.7 .75 3 1.5 1.7 2.25 3 3 1.7 3.75 3 4.5 1.7 5.25 3 6H0Z' fill='#fff'/>`),
-  SUI: FL(`<rect width='9' height='6' fill='#d52b1e'/><rect x='3.95' y='1.4' width='1.1' height='3.2' fill='#fff'/><rect x='2.95' y='2.45' width='3.1' height='1.1' fill='#fff'/>`),
-  BRA: FL(`<rect width='9' height='6' fill='#009b3a'/><path d='M4.5 .7 8.3 3 4.5 5.3 .7 3Z' fill='#fedf00'/><circle cx='4.5' cy='3' r='1.3' fill='#002776'/><path d='M3.35 2.75a2.5 2.5 0 0 1 2.4 .75' fill='none' stroke='#fff' stroke-width='.22'/>`),
-  MAR: FL(`<rect width='9' height='6' fill='#c1272d'/><use href='#s' transform='translate(4.5 3) scale(1.3)' fill='none' stroke='#006233' stroke-width='.12'/>`),
-  HAI: FL(`<rect width='9' height='3' fill='#00209f'/><rect y='3' width='9' height='3' fill='#d21034'/><rect x='3.5' y='2.1' width='2' height='1.8' fill='#fff'/><rect x='4.4' y='2.5' width='.2' height='1' fill='#0a7d2c'/><path d='M4.5 2.35 3.95 2.62H5.05Z' fill='#0a7d2c'/><rect x='4.0' y='3.5' width='1' height='.16' fill='#c8a44a'/>`),
-  SCO: FL(`<rect width='9' height='6' fill='#0065bf'/><path d='M0 0 9 6M9 0 0 6' fill='none' stroke='#fff' stroke-width='1.1'/>`),
-  USA: FL(`${[0,1,2,3,4,5,6,7,8,9,10,11,12].map(i=>`<rect y='${(i*6/13).toFixed(3)}' width='9' height='${(6/13).toFixed(3)}' fill='${i%2?'#fff':'#b22234'}'/>`).join('')}<rect width='3.6' height='${(6/13*7).toFixed(3)}' fill='#3c3b6e'/>${[0,1,2,3,4].map(r=>{const n=r%2?4:5,off=(r%2)*.32;let o='';for(let c=0;c<n;c++)o+=st(.42+off+c*.64,.42+r*.62,.1,'#fff');return o;}).join('')}`),
-  PAR: FL(`<rect width='9' height='2' fill='#d52b1e'/><rect y='2' width='9' height='2' fill='#fff'/><rect y='4' width='9' height='2' fill='#0038a8'/>${st(4.5,3,.35,'#0038a8')}`),
-  AUS: FL(`<rect width='9' height='6' fill='#00247d'/><use href='#uj' transform='scale(.5)'/>${st(2.25,4.55,.6,'#fff')}${st(6.2,1.4,.32,'#fff')}${st(5.0,3.15,.32,'#fff')}${st(7.55,2.8,.32,'#fff')}${st(6.35,4.75,.32,'#fff')}${st(6.6,3.5,.17,'#fff')}`),
-  TUR: FL(`<rect width='9' height='6' fill='#e30a17'/><circle cx='3.6' cy='3' r='1.4' fill='#fff'/><circle cx='4.05' cy='3' r='1.1' fill='#e30a17'/>${st(5.35,3,.5,'#fff')}`),
-  GER: HT('#000','#dd0000','#ffce00'),
-  CUR: FL(`<rect width='9' height='6' fill='#002b7f'/><rect y='3.9' width='9' height='1.1' fill='#f9d90f'/>${st(1.6,1.6,.45,'#fff')}${st(2.8,2.6,.3,'#fff')}`),
-  CIV: VT('#f77f00','#fff','#009e60'),
-  ECU: FL(`<rect width='9' height='3' fill='#ffd100'/><rect y='3' width='9' height='1.5' fill='#0072c6'/><rect y='4.5' width='9' height='1.5' fill='#ef3340'/><ellipse cx='4.5' cy='2.85' rx='1' ry='1.15' fill='#f3d27a' stroke='#6b4f25' stroke-width='.12'/><path d='M3.7 2.5Q4.5 2.0 5.3 2.5Q4.5 2.32 3.7 2.5Z' fill='#34528f'/><path d='M3.95 3.05H5.05L4.5 3.5Z' fill='#2e6b34'/>`),
-  NED: HT('#ae1c28','#fff','#21468b'),
-  JPN: FL(`<rect width='9' height='6' fill='#fff'/><circle cx='4.5' cy='3' r='1.65' fill='#bc002d'/>`),
-  SWE: FL(`<rect width='9' height='6' fill='#006aa7'/><rect x='2.7' width='1.2' height='6' fill='#fecc00'/><rect y='2.4' width='9' height='1.2' fill='#fecc00'/>`),
-  TUN: FL(`<rect width='9' height='6' fill='#e70013'/><circle cx='4.5' cy='3' r='1.5' fill='#fff'/><circle cx='4.85' cy='3' r='1.1' fill='#e70013'/>${st(5.55,3,.5,'#e70013')}`),
-  BEL: VT('#000','#fae042','#ed2939'),
-  EGY: FL(`<rect width='9' height='2' fill='#ce1126'/><rect y='2' width='9' height='2' fill='#fff'/><rect y='4' width='9' height='2' fill='#000'/><g transform='translate(4.5 3)' fill='#bf9b30'><path d='M-.55 -.05C-.3 -.15 -.1 -.1 0 -.35C.1 -.1 .3 -.15 .55 -.05C.3 .05 .2 .2 .25 .4C.05 .25 -.05 .25 -.25 .4C-.2 .2 -.3 .05 -.55 -.05Z'/><rect x='-.1' y='.3' width='.2' height='.45'/></g>`),
-  IRN: FL(`<rect width='9' height='2' fill='#239f40'/><rect y='2' width='9' height='2' fill='#fff'/><rect y='4' width='9' height='2' fill='#da0000'/><g transform='translate(4.5 3)' fill='none' stroke='#da0000' stroke-width='.14' stroke-linecap='round'><path d='M0 .32V-.36'/><path d='M-.28 .28Q-.34 -.05 -.13 -.12'/><path d='M.28 .28Q.34 -.05 .13 -.12'/><path d='M-.15 .32Q-.18 .06 -.05 .0'/><path d='M.15 .32Q.18 .06 .05 .0'/></g>`),
-  NZL: FL(`<rect width='9' height='6' fill='#00247d'/><use href='#uj' transform='scale(.5)'/>${st(7.4,1.7,.28,'#cc142b')}${st(6.5,3,.26,'#cc142b')}${st(7.9,3.7,.3,'#cc142b')}${st(7,4.7,.28,'#cc142b')}`),
-  ESP: FL(`<rect width='9' height='6' fill='#aa151b'/><rect y='1.5' width='9' height='3' fill='#f1bf00'/><path d='M1.15 2.5H2.25V3.05Q1.7 3.62 1.15 3.05Z' fill='#fff' stroke='#9a7b3a' stroke-width='.05'/><path d='M1.15 2.5H1.7V2.93H1.15Z' fill='#c8102e'/><path d='M1.7 2.93H2.25V3.05Q1.97 3.4 1.7 3.32Z' fill='#c8102e'/><rect x='1.65' y='2.5' width='.1' height='.95' fill='#9a7b3a'/><rect x='1.15' y='2.89' width='1.1' height='.08' fill='#9a7b3a'/><path d='M1.32 2.48H2.08L1.96 2.18 1.83 2.36 1.7 2.14 1.57 2.36 1.44 2.18Z' fill='#f7d116' stroke='#9a7b3a' stroke-width='.03'/>`),
-  CPV: FL(`<rect width='9' height='6' fill='#003893'/><rect y='3' width='9' height='1' fill='#fff'/><rect y='4' width='9' height='1' fill='#cf2027'/><rect y='5' width='9' height='1' fill='#fff'/>${[0,1,2,3,4,5,6,7,8,9].map(i=>st(3.5+1.05*Math.cos(i*0.628),3.45+1.05*Math.sin(i*0.628),.12,'#f7d116')).join('')}`),
-  KSA: FL(`<rect width='9' height='6' fill='#006c35'/><g fill='none' stroke='#fff' stroke-width='.17' stroke-linecap='round'><path d='M2.0 2.55Q2.35 2.2 2.7 2.55T3.4 2.55'/><path d='M3.75 2.6Q4.05 2.25 4.35 2.6'/><path d='M4.7 2.55Q5.05 2.25 5.4 2.55T6.1 2.55'/><path d='M6.45 2.6Q6.75 2.3 7.0 2.6'/></g><path d='M1.5 3.78 6.0 3.62 6.0 3.94Z' fill='#fff'/><rect x='5.93' y='3.42' width='.13' height='.72' fill='#fff'/><rect x='6.1' y='3.62' width='.78' height='.3' rx='.06' fill='#fff'/><circle cx='6.98' cy='3.78' r='.17' fill='#fff'/>`),
-  URU: FL(`${[0,1,2,3,4,5,6,7,8].map(i=>`<rect y='${(i*6/9).toFixed(3)}' width='9' height='${(6/9).toFixed(3)}' fill='${i%2?'#0038a8':'#fff'}'/>`).join('')}<rect width='3.4' height='${(6/9*5).toFixed(3)}' fill='#fff'/>${st(1.7,1.65,.6,'#fcd116')}`),
-  FRA: VT('#002654','#fff','#ce1126'),
-  SEN: FL(`<rect width='3' height='6' fill='#00853f'/><rect x='3' width='3' height='6' fill='#fdef42'/><rect x='6' width='3' height='6' fill='#e31b23'/>${st(4.5,3,.6,'#00853f')}`),
-  IRQ: FL(`<rect width='9' height='2' fill='#ce1126'/><rect y='2' width='9' height='2' fill='#fff'/><rect y='4' width='9' height='2' fill='#000'/><g fill='#007a3d'><rect x='3.1' y='2.65' width='.45' height='.7'/><rect x='4.27' y='2.65' width='.45' height='.7'/><rect x='5.45' y='2.65' width='.45' height='.7'/></g>`),
-  NOR: FL(`<rect width='9' height='6' fill='#ba0c2f'/><rect x='2.4' width='1.8' height='6' fill='#fff'/><rect y='1.6' width='9' height='1.8' fill='#fff'/><rect x='2.85' width='.9' height='6' fill='#00205b'/><rect y='2.05' width='9' height='.9' fill='#00205b'/>`),
-  ARG: FL(`<rect width='9' height='2' fill='#74acdf'/><rect y='2' width='9' height='2' fill='#fff'/><rect y='4' width='9' height='2' fill='#74acdf'/><circle cx='4.5' cy='3' r='.5' fill='#f6b40e'/>`),
-  ALG: FL(`<rect width='4.5' height='6' fill='#006233'/><rect x='4.5' width='4.5' height='6' fill='#fff'/><circle cx='4.55' cy='3' r='1.25' fill='#d21034'/><circle cx='4.98' cy='3' r='1' fill='#fff'/>${st(5.7,3,.5,'#d21034')}`),
-  AUT: HT('#ed2939','#fff','#ed2939'),
-  JOR: FL(`<rect width='9' height='2' fill='#000'/><rect y='2' width='9' height='2' fill='#fff'/><rect y='4' width='9' height='2' fill='#007a3d'/><path d='M0 0L4 3 0 6Z' fill='#ce1126'/>${st(1.35,3,.35,'#fff')}`),
-  POR: FL(`<rect width='3.6' height='6' fill='#006600'/><rect x='3.6' width='5.4' height='6' fill='#da291c'/><g fill='none' stroke='#ffce00' stroke-width='.13'><circle cx='3.6' cy='3' r='1.05'/><ellipse cx='3.6' cy='3' rx='.42' ry='1.05'/><ellipse cx='3.6' cy='3' rx='1.05' ry='.42'/><path d='M2.55 3H4.65M3.6 1.95V4.05'/></g><path d='M3.1 2.35H4.1V3.05Q3.6 3.62 3.1 3.05Z' fill='#fff' stroke='#da291c' stroke-width='.2'/><rect x='3.48' y='2.55' width='.24' height='.64' fill='#003399'/><rect x='3.36' y='2.74' width='.48' height='.26' fill='#003399'/>`),
-  COD: FL(`<rect width='9' height='6' fill='#007fff'/><path d='M0 5.3 8.2 0H9V.7L.8 6H0Z' fill='#f7d518'/><path d='M0 4.5 7 0H8.1L0 5.6Z' fill='#ce1021'/>${st(1,1,.6,'#f7d518')}`),
-  UZB: FL(`<rect width='9' height='2' fill='#0099b5'/><rect y='2' width='9' height='2' fill='#fff'/><rect y='4' width='9' height='2' fill='#1eb53a'/><rect y='1.9' width='9' height='.2' fill='#ce1126'/><rect y='3.9' width='9' height='.2' fill='#ce1126'/><path d='M1.5 .55a1 1 0 1 0 .4 1.92 .82 .82 0 1 1 -.4-1.92Z' fill='#fff'/>`),
-  COL: FL(`<rect width='9' height='3' fill='#fcd116'/><rect y='3' width='9' height='1.5' fill='#003893'/><rect y='4.5' width='9' height='1.5' fill='#ce1126'/>`),
-  ENG: FL(`<rect width='9' height='6' fill='#fff'/><rect x='3.7' width='1.6' height='6' fill='#ce1124'/><rect y='2.2' width='9' height='1.6' fill='#ce1124'/>`),
-  CRO: FL(`<rect width='9' height='2' fill='#ff0000'/><rect y='2' width='9' height='2' fill='#fff'/><rect y='4' width='9' height='2' fill='#171796'/>${[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19].map(i=>`<rect x='${(3.6+(i%5)*.36).toFixed(2)}' y='${(1.85+Math.floor(i/5)*.36).toFixed(2)}' width='.36' height='.36' fill='${((i%5)+Math.floor(i/5))%2?'#fff':'#ff0000'}'/>`).join('')}`),
-  GHA: FL(`<rect width='9' height='2' fill='#ce1126'/><rect y='2' width='9' height='2' fill='#fcd116'/><rect y='4' width='9' height='2' fill='#006b3f'/>${st(4.5,3,.55,'#000')}`),
-  PAN: FL(`<rect width='9' height='6' fill='#fff'/><rect x='4.5' width='4.5' height='3' fill='#da121a'/><rect y='3' width='4.5' height='3' fill='#072357'/>${st(2.25,1.5,.55,'#072357')}${st(6.75,4.5,.55,'#da121a')}`),
+/* Flags , bundled flag-icons SVGs (flags/<iso>.svg), referenced as <img>.
+   Map each 3-letter team code to its flag-icons filename, then swap TEAMS[code][1]
+   (consumed by every render site) to an <img>. See flags/CREDITS.md. */
+const FLAG_ISO = {
+  MEX:'mx', RSA:'za', KOR:'kr', CZE:'cz', CAN:'ca', BIH:'ba', QAT:'qa', SUI:'ch',
+  BRA:'br', MAR:'ma', HAI:'ht', SCO:'gb-sct', USA:'us', PAR:'py', AUS:'au', TUR:'tr',
+  GER:'de', CUR:'cw', CIV:'ci', ECU:'ec', NED:'nl', JPN:'jp', SWE:'se', TUN:'tn',
+  BEL:'be', EGY:'eg', IRN:'ir', NZL:'nz', ESP:'es', CPV:'cv', KSA:'sa', URU:'uy',
+  FRA:'fr', SEN:'sn', IRQ:'iq', NOR:'no', ARG:'ar', ALG:'dz', AUT:'at', JOR:'jo',
+  POR:'pt', COD:'cd', UZB:'uz', COL:'co', ENG:'gb-eng', CRO:'hr', GHA:'gh', PAN:'pa'
 };
-Object.keys(TEAMS).forEach(c=>{ if(FLAGS[c]) TEAMS[c][1]=FLAGS[c]; });
+const escHtml = s => String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+Object.keys(TEAMS).forEach(c=>{
+  const iso=FLAG_ISO[c];
+  if(iso) TEAMS[c][1]=`<img class="flagsvg" src="flags/${iso}.svg" alt="${escHtml(TEAMS[c][0])}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'flag-fallback',textContent:'${c}'}))">`;
+});
 
 const GROUPS = {
   A:["MEX","RSA","KOR","CZE"], B:["CAN","BIH","QAT","SUI"], C:["BRA","MAR","HAI","SCO"],
