@@ -20,6 +20,7 @@
 - Stylized, compact paths only — no traced heraldry, no external assets.
 - No em/en dashes in code/comments (repo house style; existing flags use plain ASCII).
 - Touch ONLY `FLAGS`/defs/helpers. No render-site, CSS, or data changes.
+- **Candidate-SVG style note:** candidates below use `+\`...\`` string concatenation for readability. Existing FLAGS entries are a single template literal with `${st(...)}` interpolation. Either inline the new `<g>`/path blocks inside the existing template literal, or keep them as valid concatenation — both produce identical SVG. Make sure every template literal is correctly closed before a `+`.
 
 ## File structure
 
@@ -115,7 +116,7 @@ git commit -m "flags: give Mexico a stylized coat-of-arms emblem (was a bare tri
 
 - [ ] **Step 1: Replace the faint disc with a larger outlined arms mark** (candidate)
 
-Keep the existing bands (yellow 0-3, blue 3-4.5, red 4.5-6); replace only the circle with:
+Keep the existing horizontal bands (these are y-axis bands: yellow y0-3, blue y3-4.5, red y4.5-6); replace only the `<circle>` with:
 ```js
     +`<circle cx='4.5' cy='3' r='.95' fill='#f3d27a' stroke='#6b4f25' stroke-width='.13'/>`
     +`<path d='M3.75 2.95 Q4.5 2.45 5.25 2.95 Q4.5 2.75 3.75 2.95Z' fill='#34528f'/>`   /* condor wings hint */
@@ -191,7 +192,7 @@ HAI candidate (small arms hint in the white panel, centered ~4.5,3):
     +`<rect x='3.5' y='2.1' width='2' height='1.8' fill='#fff'/>`
     +`<rect x='4.3' y='2.5' width='.4' height='1' fill='#0a7d2c'/><path d='M4.1 2.5H4.9L4.5 2.2Z' fill='#c8a44a'/>`  /* palm + hint */
 ```
-ESP candidate (turn the bare rect into a small shield silhouette on the yellow band, ~3.0,3):
+ESP candidate (REMOVE the existing `x=1.3 y=2.3` arms rect, then add a small shield silhouette on the yellow band, ~3.0,3 — don't leave two marks):
 ```js
     +`<path d='M2.55 2.45H3.25V3.1Q2.9 3.5 2.55 3.1Z' fill='#ad1519' stroke='#c8a44a' stroke-width='.06'/>`
 ```
