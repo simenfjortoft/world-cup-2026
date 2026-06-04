@@ -31,19 +31,25 @@ Render sites all consume `TEAMS[code][1]`, so **no render code changes** — the
 ## Fidelity bar (acceptance criteria, applied to every flag)
 
 1. Correct field layout, band proportions, and hex colours per the official flag.
-2. A stylized distinguishing emblem is present **wherever the real flag has one AND its absence makes the flag read as the wrong country or as another flag in this 48-team set.** Flags that are correctly plain get no emblem.
-3. No two flags in the set are confusable at the sizes they render: chip/card ~16–20px wide and the 52px hero. Two explicit pairs MUST be unambiguous:
-   - **MEX ≠ Italy** — Mexico (currently `VT` bare tricolor) gains a stylized eagle/emblem on the white band.
-   - **ECU ≠ COL** — Ecuador and Colombia share identical yellow(2x)/blue/red bands; Ecuador's emblem (currently a 0.55r faint disc) is strengthened to a clearly visible coat-of-arms mark; Colombia stays plain (correct).
-4. Each flag is legible and identifiable at BOTH ~16px (chip) and 52px (hero). Emblems must not turn to mud at 16px.
-5. Inline, self-contained, compact.
+2. A stylized distinguishing emblem is present **wherever the real flag has one AND its absence makes the flag read as another flag in this 48-team set, or as a bare/generic field.** Flags that are correctly plain get no emblem.
+3. **Emblem-shape rule (decides whether a flag needs work):** an emblem whose *shape reads as the wrong thing* (e.g. a star where the real flag has no star) MUST be replaced with a mark of the correct kind. An emblem that is already the *right kind of mark* but simplified/crude MAY stay. A flag with no emblem where the real flag has a prominent one MUST gain one.
+4. **Two-size goal, stated honestly (resolves the small-size limit):**
+   - At **52px hero**: the emblem must be identifiable as the right *kind* of mark (an eagle-ish silhouette, an arms disc, a checkerboard, a sun, etc.).
+   - At **~16px chip**: emblems will not be legible as detail and that is accepted. The bar at 16px is **differentiation only** — the flag must not read as a *different* flag in the set. (Criterion 1 colours/layout carry most of the 16px identity; the emblem only has to register as "something is there.")
+5. **Per-flag acceptance for the must-fix pair (objective, presence-based):**
+   - **MEX** — must NOT be a bare tricolor: a dark central emblem mark occupying roughly the middle third of the white band, visually distinct from CIV and any other vertical tricolor in the set. (Italy is the motivation but is *not* in the 48, so it is not an acceptance check — the in-set risk is other vertical tricolors, esp. CIV `VT` orange/white/green.)
+   - **ECU** — emblem disc enlarged to ≥ ~0.8r with a contrasting outline/fill so it is unmistakable directly beside COL; COL stays plain (correct).
+6. Inline, self-contained, compact (no traced heraldry; cap emblem path complexity).
 
 ## Scope: full 48 audit
 
 Every flag is checked against the bar and classified:
-- **Must-fix (identity wrong/confusable):** MEX (no emblem), ECU (emblem too faint vs COL).
-- **Review & likely touch (emblem present but may be weak/inaccurate):** HAI (white panel placeholder for arms), KSA (shahada+sword simplified to bars), EGY (eagle as a gold star), IRN (emblem as a red star), IRQ (takbir), BRA (globe/stars), ESP, POR, CRO, SEN/GHA stars, CPV (already has 10-star ring — verify only).
-- **Verify-only (expected no change):** plain tricolours/crosses and already-faithful flags (FRA, BEL, NED, GER, AUT, NOR, SWE, JPN, CAN, SUI, QAT, USA, ARG, URU, AUS, NZL, etc.).
+- **Must-fix (identity wrong/confusable):** MEX (no emblem; bare tricolor), ECU (emblem too faint vs COL).
+- **Wrong-emblem-shape (emblem reads as the wrong kind — replace per criterion 3):** EGY (gold *star* where the real flag has the Eagle of Saladin), IRN (red *star* where the real flag has the tulip/takbir emblem). Higher priority than the "crude" bucket because the shape actively misleads.
+- **Right-emblem-but-crude (may stay if it reads as the right kind at 52px; touch up only if weak):** HAI (white panel placeholder for arms), KSA (shahada+sword as bars), IRQ (takbir bars), BRA (globe), ESP (arms rect), POR (armillary+shield), CRO (checkerboard). 
+- **Verify-only (expected no change):** CPV (already has the 10-star ring), the plain tricolours/crosses and already-faithful flags (FRA, BEL, NED, GER, AUT, NOR, SWE, JPN, CAN, SUI, QAT, USA, ARG, URU, AUS, NZL, SEN/GHA stars, etc.).
+
+Every one of the 48 is explicitly signed off against the bar even if unchanged.
 
 The implementation works flag-by-flag; "audit" means each of the 48 is explicitly looked at and signed off against the bar, even if unchanged.
 
@@ -66,12 +72,12 @@ The implementation works flag-by-flag; "audit" means each of the 48 is explicitl
 
 ## Testing / verification
 
-1. Build the dev gallery; screenshot all 48 at **chip (~18px)** and **hero (52px)** sizes.
-2. For each flag confirm: (a) correct country identity, (b) distinguishable from every other flag in the set, (c) legible at 16px.
-3. Explicit checks: ECU placed next to COL (must differ at a glance); MEX must not read as a plain tricolour.
+1. Build the dev gallery as a **temporary `<div>` overlay injected via the browser console / preview eval** (not an edit to `index.html`), so it cannot be shipped by accident. Screenshot all 48 at **chip (~18px)** and **hero (52px)** sizes.
+2. For each flag confirm: (a) correct country identity at 52px, (b) at 16px it does not read as a *different* flag in the set (differentiation, per criterion 4 — emblem detail is not expected at 16px).
+3. Explicit checks: ECU placed next to COL (must differ at a glance); MEX must not read as a plain tricolour and must differ from CIV.
 4. Spot-check a real card, the team hero, the scorers board, and the team-filter list to confirm flags render correctly in their actual contexts (not just the gallery).
-5. Confirm the inline-script still parses (`node --check` on the extracted script) and the file-size delta is modest.
-6. Verify visually BEFORE shipping (per project lesson: measure/inspect, don't eyeball after the fact).
+5. Confirm the inline `<script>` still parses: extract the main script block (the last `<script>…</script>` in `index.html`) to a temp file and run `node --check`. Confirm the committed diff contains **only** `FLAGS`/`defs`/helper changes — no render-site or gallery code.
+6. Verify visually BEFORE shipping (per project lesson: inspect, don't eyeball after the fact). File-size delta should be modest (compact paths only).
 
 ## Out of scope
 
