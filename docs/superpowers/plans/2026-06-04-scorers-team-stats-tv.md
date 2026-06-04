@@ -329,8 +329,12 @@ async function loadScorers(){
     const res=await fetch('data/scorers.json?t='+Date.now(), {cache:'no-store'}); if(!res.ok) throw new Error(res.status);
     window.SCORERS=await res.json();
     console.log('[scorers] loaded ·', window.SCORERS.lastUpdated, '·', (window.SCORERS.scorers||[]).length, 'scorers');
-    if(!$("#view-scorers")?.hidden) renderScorers();
-    const m=/^#team\/([A-Z]{3})$/.exec(location.hash); if(m && TEAMS[m[1]]) renderTeam(m[1]);
+    // Guard on the element EXISTING and visible. A missing element makes `null?.hidden`
+    // undefined and `!undefined` true, which would call the not-yet-defined renderScorers
+    // in the intermediate (pre-Task-6) state. Require the node to exist first.
+    const vs=$("#view-scorers"); if(vs && !vs.hidden) renderScorers();
+    const vt=$("#view-team"); const m=/^#team\/([A-Z]{3})$/.exec(location.hash);
+    if(vt && !vt.hidden && m && TEAMS[m[1]]) renderTeam(m[1]);
   }catch(e){ console.log('[scorers] data/scorers.json not available yet (run scripts/fetch-scorers.mjs)'); }
 }
 ```
@@ -339,7 +343,7 @@ async function loadScorers(){
 
 - [ ] **Step 3: Refresh it when scores change** — in `loadResults`, inside the `if(Object.keys(AUTO_RESULTS).length){ ... }` branch (line 1754), add `loadScorers();` after `route();`. (Scorers stay empty until the first result, which is correct.)
 
-- [ ] **Step 4: Verify no console errors** via `preview_console_logs` after a reload (it will log the `[scorers] loaded` line from the empty seed). `renderScorers` does not exist yet, but it is only called when `#view-scorers` is visible (it is not yet). Expected: no thrown errors.
+- [ ] **Step 4: Verify no console errors** via `preview_console_logs` after a reload. Expected: a single `[scorers] loaded` line from the empty seed and NO error. The fixed guard (`vs && !vs.hidden`) is false because `#view-scorers` does not exist yet (added in Task 6), so `renderScorers` is correctly not called and the catch block does not fire.
 
 - [ ] **Step 5: Commit**
 
