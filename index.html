@@ -274,7 +274,10 @@ main{padding:18px 0 70px;position:relative}
   transition:opacity .26s var(--ease), transform .2s var(--ease), border-color .2s var(--ease), box-shadow .26s var(--ease), filter .26s var(--ease);
 }
 .mc::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent,var(--green));opacity:.8}
-.mc:hover{transform:translateY(-2px);border-color:var(--line-strong)}
+.mc{cursor:pointer}
+.mc:hover{transform:translateY(-2px);border-color:var(--line-strong);box-shadow:0 8px 24px -10px rgba(0,0,0,.55), 0 2px 6px -3px rgba(0,0,0,.4)}
+.mc:active{transform:scale(.98);transition-duration:.08s}
+@media(hover:none){.mc:active{transform:scale(.99)}}
 .mc-top{display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .badge{
   display:inline-flex;align-items:center;gap:7px;font-size:10.5px;font-weight:800;
@@ -283,16 +286,19 @@ main{padding:18px 0 70px;position:relative}
 .badge .sq{width:8px;height:8px;border-radius:2px;background:var(--accent,var(--green))}
 .badge .gp{color:var(--text-dim)}
 .mc-no{color:var(--text-faint);font-weight:700;font-size:11px;font-variant-numeric:tabular-nums}
-.mc-time{margin-left:auto;display:flex;align-items:baseline;gap:6px}
+.mc-time{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.mc-kick{display:flex;align-items:baseline;gap:6px}
 .mc-time .t{font-weight:800;font-size:18px;font-variant-numeric:tabular-nums;letter-spacing:.01em}
 .mc-time .nxt{font-size:9.5px;font-weight:800;letter-spacing:.1em;color:var(--text-faint);border:1px solid var(--line-strong);border-radius:5px;padding:2px 4px}
-/* venue + dual-zone time line on each match card */
-.mc-venue{display:flex;flex-wrap:wrap;align-items:baseline;gap:3px 9px;margin-top:13px;padding-top:11px;border-top:1px solid var(--line);font-size:11.5px}
+.mc-time .nxt.nxt-day{letter-spacing:.04em;color:var(--text-dim);text-transform:uppercase}
+.mc-local{font-size:10px;font-weight:600;color:var(--text-faint);font-variant-numeric:tabular-nums;white-space:nowrap}
+.mc-local em{font-style:normal;font-weight:700;letter-spacing:.01em}
+/* venue + broadcaster line on each match card */
+.mc-venue{display:flex;flex-wrap:wrap;align-items:center;gap:4px 9px;margin-top:13px;padding-top:11px;border-top:1px solid var(--line);font-size:11.5px}
 .mc-venue .vn{font-weight:700;color:var(--text-dim)}
 .mc-venue .vc{color:var(--text-faint)}
-.mc-venue .vt{margin-left:auto;color:var(--text-dim);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
-.mc-venue .vt em{font-style:normal;font-weight:800;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);margin-left:3px}
-.mc-venue.tbc{color:var(--st-SF);font-weight:700}
+.mc-venue .mc-tv{margin-left:auto}
+.mc-venue.tbc .vn{color:var(--st-SF);font-weight:700}
 .gm-city{color:var(--text-faint);opacity:.85}
 
 .mc-body{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
@@ -592,6 +598,7 @@ body.route-team .legend{display:none !important}
 .mm-vs{font-family:"Anton",sans-serif;color:var(--text-faint);font-size:16px;flex:none}
 .mm-kick{text-align:center;font-size:14px;color:var(--text-dim);padding:12px 0;margin-top:10px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
 .mm-kick b{color:var(--text)}
+.mm-next{font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--text-faint);border:1px solid var(--line-strong);border-radius:5px;padding:1px 5px;vertical-align:1px}
 .mm-meta{padding:14px 2px 4px;display:flex;flex-direction:column;gap:8px}
 .mm-row{display:flex;justify-content:space-between;gap:12px;font-size:13px;align-items:baseline}
 .mm-row>span:first-child{color:var(--text-faint);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;flex:none}
@@ -1358,10 +1365,10 @@ function sideHTML(code, away){
 
 // venue + dual-zone kickoff line (FIFA name by default, host city, Norwegian + venue-local time)
 function venueLineHTML(m){
-  if(!m.venue) return `<div class="mc-venue tbc">⚠ venue TBC</div>`;
+  const tv=tvBadge(m), tvEl=tv?`<span class="mc-tv">${tv}</span>`:'';
+  if(!m.venue) return `<div class="mc-venue tbc"><span class="vn">⚠ venue TBC</span>${tvEl}</div>`;
   return `<div class="mc-venue">
-    <span class="vn">${venueName(m.venue)}</span><span class="vc">${m.venue.city}</span>
-    <span class="vt">${fmtVenueTime(m)}<em>local</em></span></div>`;
+    <span class="vn">${venueName(m.venue)}</span><span class="vc">${m.venue.city}</span>${tvEl}</div>`;
 }
 /* Norwegian broadcaster per match (NRK and TV 2 share all 104, free-to-air).
    Group stage is fully assigned, keyed by the sorted team pair. Knockout channels
@@ -1401,14 +1408,19 @@ function matchCardHTML(m){
     ? `<span class="badge" style="--accent:${col}"><span class="sq"></span>Group ${m.group}<span class="gp">· MD${m.md}</span></span>`
     : `<span class="badge" style="--accent:${col}"><span class="sq"></span>${STAGES[m.stage].label}</span>`
       + (m.n?`<span class="mc-no">#${m.n}</span>`:"");
-  const nxt = m.plus?`<span class="nxt">+1</span>`:"";
-  const time = `<div class="mc-time">${m.status?`<span class="nxt res">${m.status}</span>`:""}${nxt}<span class="t">${m.kickoffLocal}</span></div>`;
+  // after-midnight matches kick off the next calendar day in Norwegian time , tag with that weekday
+  const [cy,cmo,cda]=m.date.split('-').map(Number);
+  const koWd = m.plus ? WD[new Date(Date.UTC(cy,cmo-1,cda)+864e5).getUTCDay()].slice(0,3) : "";
+  const dayTag = koWd?`<span class="nxt nxt-day" title="Kicks off ${koWd} morning (after midnight Norwegian time)">${koWd}</span>`:"";
+  const time = `<div class="mc-time">
+      <span class="mc-kick">${m.status?`<span class="nxt res">${m.status}</span>`:""}${dayTag}<span class="t">${m.kickoffLocal}</span></span>
+      ${m.venue?`<span class="mc-local">${fmtVenueTime(m)} <em>${m.venue.city}</em></span>`:""}</div>`;
   const trophy = isFinal?`<span class="trophy">🏆</span>`:"";
   const teamAttr = (isTeam(m.home)?m.home:"")+" "+(isTeam(m.away)?m.away:"");
   return `<article class="mc${isFinal?' is-final':''}" style="--accent:${col}" data-teams="${teamAttr.trim()}" data-mi="${m.i}">
     ${trophy}<div class="mc-top">${badge}${time}</div>
     <div class="mc-body">${sideHTML(m.home,false)}${m.homeScore!=null?`<span class="vs score">${m.homeScore}<i>-</i>${m.awayScore}</span>`:`<span class="vs">${isFinal?'VS':'-'}</span>`}${sideHTML(m.away,true)}</div>
-    ${venueLineHTML(m)}${tvBadge(m)}
+    ${venueLineHTML(m)}
   </article>`;
 }
 
@@ -2097,12 +2109,13 @@ function openMatch(i){
   const v=m.venue;
   const [y,mo,da]=m.date.split('-').map(Number);
   const wd=WD[new Date(Date.UTC(y,mo-1,da)).getUTCDay()];
+  const koWd=m.plus?WD[new Date(Date.UTC(y,mo-1,da)+864e5).getUTCDay()]:"";   // after-midnight kickoffs land the next day
   const stageLabel=m.stage==='GROUP'?`Group ${m.group} · Matchday ${m.md}`:`${STAGES[m.stage].label}${m.n?` · Match ${m.n}`:''}`;
   $("#match-modal").innerHTML=`<div class="mm-card" style="--accent:${matchColor(m)}">
     <button class="mm-x" data-mclose aria-label="Close">×</button>
     <div class="mm-stage">${stageLabel}</div>
     <div class="mm-teams">${mmSide(m.home)}<span class="mm-vs">${m.homeScore!=null?`${m.homeScore}-${m.awayScore}`:(m.stage==='FINAL'?'VS':'-')}</span>${mmSide(m.away)}</div>
-    <div class="mm-kick"><b>${m.kickoffLocal}${m.plus?'+1':''}</b> Norwegian${v?` &nbsp;·&nbsp; <b>${fmtVenueTime(m)}</b> ${v.city} local`:''}</div>
+    <div class="mm-kick"><b>${m.kickoffLocal}</b> Norwegian${m.plus?` <span class="mm-next">${koWd}</span>`:''}${v?` &nbsp;·&nbsp; <b>${fmtVenueTime(m)}</b> ${v.city} local`:''}</div>
     <div class="mm-meta">
       <div class="mm-row"><span>Date</span><b>${wd} ${da} ${MO[mo-1]} 2026</b></div>
       ${v?`<div class="mm-row"><span>Stadium</span><b>${v.fifaName}</b></div>
