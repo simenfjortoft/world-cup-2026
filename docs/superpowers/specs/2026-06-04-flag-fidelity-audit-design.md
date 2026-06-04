@@ -1,7 +1,7 @@
 # Flag Fidelity Audit & Upgrade — Design
 
 Date: 2026-06-04
-Status: Approved (pending spec review)
+Status: Approved
 Repo: world-cup-2026 (single-file `index.html`)
 
 ## Goal
