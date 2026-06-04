@@ -957,8 +957,8 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
         Norwegian time (CEST)
       </span>
-      <span class="sep"></span><span><strong>104</strong> matches</span>
-      <span class="sep"></span><span><strong>48</strong> nations</span>
+      <span class="sep"></span><span id="hero-played"><strong>0</strong> of 104 played</span>
+      <span class="sep"></span><span id="hero-left"><strong>48</strong> teams left</span>
       <span class="sep"></span><span>11 Jun - 19 Jul 2026</span>
     </div>
     <div class="countdown" id="countdown" role="timer" aria-live="off">
@@ -2481,13 +2481,33 @@ function tick(){
 /* =====================================================================
    INIT
    ===================================================================== */
-function rerenderViews(){ renderSchedule(); renderGroups(); renderCalendar(); renderBracket(); renderScorers(); cacheRefs(); applyFilter(); applyRound(); applyStageFold(); applyGroupCollapse(); }
+/* live masthead progress: matches played + teams still in.
+   Each completed knockout match (except the 3rd-place playoff, whose teams already
+   lost their semi) eliminates exactly one team, so we count completed matches rather
+   than resolve winners , which sidesteps penalty-shootout draws entirely. */
+function renderHeroStats(){
+  const total=MATCHES.length;
+  const played=MATCHES.filter(m=>m.homeScore!=null&&m.awayScore!=null).length;
+  const gKeys=Object.keys(GROUPS);
+  const groupsComplete=gKeys.filter(g=>{ const gm=MATCHES.filter(m=>m.stage==='GROUP'&&m.group===g); return gm.length && gm.every(m=>m.homeScore!=null&&m.awayScore!=null); }).length;
+  const allGroupsDone=groupsComplete===gKeys.length;
+  // group stage: each completed group eliminates its 4th; once all 12 are done the 4 worst
+  // third-placers also drop, leaving exactly 32 (so 16 eliminated).
+  const groupOut=allGroupsDone?16:groupsComplete;
+  const koOut=MATCHES.filter(m=>m.stage!=='GROUP'&&m.stage!=='3RD'&&m.homeScore!=null&&m.awayScore!=null).length;
+  const left=48-groupOut-koOut;
+  const pl=$("#hero-played"), lf=$("#hero-left");
+  if(pl) pl.innerHTML=`<strong>${played}</strong> of ${total} played`;
+  if(lf) lf.innerHTML=`<strong>${left}</strong> team${left===1?'':'s'} left`;
+}
+function rerenderViews(){ renderSchedule(); renderGroups(); renderCalendar(); renderBracket(); renderScorers(); renderHeroStats(); cacheRefs(); applyFilter(); applyRound(); applyStageFold(); applyGroupCollapse(); }
 
 document.body.classList.add('anim-intro');   // staggered first-paint entrance; removed after it settles so re-renders/switches don't replay it
 applyOverlays();                 // compose any saved manual scores onto MATCHES before first paint
 renderTeamFilter();
 renderGroupFilter();
 renderLegend();
+renderHeroStats();
 renderSchedule();
 renderGroups();
 renderCalendar();
