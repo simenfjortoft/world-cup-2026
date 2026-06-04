@@ -1383,6 +1383,23 @@ function renderSchedule(){
    deterministic stand-in for FIFA's drawing of lots).
    ===================================================================== */
 function blankRow(code){ return {code, name:TEAMS[code][0], P:0,W:0,D:0,L:0,GF:0,GA:0,GD:0,Pts:0}; }
+// tournament-wide goals + clean sheets for one team, across group AND knockout
+// matches it has played (a match counts once teams + score are resolved).
+function teamGoalStats(code){
+  const s = { P:0, W:0, D:0, L:0, GF:0, GA:0, GD:0, cleanSheets:0 };
+  MATCHES.forEach(m=>{
+    if(m.homeScore==null || m.awayScore==null) return;        // not played / not resolved
+    const isHome = m.home===code, isAway = m.away===code;
+    if(!isHome && !isAway) return;
+    const gf = isHome ? m.homeScore : m.awayScore;            // orient to this team
+    const ga = isHome ? m.awayScore : m.homeScore;
+    s.P++; s.GF+=gf; s.GA+=ga;
+    if(gf>ga) s.W++; else if(gf<ga) s.L++; else s.D++;
+    if(ga===0) s.cleanSheets++;
+  });
+  s.GD = s.GF - s.GA;
+  return s;
+}
 function playedGroupMatches(){
   return MATCHES.filter(m=> m.stage==='GROUP' && isTeam(m.home) && isTeam(m.away) && m.homeScore!=null && m.awayScore!=null);
 }
@@ -1769,6 +1786,7 @@ document.addEventListener('visibilitychange', ()=>{ if(resultsTimer && !document
 window.WC_STANDINGS = { computeStandings, rankGroup, thirdPlaceRanking, h2hStats, applyOverlays,
   setAuto: o => { AUTO_RESULTS = o||{}; RESULTS_SIG = JSON.stringify(AUTO_RESULTS); applyOverlays(); rerenderViews(); },
   auto: () => AUTO_RESULTS, match: i => MATCHES[i] };
+window.WC_STATS = { teamGoalStats };
 /* hash router , the URL fragment is the single source of truth for the active sub-page:
      (empty)/#schedule · #groups · #calendar · #map · #team/CODE
    Each route sets the document title so tabs, history and bookmarks read correctly. */
