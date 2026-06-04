@@ -1,0 +1,14 @@
+{
+  "count": 4,
+  "competition": { "code": "WC", "name": "FIFA World Cup" },
+  "scorers": [
+    { "player": { "name": "Erling Haaland", "nationality": "Norway", "position": "Offence" },
+      "team": { "name": "Norway", "tla": "NOR" }, "goals": 3, "penalties": 1 },
+    { "player": { "name": "Kylian Mbappé", "nationality": "France", "position": "Offence" },
+      "team": { "name": "France", "tla": "FRA" }, "goals": 2, "penalties": null },
+    { "player": { "name": "Jude Bellingham", "nationality": "England", "position": "Midfield" },
+      "team": { "name": "England", "tla": "ENG" }, "goals": 2, "penalties": null },
+    { "player": { "name": "Nobody", "nationality": "Atlantis", "position": "Defence" },
+      "team": { "name": "Atlantis", "tla": "ATL" }, "goals": 1, "penalties": null }
+  ]
+}
