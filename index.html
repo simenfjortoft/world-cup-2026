@@ -847,6 +847,29 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 .tp-row.tp-out .tp-mark{color:var(--text-faint)}
 .tp-note{margin:10px 2px 0;font-size:11px;line-height:1.5;color:var(--text-faint);text-wrap:pretty}
 
+/* ---------------------------- SCORERS VIEW ---------------------------- */
+.sc-head{display:flex;align-items:baseline;gap:10px;margin:2px 0 18px}
+.sc-title{font-family:"Anton",sans-serif;font-weight:400;font-size:30px;text-transform:uppercase;letter-spacing:.02em;margin:0;color:var(--text)}
+.sc-meta{color:var(--text-faint);font-size:12px;font-weight:600}
+.sc-cols{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+@media (max-width:820px){.sc-cols{grid-template-columns:1fr}}
+.sc-board{list-style:none;margin:0;padding:0}
+.sc-row{display:grid;grid-template-columns:24px 24px 1fr auto auto;align-items:center;gap:11px;padding:7px 2px;border-bottom:1px solid var(--line)}
+.sc-rank{color:var(--text-faint);font-weight:800;text-align:right;font-variant-numeric:tabular-nums}
+.sc-fl{font-size:18px}
+.sc-nm{font-weight:700;color:var(--text);text-decoration:none;cursor:pointer}
+.sc-nm:hover{color:var(--green-bright)}
+.sc-pos{color:var(--text-faint);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.sc-goals{font-weight:800;font-variant-numeric:tabular-nums;color:var(--text)}
+.sc-pen{margin-left:7px;font-size:9px;font-weight:800;color:var(--text-faint);border:1px solid var(--line-strong);border-radius:5px;padding:2px 5px;letter-spacing:.04em;vertical-align:middle}
+.sc-teams{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:13px}
+.sc-teams th{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-faint);font-weight:800;padding:6px 6px;text-align:center;border-bottom:1px solid var(--line-strong)}
+.sc-teams td{padding:7px 6px;text-align:center;border-bottom:1px solid var(--line);color:var(--text)}
+.sc-teams th:first-child,.sc-teams td.sc-team{text-align:left}
+.sc-team a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:inherit;font-weight:700;cursor:pointer}
+.sc-team a:hover{color:var(--green-bright)}
+.sc-team .fl{font-size:17px}
+
 /* ---------------------------- BRACKET VIEW ---------------------------- */
 #view-bracket{padding-top:4px}
 @media(min-width:821px){ #view-bracket:not([hidden]){width:96vw;margin-left:calc(50% - 48vw)} }   /* break out of the 1180px rail so the full bracket isn't squeezed */
@@ -925,6 +948,7 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
       <button role="tab" id="tab-calendar" aria-controls="view-calendar" aria-selected="false" tabindex="-1" data-view="calendar">Calendar</button>
       <button role="tab" id="tab-map" aria-controls="view-map" aria-selected="false" tabindex="-1" data-view="map">Map</button>
       <button role="tab" id="tab-bracket" aria-controls="view-bracket" aria-selected="false" tabindex="-1" data-view="bracket">Bracket</button>
+      <button role="tab" id="tab-scorers" aria-controls="view-scorers" aria-selected="false" tabindex="-1" data-view="scorers">Scorers</button>
     </div>
     <div class="teamfilter" id="teamfilter">
       <button class="tf-trigger" id="tfTrigger" aria-haspopup="true" aria-expanded="false">
@@ -972,6 +996,7 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
     <section class="view" id="view-calendar" role="tabpanel" aria-labelledby="tab-calendar" tabindex="0" hidden></section>
     <section class="view" id="view-map" role="tabpanel" aria-labelledby="tab-map" tabindex="0" hidden></section>
     <section class="view" id="view-bracket" role="tabpanel" aria-labelledby="tab-bracket" tabindex="0" hidden></section>
+    <section class="view" id="view-scorers" role="tabpanel" aria-labelledby="tab-scorers" tabindex="0" hidden></section>
     <section class="view" id="view-team" aria-label="Team page" hidden></section>
 
     <div class="legend" id="legend"></div>
@@ -1612,6 +1637,45 @@ function bkMatchHTML(m){
   };
   return `<div class="bk-m" data-mi="${m.i}" style="--c:${stageColor(m.stage)}" title="${STAGES[m.stage].label}">${side(m.home)}${side(m.away)}</div>`;
 }
+/* =====================================================================
+   RENDER , SCORERS  (leaderboard from data/scorers.json + derived team table)
+   ===================================================================== */
+function renderScorers(){
+  const view=$("#view-scorers"); if(!view) return;
+  const data=window.SCORERS, list=(data&&data.scorers)||[];
+  const meta=data&&data.lastUpdated?`· updated ${data.lastUpdated}`:'';
+  // Leaderboard (player goals from the API)
+  let board;
+  if(!list.length){
+    board=`<p class="sq-note">No goals yet , the leaderboard fills in once matches kick off.</p>`;
+  } else {
+    board=`<ol class="sc-board">`+list.map((p,i)=>{
+      const fl=TEAMS[p.code]?TEAMS[p.code][1]:'';
+      const pen=(p.penalties&&p.penalties>0)?`<span class="sc-pen" title="${p.penalties} penalty goal${p.penalties>1?'s':''}">${p.penalties} pen</span>`:'';
+      return `<li class="sc-row"><span class="sc-rank">${i+1}</span>
+        <span class="sc-fl">${fl}</span>
+        <a class="sc-nm tlink" data-team="${p.code}">${p.name}</a>
+        <span class="sc-pos">${p.pos||''}</span>
+        <span class="sc-goals">${p.goals}${pen}</span></li>`;
+    }).join('')+`</ol>`;
+  }
+  // Team scoring/defense table (derived in-browser, all teams that have played)
+  const codes=Object.keys(TEAMS).filter(c=>teamGoalStats(c).P>0)
+    .map(c=>({c,...teamGoalStats(c)}))
+    .sort((a,b)=>b.GF-a.GF || b.GD-a.GD || a.GA-b.GA);
+  const teamTbl = codes.length ? `<table class="sc-teams"><thead><tr>
+      <th>Team</th><th>P</th><th>GF</th><th>GA</th><th>GD</th><th>GF/m</th><th>CS</th></tr></thead><tbody>`+
+      codes.map(t=>`<tr><td class="sc-team"><a class="tlink" data-team="${t.c}"><span class="fl">${TEAMS[t.c][1]}</span>${TEAMS[t.c][0]}</a></td>
+        <td>${t.P}</td><td>${t.GF}</td><td>${t.GA}</td><td>${t.GD>0?'+':''}${t.GD}</td>
+        <td>${(t.GF/t.P).toFixed(1)}</td><td>${t.cleanSheets}</td></tr>`).join('')+
+      `</tbody></table>` : `<p class="sq-note">Team scoring stats appear once matches are played.</p>`;
+  view.innerHTML=`
+    <div class="sc-head"><h2 class="sc-title">Goal scorers</h2><span class="sc-meta">${meta}</span></div>
+    <div class="sc-cols">
+      <section class="sc-sec"><h3 class="team-h3">Leaderboard<span>by goals</span></h3>${board}</section>
+      <section class="sc-sec"><h3 class="team-h3">Team scoring &amp; defense<span>this tournament</span></h3>${teamTbl}</section>
+    </div>`;
+}
 const bkCol=ms=>`<div class="bk-col">${ms.map(bkMatchHTML).join('')}</div>`;
 function renderBracket(){
   const view=$("#view-bracket"); if(!view) return;
@@ -1803,7 +1867,7 @@ window.WC_STATS = { teamGoalStats };
      (empty)/#schedule · #groups · #calendar · #map · #team/CODE
    Each route sets the document title so tabs, history and bookmarks read correctly. */
 const SITE='World Cup 2026';
-const VIEW_LABELS={schedule:'Schedule',groups:'Groups',calendar:'Calendar',map:'Map',bracket:'Bracket'};
+const VIEW_LABELS={schedule:'Schedule',groups:'Groups',calendar:'Calendar',map:'Map',bracket:'Bracket',scorers:'Scorers'};
 function route(){
   closeMatch();
   const tm=/^#team\/([A-Z]{3})$/.exec(location.hash);
@@ -2061,11 +2125,12 @@ $("#tfSearch")?.addEventListener('input', e=>{
 
 // view toggle (ARIA tablist: roving tabindex + arrow-key navigation)
 const tabs=[...document.querySelectorAll('.segmented button')];
-const VIEW_NAMES=['schedule','groups','calendar','map','bracket'];
+const VIEW_NAMES=['schedule','groups','calendar','map','bracket','scorers'];
 function setActiveView(v){                                      // pure activation; routing is driven by the hash
   tabs.forEach(b=>{ const on=b.dataset.view===v; b.setAttribute('aria-selected', on?'true':'false'); b.tabIndex=on?0:-1; });
   if(v==='map'){ renderMap(); applyMapFilter(); fitToSelection(); }   // build on first open + honor the current global filter
   if(v==='bracket') requestAnimationFrame(bkFit);                     // measure + scale-to-fit once the view is visible
+  if(v==='scorers') renderScorers();                                  // build leaderboard + team table on open
   VIEW_NAMES.forEach(n=>{ const el=$("#view-"+n); if(el) el.hidden = v!==n; });
   if(v==='calendar') requestAnimationFrame(calScrollToFocus);         // land on today / next match, not the empty start of June
   localStorage.setItem('wc2026.view', v);
@@ -2333,7 +2398,7 @@ function tick(){
 /* =====================================================================
    INIT
    ===================================================================== */
-function rerenderViews(){ renderSchedule(); renderGroups(); renderCalendar(); renderBracket(); cacheRefs(); applyFilter(); applyRound(); applyStageFold(); applyGroupCollapse(); }
+function rerenderViews(){ renderSchedule(); renderGroups(); renderCalendar(); renderBracket(); renderScorers(); cacheRefs(); applyFilter(); applyRound(); applyStageFold(); applyGroupCollapse(); }
 
 document.body.classList.add('anim-intro');   // staggered first-paint entrance; removed after it settles so re-renders/switches don't replay it
 applyOverlays();                 // compose any saved manual scores onto MATCHES before first paint
