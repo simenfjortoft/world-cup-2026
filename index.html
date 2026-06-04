@@ -527,6 +527,15 @@ body.route-team .legend{display:none !important}
 .tfx-time{font-variant-numeric:tabular-nums;color:var(--text-dim);font-weight:600}
 .tlink{cursor:pointer;color:inherit;text-decoration:none}
 .tlink:hover{color:var(--green-bright)}
+.team-stat-sec{grid-column:1/-1}
+.team-stats{display:flex;flex-wrap:wrap;gap:8px}
+.team-stats .ts{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:58px;padding:9px 12px;border:1px solid var(--line);border-radius:11px;background:var(--surface)}
+.team-stats .ts span{font-size:9.5px;letter-spacing:.06em;color:var(--text-faint);text-transform:uppercase;font-weight:700}
+.team-stats .ts b{font-size:18px;color:var(--text);font-variant-numeric:tabular-nums}
+.team-scorers{display:flex;flex-direction:column}
+.tsc-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 2px;border-bottom:1px solid var(--line);font-size:13.5px}
+.tsc-nm{font-weight:600;color:var(--text)}
+.tsc-g{font-weight:800;font-variant-numeric:tabular-nums;color:var(--text)}
 .sq-note{color:var(--text-faint);font-size:13px;line-height:1.65}
 .sq-note code{background:rgba(255,255,255,.06);padding:1px 5px;border-radius:4px;font-size:12px;color:var(--text-dim)}
 .sq-group{margin-bottom:16px}
@@ -1749,6 +1758,14 @@ function renderTeam(code){
       <div class="tfx-meta"><span>${venueNm}</span><span class="tfx-time">${m.homeScore!=null?`<b class="tfx-score">${m.homeScore}-${m.awayScore}</b> · `:''}${m.kickoffLocal}${m.plus?'+':''} NOR · ${fmtVenueTime(m)} local</span></div>
     </div>`;
   }).join("");
+  const gs=teamGoalStats(code);
+  const statStrip=`<div class="team-stats">
+    ${[['P',gs.P],['W',gs.W],['D',gs.D],['L',gs.L],['GF',gs.GF],['GA',gs.GA],['GD',`${gs.GD>0?'+':''}${gs.GD}`],['Clean sheets',gs.cleanSheets]]
+      .map(([k,v])=>`<div class="ts"><span>${k}</span><b>${v}</b></div>`).join('')}</div>`;
+  const tsc=((window.SCORERS&&window.SCORERS.scorers)||[]).filter(p=>p.code===code).sort((a,b)=>b.goals-a.goals);
+  const scorersBlock = tsc.length
+    ? `<div class="team-scorers">${tsc.map(p=>`<div class="tsc-row"><span class="tsc-nm">${p.name}</span><span class="tsc-g">${p.goals}${(p.penalties&&p.penalties>0)?` <span class="sc-pen">${p.penalties} pen</span>`:''}</span></div>`).join('')}</div>`
+    : `<p class="sq-note">No goals yet for ${name}.</p>`;
   $("#view-team").innerHTML=`
     <button class="team-back">← Back to all matches</button>
     <div class="team-head">
@@ -1758,6 +1775,12 @@ function renderTeam(code){
       <button class="team-hl${selected.has(code)?' on':''}" data-hlteam="${code}">${selected.has(code)?'★ In filter':'☆ Show this team'}</button>
     </div>
     <div class="team-cols">
+      <section class="team-stat-sec">
+        <h3 class="team-h3">Tournament record<span>all matches played</span></h3>
+        ${statStrip}
+        <h3 class="team-h3" style="margin-top:18px">Scorers<span>this team</span></h3>
+        ${scorersBlock}
+      </section>
       <section class="team-fx"><h3 class="team-h3">Fixtures<span>${fixtures.length} group matches · Norwegian + venue-local time</span></h3>${fx}</section>
       <section class="team-sq"><h3 class="team-h3">Squad<span id="squad-meta"></span></h3><div id="team-squad"></div></section>
     </div>`;
