@@ -1,7 +1,7 @@
 # Goal Scorers, Team Stats & Norwegian TV Channels — Design
 
 Date: 2026-06-04
-Status: Approved (pending spec review)
+Status: Approved
 Repo: world-cup-2026 (single-file `index.html` + node fetch scripts + cron-committed `data/*.json`)
 
 ## Goal
