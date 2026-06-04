@@ -286,9 +286,9 @@ main{padding:18px 0 70px;position:relative}
 .badge .sq{width:8px;height:8px;border-radius:2px;background:var(--accent,var(--green))}
 .badge .gp{color:var(--text-dim)}
 .mc-no{color:var(--text-faint);font-weight:700;font-size:11px;font-variant-numeric:tabular-nums}
-.mc-time{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:2px}
-.mc-kick{display:flex;align-items:baseline;gap:6px}
-.mc-time .t{font-weight:800;font-size:18px;font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.mc-time{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.mc-kick{display:flex;align-items:center;gap:6px}
+.mc-time .t{font-weight:800;font-size:18px;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:.01em}
 .mc-time .nxt{font-size:9.5px;font-weight:800;letter-spacing:.1em;color:var(--text-faint);border:1px solid var(--line-strong);border-radius:5px;padding:2px 4px}
 .mc-time .nxt.nxt-day{letter-spacing:.04em;color:var(--text-dim);text-transform:uppercase}
 .mc-local{font-size:10px;font-weight:600;color:var(--text-faint);font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -297,7 +297,7 @@ main{padding:18px 0 70px;position:relative}
 .mc-venue{display:flex;flex-wrap:wrap;align-items:center;gap:4px 9px;margin-top:13px;padding-top:11px;border-top:1px solid var(--line);font-size:11.5px}
 .mc-venue .vn{font-weight:700;color:var(--text-dim)}
 .mc-venue .vc{color:var(--text-faint)}
-.mc-venue .mc-tv{margin-left:auto}
+.mc-venue .tv-badge{margin-left:auto}
 .mc-venue.tbc .vn{color:var(--st-SF);font-weight:700}
 .gm-city{color:var(--text-faint);opacity:.85}
 
@@ -872,7 +872,6 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 .tv-ic{width:13px;height:13px;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;transform:translateY(-.5px);opacity:.95}
 .tv-nrk{--tvc:#4dabf7}   /* NRK , cool blue (matches the UEFA accent) */
 .tv-tv2{--tvc:#ff6b6b}   /* TV 2 , warm red (matches the CONCACAF accent) */
-.mc .tv-badge{margin-top:7px}
 
 /* ---------------------------- SCORERS VIEW ---------------------------- */
 .sc-head{display:flex;align-items:baseline;gap:10px;margin:2px 0 18px}
@@ -1365,10 +1364,10 @@ function sideHTML(code, away){
 
 // venue + dual-zone kickoff line (FIFA name by default, host city, Norwegian + venue-local time)
 function venueLineHTML(m){
-  const tv=tvBadge(m), tvEl=tv?`<span class="mc-tv">${tv}</span>`:'';
-  if(!m.venue) return `<div class="mc-venue tbc"><span class="vn">⚠ venue TBC</span>${tvEl}</div>`;
+  const tv=tvBadge(m);
+  if(!m.venue) return `<div class="mc-venue tbc"><span class="vn">⚠ venue TBC</span>${tv}</div>`;
   return `<div class="mc-venue">
-    <span class="vn">${venueName(m.venue)}</span><span class="vc">${m.venue.city}</span>${tvEl}</div>`;
+    <span class="vn">${venueName(m.venue)}</span><span class="vc">${m.venue.city}</span>${tv}</div>`;
 }
 /* Norwegian broadcaster per match (NRK and TV 2 share all 104, free-to-air).
    Group stage is fully assigned, keyed by the sorted team pair. Knockout channels
