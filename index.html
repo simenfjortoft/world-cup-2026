@@ -1725,6 +1725,18 @@ async function loadSquads(){
     const m=/^#team\/([A-Z]{3})$/.exec(location.hash); if(m && TEAMS[m[1]]) renderSquad(m[1]);
   }catch(e){ console.log('[squads] data/squads.json not available yet (run scripts/fetch-squads.mjs)'); }
 }
+async function loadScorers(){
+  try{
+    const res=await fetch('data/scorers.json?t='+Date.now(), {cache:'no-store'}); if(!res.ok) throw new Error(res.status);
+    window.SCORERS=await res.json();
+    console.log('[scorers] loaded ·', window.SCORERS.lastUpdated, '·', (window.SCORERS.scorers||[]).length, 'scorers');
+    // Guard on the element EXISTING and visible. A missing node makes `null?.hidden`
+    // undefined and `!undefined` true, so require the node before rendering.
+    const vs=$("#view-scorers"); if(vs && !vs.hidden) renderScorers();
+    const vt=$("#view-team"); const m=/^#team\/([A-Z]{3})$/.exec(location.hash);
+    if(vt && !vt.hidden && m && TEAMS[m[1]]) renderTeam(m[1]);
+  }catch(e){ console.log('[scorers] data/scorers.json not available yet (run scripts/fetch-scorers.mjs)'); }
+}
 /* =====================================================================
    RESULTS OVERLAY
    One layer composes onto MATCHES (the single source of truth):
@@ -1768,7 +1780,7 @@ async function loadResults(){
     AUTO_RESULTS = data.matches||{};
     if(data.lastUpdated) window.RESULTS_UPDATED=data.lastUpdated;
     console.log('[results]', first?'loaded':'refreshed', '·', data.lastUpdated||'(no date)', '·', Object.keys(AUTO_RESULTS).length, 'updates');
-    if(Object.keys(AUTO_RESULTS).length){ applyOverlays(); rerenderViews(); route(); }   // only re-render when there are actual results (avoids a needless re-render flash pre-tournament)
+    if(Object.keys(AUTO_RESULTS).length){ applyOverlays(); rerenderViews(); route(); loadScorers(); }   // only re-render when there are actual results (avoids a needless re-render flash pre-tournament); refresh scorers on the same edge
     // once every match is final the data is frozen , stop polling for good
     if(resultsTimer && MATCHES.every(m=>m.status==='FT')){ clearInterval(resultsTimer); resultsTimer=0; console.log('[results] all matches final , polling stopped'); }
   }catch(e){ console.log('[results] data/results.json not available yet (run scripts/fetch-results.mjs)'); }
@@ -2341,6 +2353,7 @@ applyStageFold();
 applyGroupCollapse();
 loadSquads();
 loadResults();
+loadScorers();
 route();
 tick(); cdTimer=setInterval(tick,1000);
 setTimeout(()=>document.body.classList.remove('anim-intro'), 1100);   // intro done , hand entrance duties to viewIn on tab switches
