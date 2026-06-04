@@ -39,7 +39,9 @@ Follows the existing project split exactly:
 - `data/results.json` = scores + knockout resolution (hot-polled, live).
 - `data/squads.json` = rosters (Wikipedia, rarely changes).
 - **`data/scorers.json` (new)** = per-player goals (football-data.org, changes on match days).
-- Derived stats (team goals for/against, GD, goals-per-match, clean sheets) are **computed in the browser** from `MATCHES` + the results overlay, reusing `computeStandings` — never precomputed in a script, so they can never drift from the scores already shown.
+- Derived stats (team goals for/against, GD, goals-per-match, clean sheets) are **computed in the browser** from `MATCHES` + the results overlay — never precomputed in a script, so they can never drift from the scores already shown.
+  - **Important**: the existing `computeStandings()` (index.html:1389) is **group-stage only** — it iterates `playedGroupMatches()` and `blankRow` tracks only `P/W/D/L/GF/GA/GD/Pts`, with **no clean-sheet field and no knockout matches**. It is therefore NOT sufficient for the tournament-wide stats this feature needs. The design adds a **new helper `teamGoalStats(code)`** that scans every played match a team appears in (group *and* knockout, orienting goals to that team's home/away side) and returns `{ P, W, D, L, GF, GA, GD, cleanSheets }`. The Scorers team panel and the team-page stats strip both use this new helper. `computeStandings` is left untouched (it still drives group standings).
+  - Leaderboard and team goal stats are **tournament-wide** (group + knockout), consistent with a "top scorers" board.
 - TV channel = a **static `tv` field on each match literal** in `index.html`'s `MATCHES`, like `hostCity`/venue today.
 
 ### Component 1 — `scripts/fetch-scorers.mjs` (new)
@@ -50,19 +52,21 @@ Mirrors `fetch-results.mjs` structure and conventions:
 - Supports `--mock <file>` and `--dry-run` for headless testing.
 - Reuses `teamCode()` from `scripts/codes.mjs` to map the API `team` (by `name`/`shortName`/`tla`) to our 3-letter code, same mapping path as results. Unmapped teams are logged, not fatal.
 - Request: `GET https://api.football-data.org/v4/competitions/{WC_COMPETITION||'WC'}/scorers?limit=100`, header `X-Auth-Token`.
-- Output `data/scorers.json`:
+- The API's `position` vocabulary is `Goalkeeper/Defence/Midfield/Offence`; normalize to the app's `GK/DEF/MID/FWD` (same labels `renderSquad` uses, index.html:1692) in the script so the leaderboard reads consistently next to squad pages.
+- Output `data/scorers.json` (note: separator is a comma, matching the existing scripts' `source` convention and the repo's no-dashes house style — not a middle dot):
   ```json
   {
     "lastUpdated": "2026-06-15",
-    "source": "football-data.org · competition WC",
+    "source": "football-data.org , competition WC",
     "scorers": [
-      { "name": "Erling Haaland", "code": "NOR", "nat": "Norway", "pos": "Offence", "goals": 3, "penalties": 1 }
+      { "name": "Erling Haaland", "code": "NOR", "nat": "Norway", "pos": "FWD", "goals": 3, "penalties": 1 }
     ]
   }
   ```
   - `penalties` is `null` when the tier doesn't expose it.
-  - Pre-tournament the `scorers` array is empty (like `results.json` today).
+  - Pre-tournament the `scorers` array is empty (like `results.json` today). This empty-array-on-empty-feed case is **distinct** from the missing-token no-op, which writes nothing at all.
   - Scorers whose `team` can't be mapped to a code are skipped and logged (kept out of the file rather than written with a null code).
+- **Rate limit**: free tier is ~10 req/min. Adding one `/scorers` call alongside the existing `/matches` call means 2 calls per cron run, including the Jun/Jul `*/5` windows — comfortably within the limit.
 
 ### Component 2 — `.github/workflows/update-data.yml` (edit)
 
@@ -71,20 +75,25 @@ Mirrors `fetch-results.mjs` structure and conventions:
 
 ### Component 3 — "Scorers" view (new top-level tab)
 
-Wired through the existing view machinery: add `'scorers'` to `VIEW_NAMES`, a label to `VIEW_LABELS`, a nav tab, a `#view-scorers` container, and a `renderScorers()` called from `setActiveView`/`rerenderViews`.
+Wired through the existing view machinery. The nav tabs are **hardcoded markup**, so adding a view touches **four sites** (all must be edited, or the tab silently fails):
+1. the static nav button list (index.html:923-927) — add `<button data-view="scorers">`;
+2. the tabpanel section (index.html:970-975) — add the `#view-scorers` container with matching `aria-controls`;
+3. `VIEW_NAMES` (index.html:2034) — add `'scorers'` (also drives the `tabs` selector at 2033 and arrow-key nav at 2048-2055);
+4. `VIEW_LABELS` (index.html:1776) — add the title-case label.
+Then a `renderScorers()` is called from `setActiveView` and added to `rerenderViews()` (see Component 6).
 
 Contents:
 
-- **Scorer leaderboard**: rank, flag + player name, team, position, goals, and a small "pen" badge when `penalties` is present and > 0. Sorted by `goals` desc, then `name` asc. Reads `window.SCORERS`.
-- **Team scoring panel** (derived in-browser from `MATCHES` via `computeStandings`): per-team goals for / against / GD, goals-per-match, and clean sheets, as a sortable table answering "who's scoring / who's defending".
-- Team flags/names link to the team page using the existing `teamLink`/route pattern.
+- **Scorer leaderboard**: rank, flag + player name, team, position, goals, and a small "pen" badge when `penalties` is present and > 0. Sorted by `goals` desc, then `name` asc. Reads `window.SCORERS`. The flag glyph comes from `TEAMS[code][1]` (as everywhere else in the app) using the scorer's `code` — `nat` (country name) is for tooltip/label text only, not rendered as a flag.
+- **Team scoring panel** (derived in-browser via the new `teamGoalStats(code)` helper, group + knockout): per-team goals for / against / GD, goals-per-match, and clean sheets, as a sortable table answering "who's scoring / who's defending".
+- Team flags/names link to the team page using the existing `teamLink(code)` (index.html:1646) — it emits `<a class="tlink" data-team>` which the global click delegator (index.html:1997-1998) routes to `#team/CODE`. No new routing code.
 - Empty pre-tournament state: a placeholder in the established tone ("No goals yet — the leaderboard fills in once matches kick off"), matching the squad/results placeholders.
 
 ### Component 4 — team page enrichment in `renderTeam(code)` (edit)
 
 Add, alongside the existing Fixtures + Squad columns (Squad unchanged):
 
-- **Stats strip**: the team's standings line — P · W · D · L · GF · GA · GD · Pts — plus clean sheets, from `computeStandings`. Shows zeros pre-tournament.
+- **Stats strip**: the team's tournament record — P · W · D · L · GF · GA · GD — plus clean sheets, from the new `teamGoalStats(code)` helper (group + knockout, so it stays correct once knockouts begin). Shows zeros pre-tournament. Note: this is an all-matches record, not a group-standings row; group position/points remain on the Groups view (`computeStandings`). If a points figure is wanted here it must be group-stage Pts explicitly labelled "Group" — otherwise omit Pts to avoid implying knockout matches award points.
 - **This team's scorers**: `window.SCORERS.scorers` filtered to `code` — player, goals, pen badge — sorted by goals desc; "No goals yet" before the team has scored.
 
 ### Component 5 — Norwegian TV channel
@@ -100,8 +109,9 @@ Add, alongside the existing Fixtures + Squad columns (Squad unchanged):
 
 ### Component 6 — loading & polling
 
-- `loadScorers()` mirrors `loadSquads()`: `fetch('data/scorers.json')` → `window.SCORERS` → re-render the Scorers view and the current team page if open. Missing/unfetched file → graceful placeholders, never throws.
-- Hook into the existing results poll: when `loadResults()` detects a changed payload, it also refreshes scorers (one call in the existing changed-data branch), so the leaderboard stays near-live on match days and stops when the tournament freezes (`RESULTS_FROZEN_AFTER`). **No new timer.**
+- `loadScorers()` mirrors `loadSquads()` (index.html:1703): `fetch('data/scorers.json')` → `window.SCORERS` → re-render the Scorers view and the current team page if open. Missing/unfetched file → graceful placeholders, never throws.
+- **`rerenderViews()` (index.html:2306) must gain a `renderScorers()` call** — it currently re-renders schedule/groups/calendar/bracket but has no scorers branch, so without this the leaderboard won't refresh.
+- Hook into the existing results poll: `loadResults()`'s changed-data branch is `if(Object.keys(AUTO_RESULTS).length){ applyOverlays(); rerenderViews(); route(); }` (index.html:1754). Add a `loadScorers()` call here so scorers refresh whenever scores change. This branch is intentionally gated on non-empty results — scorers stay empty until the first result lands, which is correct (no goals exist before the first match). The leaderboard thus stays near-live on match days and stops when the tournament freezes (`RESULTS_FROZEN_AFTER`). **No new timer.**
 
 ## Data flow
 
@@ -121,8 +131,10 @@ Derived stats are recomputed from the single source of truth (`MATCHES` + result
 
 ## Testing
 
-- **Script**: run `fetch-scorers.mjs --mock <fixture.json> --dry-run`; assert (a) team-name→code mapping, (b) `penalties: null` passthrough, (c) unmapped-team skip, (d) empty-feed produces an empty array. Mirrors how results is testable.
-- **Browser**: feed a small `SCORERS` fixture + a known scoreline through the render path; verify leaderboard sort order, pen badge presence/absence, team-filter routing, derived clean-sheet/GD math against the known scoreline, the TV badge (confirmed vs TBC), and every empty (pre-tournament) state.
+- **Script**: run `fetch-scorers.mjs --mock <fixture.json> --dry-run`; assert (a) team-name→code mapping, (b) position normalization `Offence→FWD` etc., (c) `penalties: null` passthrough, (d) unmapped-team skip, (e) empty-feed produces an empty array (distinct from the missing-token no-op which writes nothing). Mirrors how results is testable.
+- **Browser**:
+  - `teamGoalStats(code)`: feed a known set of played group + knockout matches and assert GF/GA/GD, clean-sheet count, and home/away goal orientation are correct (this is the highest-risk new logic — test it directly).
+  - Render path: feed a small `SCORERS` fixture; verify leaderboard sort order, flag from `TEAMS[code][1]`, pen badge presence/absence, team-filter routing, the TV badge (confirmed vs TBC), and every empty (pre-tournament) state.
 
 ## Open items / future
 
