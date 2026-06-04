@@ -1737,7 +1737,7 @@ function bkFit(){
   const sc=$(".bk-scaler"), full=$(".bk-full"); if(!sc||!full||!sc.clientWidth) return;   // skip while hidden (clientWidth 0)
   full.style.transform='none'; bkConnectors();
   const k=Math.min(1, sc.clientWidth/full.scrollWidth);
-  full.style.transformOrigin='top center'; full.style.transform=`scale(${k})`;
+  full.style.transformOrigin='top left'; full.style.transform=`scale(${k})`;   // scale from the left edge: when wider than the rail, margin:auto collapses to 0, so 'center' origin scaled about the off-screen-right middle and clipped the right
   sc.style.height=(full.scrollHeight*k)+'px';
 }
 window.addEventListener('resize', ()=>{ if(!$("#view-bracket")?.hidden) bkFit(); });
