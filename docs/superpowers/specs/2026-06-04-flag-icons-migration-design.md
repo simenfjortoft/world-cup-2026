@@ -1,7 +1,7 @@
 # Flag-Icons Migration — Design
 
 Date: 2026-06-04
-Status: Approved (pending spec review)
+Status: Approved
 Repo: world-cup-2026 (single-file `index.html` + node fetch scripts)
 
 ## Goal
@@ -29,12 +29,13 @@ The flags are currently hand-built inline SVGs (`FLAGS` object + `FL`/`HT`/`VT`/
 - **Delete**: the `FLAGS` object, the `FL`/`HT`/`VT`/`st` helper consts, the `#s` and `#uj` `<defs>` (used only by the hand-drawn flags — verify no other `href='#s'`/`href='#uj'` consumers remain), the ENG/SCO inline-SVG values in `TEAMS`, and the `Object.keys(TEAMS).forEach(...FLAGS...)` override loop (index.html:~1137).
 - **Add**: a `FLAG_ISO` map (code → flag-icons filename), and a loop:
   ```js
+  const esc = s => s.replace(/&/g,'&amp;').replace(/"/g,'&quot;');   // alt names contain '&' (Bosnia & Herz.)
   Object.keys(TEAMS).forEach(c=>{
     const iso = FLAG_ISO[c];
-    if(iso) TEAMS[c][1] = `<img class="flagsvg" src="flags/${iso}.svg" alt="${TEAMS[c][0]}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'flag-fallback',textContent:'${c}'}))">`;
+    if(iso) TEAMS[c][1] = `<img class="flagsvg" src="flags/${iso}.svg" alt="${esc(TEAMS[c][0])}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'flag-fallback',textContent:'${c}'}))">`;
   });
   ```
-  (Exact fallback mechanism is an implementation detail; intent: a missing file degrades to the 3-letter code, not a broken-image icon.)
+  (Exact fallback mechanism is an implementation detail; intent: a missing file degrades to the 3-letter code, not a broken-image icon. `alt` is HTML-escaped because two names contain `&` / apostrophes.)
 
 Because `TEAMS[code][1]` is still an HTML string starting with a `.flagsvg` element, all ~14 render sites (`sideHTML`, mate chips, scorers board/table, group standings, calendar entries, bracket, match modal, team hero, map popover, team filter) render correctly with no change.
 
@@ -55,7 +56,18 @@ Download each `flags/{iso}.svg` from the flag-icons `4x3` set (e.g. `https://cdn
 
 ## CSS (only styling change): 3:2 → 4:3
 
-flag-icons SVGs are 4:3 (viewBox 640x480); the hand-drawn ones were 3:2 (9x6). The `.flagsvg` rules size via `em` against the container `font-size`. Update each `.flagsvg` width/height pair so height = width × 3/4 (4:3), to avoid horizontal stretch. Affected rules (verify current line numbers at implementation time): the base `.flagsvg` (~308) and the per-context overrides at ~431 (`.tf-opt`), ~487 (`.cal-entry .ce-fl`), ~514 (`.team-flag`), ~599 (`.mm-team`), ~813 (`.map-pop-flag`). The container `font-size` knobs (`.fl`, `.mc-fl`, `.team-flag`, `.gst-team .fl`, etc.) stay unchanged. The existing `border-radius`, inset `box-shadow` outline, and `drop-shadow` filters apply to `<img>` unchanged.
+flag-icons SVGs are 4:3 (viewBox 640x480); the hand-drawn ones were ~3:2 (9x6, rendered at ~1.52:1). The `.flagsvg` rules size via `em` against the container `font-size`. Keep each rule's `width` and set `height = width × 0.75` (4:3) to avoid horizontal stretch. Concrete targets (current → new height; widths unchanged):
+
+| selector | line | width | height now → new |
+| --- | --- | --- | --- |
+| `.flagsvg` (base) | 308 | 1.25em | .82 → .9375em |
+| `.tf-opt .flagsvg` | 431 | 1.2em | .78 → .9em |
+| `.cal-entry .ce-fl .flagsvg` | 487 | 1.1em | .72 → .825em |
+| `.team-flag .flagsvg` | 514 | 1.3em | .85 → .975em |
+| `.mm-team .flagsvg` | 599 | 1.25em | .82 → .9375em |
+| `.map-pop-flag .flagsvg` | 813 | 1.3em | .85 → .975em |
+
+The container `font-size` knobs (`.fl`, `.mc-fl`, `.team-flag`, `.gst-team .fl`, etc.) stay unchanged; `font-size`-only containers (`.bk-fl`, `.mc-fl`, `.sc-fl`, `.sc-team .fl`, `.gst-team .fl`) inherit the base rule and so get 4:3 automatically. The existing `border-radius`, inset `box-shadow` outline, and `drop-shadow` filters apply to `<img>` unchanged.
 
 Note: a few contexts size flags by `font-size` on the container with no `.flagsvg` override (relying on the base rule); these inherit the 4:3 base automatically. Also add `object-fit:cover` (or rely on exact 4:3 box) as a safety so any residual ratio mismatch crops rather than distorts.
 
