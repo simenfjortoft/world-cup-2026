@@ -143,17 +143,26 @@ Run the syntax-check block. Expected: `SYNTAX OK`.
 
 - [ ] **Step 5: Confirm no orphaned references remain**
 
+NOTE: do NOT grep for `st(`/`FL(`/`HT(`/`VT(` as bare tokens — the inlined d3 minified libraries contain `function st(` etc. (lines ~1047, ~1052) that survive this migration and would be false positives. Use the specific patterns:
 ```bash
-grep -nE "href='#s'|href='#uj'|\bFL\(|\bHT\(|\bVT\(|\bst\(|FLAGS\[" index.html | grep -v FLAG_ISO || echo "NONE (clean)"
+grep -nE "href='#s'|href='#uj'|\bFLAGS\b|const FL =|const HT |const VT |const st " index.html | grep -v FLAG_ISO || echo "NONE (clean)"
 ```
-Expected: `NONE (clean)` (no remaining uses of the deleted helpers/defs/FLAGS).
+Expected: `NONE (clean)` (the deleted defs/helpers/FLAGS are gone; `FLAG_ISO` is excluded).
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 6: Add a `.flag-fallback` style (for the rare onerror case) near the base `.flagsvg` rule (~line 308)**
+
+```css
+.flag-fallback{display:inline-block;font-size:.7em;font-weight:800;letter-spacing:.02em;color:var(--text-faint);vertical-align:middle}
+```
+
+- [ ] **Step 7: Commit**
 
 ```bash
 git add index.html
 git commit -m "flags: swap hand-drawn inline SVG for bundled flag-icons <img> (FLAG_ISO map)"
 ```
+
+NOTE on intermediate state: after this task but BEFORE Task 2, the flags are 4:3 images in the old ~3:2 boxes with no `object-fit` yet, so they look horizontally **stretched**. That is expected and fixed in Task 2 — do not flag it as a bug at this checkpoint. The app is fully functional (every flag visible, correct country).
 
 ---
 
