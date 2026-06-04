@@ -1085,7 +1085,7 @@ const HT = (...c) => FL(c.map((x,i)=>`<rect y='${(i*6/c.length).toFixed(3)}' wid
 const VT = (...c) => FL(c.map((x,i)=>`<rect x='${(i*9/c.length).toFixed(3)}' width='${(9/c.length).toFixed(3)}' height='6' fill='${x}'/>`).join(''));
 const st = (x,y,r,c) => `<use href='#s' transform='translate(${x} ${y}) scale(${r})' fill='${c}'/>`;
 const FLAGS = {
-  MEX: VT('#006847','#fff','#ce1126'),
+  MEX: FL(`<rect width='3' height='6' fill='#006847'/><rect x='3' width='3' height='6' fill='#fff'/><rect x='6' width='3' height='6' fill='#ce1126'/><g transform='translate(4.5 3)'><path d='M.05 -.5C.4 -.45 .55 -.2 .5 .05C.35 -.05 .2 -.05 .1 .05C.3 .1 .35 .35 .2 .55C.1 .35 -.05 .3 -.15 .4C-.2 .2 -.35 .15 -.55 .2C-.35 0 -.3 -.25 -.1 -.3C-.25 -.35 -.3 -.45 -.45 -.45C-.25 -.55 -.05 -.55 .05 -.5Z' fill='#5a3a1a'/><path d='M-.6 .72Q0 .98 .6 .72' fill='none' stroke='#2e6b34' stroke-width='.14'/></g>`),
   RSA: FL(`<rect width='9' height='3' fill='#e03c31'/><rect y='3' width='9' height='3' fill='#001489'/><path d='M0 0H1.2L4.4 2.1H9V3.9H4.4L1.2 6H0Z' fill='#fff'/><path d='M0 .35H1L4.4 2.45H9V3.55H4.4L1 5.65H0Z' fill='#007749'/><path d='M0 0L3.4 3 0 6Z' fill='#fff'/><path d='M0 .5L2.55 3 0 5.5Z' fill='#ffb81c'/><path d='M0 1L1.9 3 0 5Z' fill='#000'/>`),
   KOR: FL(`<rect width='9' height='6' fill='#fff'/><circle cx='4.5' cy='3' r='1.3' fill='#cd2e3a'/><path d='M4.5 1.7a1.3 1.3 0 0 1 0 2.6 .65 .65 0 0 0 0-1.3 .65 .65 0 0 1 0-1.3Z' fill='#0047a0'/>`),
   CZE: FL(`<rect width='9' height='3' fill='#fff'/><rect y='3' width='9' height='3' fill='#d7141a'/><path d='M0 0L4.2 3 0 6Z' fill='#11457e'/>`),
@@ -1104,14 +1104,14 @@ const FLAGS = {
   GER: HT('#000','#dd0000','#ffce00'),
   CUR: FL(`<rect width='9' height='6' fill='#002b7f'/><rect y='3.9' width='9' height='1.1' fill='#f9d90f'/>${st(1.6,1.6,.45,'#fff')}${st(2.8,2.6,.3,'#fff')}`),
   CIV: VT('#f77f00','#fff','#009e60'),
-  ECU: FL(`<rect width='9' height='3' fill='#ffd100'/><rect y='3' width='9' height='1.5' fill='#0072c6'/><rect y='4.5' width='9' height='1.5' fill='#ef3340'/><circle cx='4.5' cy='3' r='.55' fill='#7d6b3a'/>`),
+  ECU: FL(`<rect width='9' height='3' fill='#ffd100'/><rect y='3' width='9' height='1.5' fill='#0072c6'/><rect y='4.5' width='9' height='1.5' fill='#ef3340'/><ellipse cx='4.5' cy='2.85' rx='1' ry='1.15' fill='#f3d27a' stroke='#6b4f25' stroke-width='.12'/><path d='M3.7 2.5Q4.5 2.0 5.3 2.5Q4.5 2.32 3.7 2.5Z' fill='#34528f'/><path d='M3.95 3.05H5.05L4.5 3.5Z' fill='#2e6b34'/>`),
   NED: HT('#ae1c28','#fff','#21468b'),
   JPN: FL(`<rect width='9' height='6' fill='#fff'/><circle cx='4.5' cy='3' r='1.65' fill='#bc002d'/>`),
   SWE: FL(`<rect width='9' height='6' fill='#006aa7'/><rect x='2.7' width='1.2' height='6' fill='#fecc00'/><rect y='2.4' width='9' height='1.2' fill='#fecc00'/>`),
   TUN: FL(`<rect width='9' height='6' fill='#e70013'/><circle cx='4.5' cy='3' r='1.5' fill='#fff'/><circle cx='4.85' cy='3' r='1.1' fill='#e70013'/>${st(5.55,3,.5,'#e70013')}`),
   BEL: VT('#000','#fae042','#ed2939'),
-  EGY: FL(`<rect width='9' height='2' fill='#ce1126'/><rect y='2' width='9' height='2' fill='#fff'/><rect y='4' width='9' height='2' fill='#000'/>${st(4.5,3,.5,'#c09300')}`),
-  IRN: FL(`<rect width='9' height='2' fill='#239f40'/><rect y='2' width='9' height='2' fill='#fff'/><rect y='4' width='9' height='2' fill='#da0000'/>${st(4.5,3,.38,'#da0000')}`),
+  EGY: FL(`<rect width='9' height='2' fill='#ce1126'/><rect y='2' width='9' height='2' fill='#fff'/><rect y='4' width='9' height='2' fill='#000'/><g transform='translate(4.5 3)' fill='#bf9b30'><path d='M-.55 -.05C-.3 -.15 -.1 -.1 0 -.35C.1 -.1 .3 -.15 .55 -.05C.3 .05 .2 .2 .25 .4C.05 .25 -.05 .25 -.25 .4C-.2 .2 -.3 .05 -.55 -.05Z'/><rect x='-.1' y='.3' width='.2' height='.45'/></g>`),
+  IRN: FL(`<rect width='9' height='2' fill='#239f40'/><rect y='2' width='9' height='2' fill='#fff'/><rect y='4' width='9' height='2' fill='#da0000'/><g transform='translate(4.5 3)' fill='none' stroke='#da0000' stroke-width='.14' stroke-linecap='round'><path d='M0 .32V-.36'/><path d='M-.28 .28Q-.34 -.05 -.13 -.12'/><path d='M.28 .28Q.34 -.05 .13 -.12'/><path d='M-.15 .32Q-.18 .06 -.05 .0'/><path d='M.15 .32Q.18 .06 .05 .0'/></g>`),
   NZL: FL(`<rect width='9' height='6' fill='#00247d'/><use href='#uj' transform='scale(.5)'/>${st(7.4,1.7,.28,'#cc142b')}${st(6.5,3,.26,'#cc142b')}${st(7.9,3.7,.3,'#cc142b')}${st(7,4.7,.28,'#cc142b')}`),
   ESP: FL(`<rect width='9' height='6' fill='#aa151b'/><rect y='1.5' width='9' height='3' fill='#f1bf00'/><rect x='1.3' y='2.3' width='1' height='1.4' fill='#ad1519'/>`),
   CPV: FL(`<rect width='9' height='6' fill='#003893'/><rect y='3' width='9' height='1' fill='#fff'/><rect y='4' width='9' height='1' fill='#cf2027'/><rect y='5' width='9' height='1' fill='#fff'/>${[0,1,2,3,4,5,6,7,8,9].map(i=>st(3.5+1.05*Math.cos(i*0.628),3.45+1.05*Math.sin(i*0.628),.12,'#f7d116')).join('')}`),
