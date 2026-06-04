@@ -1439,7 +1439,7 @@ function thirdPlaceHTML(ranked){
 function renderGroups(){
   const gTeam = c => `<span class="fl">${TEAMS[c][1]}</span><span class="tn" data-team="${c}">${c}</span>`;
   const ranked = computeStandings();
-  let html = thirdPlaceHTML(ranked) + '<div class="groups-grid">';
+  let html = '<div class="groups-grid">';
   Object.keys(GROUPS).forEach((g,gi)=>{
     const gms = MATCHES.filter(m=>m.stage==="GROUP"&&m.group===g).sort((a,b)=>a.ts-b.ts);
     const playedN = gms.filter(m=>m.homeScore!=null).length;
@@ -1462,6 +1462,7 @@ function renderGroups(){
       <div class="gc-matches">${matches}</div></div>`;
   });
   html+='</div>';
+  html+=thirdPlaceHTML(ranked);   // best third-placed teams below the groups grid
   $("#view-groups").innerHTML=html;
 }
 
