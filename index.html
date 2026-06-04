@@ -859,7 +859,6 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 /* ---------------------------- TV BADGE ---------------------------- */
 .tv-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;color:var(--text-dim)}
 .mc .tv-badge{margin-top:5px;font-size:10px;color:var(--text-faint)}
-.tv-badge.tbc{opacity:.62;font-style:italic;font-weight:600}
 
 /* ---------------------------- SCORERS VIEW ---------------------------- */
 .sc-head{display:flex;align-items:baseline;gap:10px;margin:2px 0 18px}
@@ -1357,11 +1356,10 @@ function venueLineHTML(m){
     <span class="vn">${venueName(m.venue)}</span><span class="vc">${m.venue.city}</span>
     <span class="vt">${fmtVenueTime(m)}<em>local</em></span></div>`;
 }
-// Norwegian broadcaster badge (static schedule data). Muted "TBC" when unassigned.
+// Norwegian broadcaster badge (static schedule data). Only shown for confirmed
+// matches; unassigned matches render nothing.
 function tvBadge(m){
-  return m.tv
-    ? `<span class="tv-badge" title="Norwegian broadcaster">📺 ${m.tv}</span>`
-    : `<span class="tv-badge tbc" title="Norwegian broadcaster to be confirmed">📺 NRK / TV 2 TBC</span>`;
+  return m.tv ? `<span class="tv-badge" title="Norwegian broadcaster">📺 ${m.tv}</span>` : '';
 }
 function matchCardHTML(m){
   const col=stageColor(m.stage);
@@ -1766,7 +1764,7 @@ function renderTeam(code){
         <span class="tfx-opp">vs ${teamLink(opp)}</span>
         <span class="tfx-badge" style="--accent:${matchColor(m)}">${m.stage==='GROUP'?'Group '+m.group+' · MD'+m.md:STAGES[m.stage].label}</span>
       </div>
-      <div class="tfx-meta"><span>${venueNm} · ${tvBadge(m)}</span><span class="tfx-time">${m.homeScore!=null?`<b class="tfx-score">${m.homeScore}-${m.awayScore}</b> · `:''}${m.kickoffLocal}${m.plus?'+':''} NOR · ${fmtVenueTime(m)} local</span></div>
+      <div class="tfx-meta"><span>${venueNm}${m.tv?` · ${tvBadge(m)}`:''}</span><span class="tfx-time">${m.homeScore!=null?`<b class="tfx-score">${m.homeScore}-${m.awayScore}</b> · `:''}${m.kickoffLocal}${m.plus?'+':''} NOR · ${fmtVenueTime(m)} local</span></div>
     </div>`;
   }).join("");
   const gs=teamGoalStats(code);
@@ -2076,7 +2074,7 @@ function openMatch(i){
       <div class="mm-row"><span>Date</span><b>${wd} ${da} ${MO[mo-1]} 2026</b></div>
       ${v?`<div class="mm-row"><span>Stadium</span><b>${v.fifaName}</b></div>
       <div class="mm-row"><span></span><span class="mm-sub">${v.commonName} · ${v.city}, ${v.country} · ${v.capacity.toLocaleString()} seats</span></div>`:`<div class="mm-row"><span>Stadium</span><b>Venue TBC</b></div>`}
-      <div class="mm-row"><span>TV (Norway)</span><b>${m.tv||'NRK / TV 2 TBC'}</b></div>
+      ${m.tv?`<div class="mm-row"><span>TV (Norway)</span><b>${m.tv}</b></div>`:''}
     </div>
     ${isTeam(m.home)||isTeam(m.away)?`<div class="mm-hint">Tap a team to open its page</div>`:''}
   </div>`;
