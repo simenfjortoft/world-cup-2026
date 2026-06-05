@@ -939,6 +939,19 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 .bk-rcol.on{display:flex}
 .bk-rcol .bk-m{width:100%;margin:0}
 .bk-empty{color:var(--text-faint);text-align:center;padding:48px 16px}
+/* ---------------------------- WEATHER ---------------------------- */
+.wx-chip{display:inline-flex;align-items:center;gap:3px;margin-left:auto;font-size:11px;font-weight:700;color:var(--text-dim);font-variant-numeric:tabular-nums;white-space:nowrap;line-height:1}
+.wx-chip b{font-weight:800;color:var(--text)}
+.wx-chip.typ{color:var(--text-faint)} .wx-chip.typ b{color:var(--text-dim)}
+.cal-entry{position:relative}                                  /* anchor the corner temp */
+.cal-entry .wx-chip{position:absolute;top:3px;right:5px;margin:0;font-size:9.5px}
+.mm-wx{display:flex;align-items:center;gap:12px;margin-top:14px;padding:11px 13px;border-radius:12px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.03),transparent)}
+.mm-wx-ico{font-size:26px;line-height:1;flex:none}
+.mm-wx-mid{display:flex;flex-direction:column;gap:1px;min-width:0}
+.mm-wx-t{font-weight:800;font-size:18px;color:var(--text);font-variant-numeric:tabular-nums}
+.mm-wx-c{font-size:12px;color:var(--text-dim)}
+.mm-wx-r{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:2px;font-size:11px;color:var(--text-faint);font-variant-numeric:tabular-nums}
+.mm-wx-tag{font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint);border:1px solid var(--line);border-radius:5px;padding:1px 6px;margin-top:2px}
 </style>
 </head>
 <body>
@@ -1328,7 +1341,7 @@ function venueLineHTML(m){
   const tv=tvBadge(m);
   if(!m.venue) return `<div class="mc-venue tbc"><span class="vn">⚠ venue TBC</span>${tv}</div>`;
   return `<div class="mc-venue">
-    <span class="vn">${venueName(m.venue)}</span><span class="vc">${m.venue.city}</span>${tv}</div>`;
+    <span class="vn">${venueName(m.venue)}</span><span class="vc">${m.venue.city}</span>${tv}${wxChip(m)}</div>`;
 }
 /* Norwegian broadcaster per match (NRK and TV 2 share all 104, free-to-air).
    Group stage is fully assigned, keyed by the sorted team pair. Knockout channels
@@ -1592,7 +1605,7 @@ function calEntryHTML(m, extra){
   const teamAttr=(isTeam(m.home)?m.home:"")+" "+(isTeam(m.away)?m.away:"");
   return `<div class="cal-entry${extra?' cal-extra':''}${isTeam(m.home)?'':' cal-ko'}" style="--c:${c}" data-teams="${teamAttr.trim()}" data-mi="${m.i}" data-stage="${m.stage}" title="${title.replace(/"/g,'&quot;')}">
     <span class="ce-time">${m.kickoffLocal}${m.plus?'+':''}<i>${local}</i></span>
-    <span class="ce-teams">${teams}${m.homeScore!=null?`<span class="ce-res">${m.homeScore}-${m.awayScore}</span>`:''}</span></div>`;
+    <span class="ce-teams">${teams}${m.homeScore!=null?`<span class="ce-res">${m.homeScore}-${m.awayScore}</span>`:''}</span>${wxChip(m)}</div>`;
 }
 const CAL_MAX=3;   // entries shown per day cell on the desktop grid; the rest fold into "+N more"
 function monthGridHTML(year, month, label, byDate, todayStr, nextDate){
@@ -1840,6 +1853,47 @@ async function loadScorers(){
     if(vt && !vt.hidden && m && TEAMS[m[1]]) renderTeam(m[1]);
   }catch(e){ console.log('[scorers] data/scorers.json not available yet (run scripts/fetch-scorers.mjs)'); }
 }
+
+/* =====================================================================
+   WEATHER , per-match kickoff weather from data/weather.json
+   (scripts/fetch-weather.mjs · Open-Meteo). All °C. feels-like is the
+   heat-stress read that makes the US-summer venues matter. Forecast once a
+   match is within ~15 days, refined daily; a seasonal "typical" before that.
+   ===================================================================== */
+let WEATHER={}, WEATHER_SIG='';
+const WMO={0:['☀','Clear'],1:['🌤','Mainly clear'],2:['⛅','Partly cloudy'],3:['☁','Overcast'],
+  45:['🌫','Fog'],48:['🌫','Rime fog'],51:['🌦','Light drizzle'],53:['🌦','Drizzle'],55:['🌦','Dense drizzle'],
+  56:['🌧','Freezing drizzle'],57:['🌧','Freezing drizzle'],61:['🌧','Light rain'],63:['🌧','Rain'],65:['🌧','Heavy rain'],
+  66:['🌧','Freezing rain'],67:['🌧','Freezing rain'],71:['🌨','Light snow'],73:['🌨','Snow'],75:['🌨','Heavy snow'],77:['🌨','Snow grains'],
+  80:['🌦','Light showers'],81:['🌧','Showers'],82:['⛈','Violent showers'],85:['🌨','Snow showers'],86:['🌨','Snow showers'],
+  95:['⛈','Thunderstorm'],96:['⛈','Storm, hail'],99:['⛈','Storm, hail']};
+const wmo=code=>WMO[code]||['🌡',','];
+async function loadWeather(){
+  try{
+    const res=await fetch('data/weather.json?t='+Date.now(),{cache:'no-store'}); if(!res.ok) return;
+    const d=await res.json(); const sig=JSON.stringify(d.matches||{});
+    if(sig===WEATHER_SIG) return;                       // unchanged , no needless re-render
+    WEATHER_SIG=sig; WEATHER=d.matches||{};
+    console.log('[weather] loaded ·', d.lastUpdated, '·', Object.keys(WEATHER).length, 'matches');
+    if(Object.keys(WEATHER).length) rerenderViews();
+  }catch(e){ console.log('[weather] data/weather.json not available yet (run scripts/fetch-weather.mjs)'); }
+}
+// compact chip for match cards (schedule + calendar)
+function wxChip(m){
+  const w=WEATHER[m.i]; if(!w||w.c==null) return '';
+  const icon=w.typical?'🌡':wmo(w.code)[0], lab=w.typical?'Typical for this date':wmo(w.code)[1];
+  return `<span class="wx-chip${w.typical?' typ':''}" title="${lab}: ${w.c}°C${w.feels!=null?` (feels ${w.feels}°)`:''}">${icon}<b>${w.typical?'~':''}${w.c}°</b></span>`;
+}
+// full weather block for the match modal
+function wxRowHTML(m){
+  const w=WEATHER[m.i]; if(!w||w.c==null) return '';
+  const [icon,label]=wmo(w.code);
+  return `<div class="mm-wx">
+    <span class="mm-wx-ico">${w.typical?'🌡':icon}</span>
+    <div class="mm-wx-mid"><span class="mm-wx-t">${w.typical?'~':''}${w.c}°C</span><span class="mm-wx-c">${w.typical?'Seasonal average':label}</span></div>
+    <div class="mm-wx-r">${w.feels!=null?`<span>Feels ${w.feels}°</span>`:''}${w.hi!=null?`<span>H ${w.hi}° · L ${w.lo}°</span>`:''}<span class="mm-wx-tag">${w.typical?'Typical':'Forecast'}</span></div>
+  </div>`;
+}
 /* =====================================================================
    RESULTS OVERLAY
    One layer composes onto MATCHES (the single source of truth):
@@ -1893,7 +1947,7 @@ async function loadResults(){
 // loadResults(), which can't fire if a feed gap leaves one match without an 'FT' status.
 resultsTimer=setInterval(()=>{
   if(todayDateStr()>=RESULTS_FROZEN_AFTER){ clearInterval(resultsTimer); resultsTimer=0; console.log('[results] tournament over , polling stopped'); return; }
-  if(!document.hidden) loadResults();
+  if(!document.hidden){ loadResults(); loadWeather(); }   // weather refreshes too (cron writes weather.json a few times a day)
 }, RESULTS_POLL_MS);
 document.addEventListener('visibilitychange', ()=>{ if(resultsTimer && !document.hidden) loadResults(); });
 
@@ -2084,6 +2138,7 @@ function openMatch(i){
       <div class="mm-row"><span></span><span class="mm-sub">${v.commonName} · ${v.city}, ${v.country} · ${v.capacity.toLocaleString()} seats</span></div>`:`<div class="mm-row"><span>Stadium</span><b>Venue TBC</b></div>`}
       ${tvOf(m)?`<div class="mm-row"><span>TV (Norway)</span><b>${tvOf(m)}</b></div>`:''}
     </div>
+    ${wxRowHTML(m)}
     ${isTeam(m.home)||isTeam(m.away)?`<div class="mm-hint">Tap a team to open its page</div>`:''}
   </div>`;
   $("#match-modal").hidden=false; document.body.classList.add('modal-open');
@@ -2480,6 +2535,7 @@ applyGroupCollapse();
 loadSquads();
 loadResults();
 loadScorers();
+loadWeather();
 route();
 tick(); cdTimer=setInterval(tick,1000);
 setTimeout(()=>document.body.classList.remove('anim-intro'), 1100);   // intro done , hand entrance duties to viewIn on tab switches
