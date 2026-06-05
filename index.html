@@ -510,8 +510,9 @@ body.route-team .legend{display:none !important}
 .team-back{appearance:none;border:1px solid var(--line-strong);background:transparent;color:var(--text-dim);
   font-family:inherit;font-weight:700;font-size:13px;padding:8px 14px;border-radius:9px;cursor:pointer;margin:14px 0 20px;transition:color .18s var(--ease),border-color .18s var(--ease),background .18s var(--ease),transform .1s var(--ease)}
 .team-back:hover{color:var(--text);border-color:var(--green);background:rgba(25,224,138,.07)}
-.team-head{display:flex;align-items:center;gap:20px;padding-bottom:22px;border-bottom:1px solid var(--line)}
-.team-flag{font-size:52px;line-height:1;flex:none;filter:drop-shadow(0 3px 10px rgba(0,0,0,.5))}
+.team-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+.team-headmain{display:flex;flex-direction:column;align-items:flex-start;min-width:0}   /* flag stacks above the name so name/group left-align with the page (not pushed right by the flag) */
+.team-flag{font-size:52px;line-height:1;flex:none;margin-bottom:14px;filter:drop-shadow(0 3px 10px rgba(0,0,0,.5))}
 .team-flag .flagsvg{width:1.3em;height:.975em}
 .team-name{font-family:"Anton",sans-serif;font-weight:400;font-size:clamp(34px,7vw,64px);line-height:.88;margin:0;text-transform:uppercase;text-wrap:balance}
 .team-grp{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:13px;color:var(--text-faint);font-size:13px}
@@ -1781,9 +1782,11 @@ function renderTeam(code){
   $("#view-team").innerHTML=`
     <button class="team-back">← Back to all matches</button>
     <div class="team-head">
-      <span class="team-flag">${flag}</span>
-      <div><h2 class="team-name">${name}</h2>
-        <div class="team-grp"><span class="grp-tag" style="--gc:${GCOL[group]}">Group ${group}</span><span class="grp-with">with</span>${mates.map(c=>`<a class="mate-chip" data-team="${c}"><span class="mc-fl">${TEAMS[c][1]}</span>${TEAMS[c][0]}</a>`).join('')}</div></div>
+      <div class="team-headmain">
+        <span class="team-flag">${flag}</span>
+        <h2 class="team-name">${name}</h2>
+        <div class="team-grp"><span class="grp-tag" style="--gc:${GCOL[group]}">Group ${group}</span><span class="grp-with">with</span>${mates.map(c=>`<a class="mate-chip" data-team="${c}"><span class="mc-fl">${TEAMS[c][1]}</span>${TEAMS[c][0]}</a>`).join('')}</div>
+      </div>
       <button class="team-hl${selected.has(code)?' on':''}" data-hlteam="${code}">${selected.has(code)?'★ In filter':'☆ Show this team'}</button>
     </div>
     <div class="team-cols">
