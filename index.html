@@ -510,7 +510,7 @@ body.route-team .legend{display:none !important}
 .team-back{appearance:none;border:1px solid var(--line-strong);background:transparent;color:var(--text-dim);
   font-family:inherit;font-weight:700;font-size:13px;padding:8px 14px;border-radius:9px;cursor:pointer;margin:14px 0 20px 88px;transition:color .18s var(--ease),border-color .18s var(--ease),background .18s var(--ease),transform .1s var(--ease)}   /* left:88px = flag width (1.3em*52) + gap (20px), so the button lines up with the name */
 .team-back:hover{color:var(--text);border-color:var(--green);background:rgba(25,224,138,.07)}
-.team-head{display:flex;align-items:center;gap:20px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+.team-head{display:flex;align-items:flex-start;gap:20px;padding-bottom:22px;border-bottom:1px solid var(--line)}   /* flag lines up with the name (top), not centered against name+group so it droops to the group row */
 .team-headmain{display:flex;flex-direction:column;align-items:flex-start;min-width:0}   /* name + group column, beside the flag */
 .team-flag{font-size:52px;line-height:1;flex:none;filter:drop-shadow(0 3px 10px rgba(0,0,0,.5))}
 .team-flag .flagsvg{width:1.3em;height:.975em}
