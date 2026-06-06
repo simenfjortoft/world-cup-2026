@@ -744,6 +744,10 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 
   /* tighter sticky controls: trim padding + drop the redundant default status row */
   .controls .wrap{gap:10px;padding-top:10px;padding-bottom:10px}
+  /* 6 tabs do not fit a 360px phone at 13px/16px , compact them, AND allow horizontal scroll as a fallback (snap + hidden scrollbar) so nothing is cut off */
+  .segmented{flex:1 1 100%;max-width:100%;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
+  .segmented::-webkit-scrollbar{display:none}
+  .segmented button{font-size:12px;padding:7px 11px;flex:none;scroll-snap-align:start}
   body:not(.has-filter) .filter-status{display:none}
 
   /* lift fixtures: compact hero + countdown */
@@ -2261,7 +2265,8 @@ $("#tfSearch")?.addEventListener('input', e=>{
 const tabs=[...document.querySelectorAll('.segmented button')];
 const VIEW_NAMES=['schedule','groups','calendar','map','bracket','scorers'];
 function setActiveView(v){                                      // pure activation; routing is driven by the hash
-  tabs.forEach(b=>{ const on=b.dataset.view===v; b.setAttribute('aria-selected', on?'true':'false'); b.tabIndex=on?0:-1; });
+  tabs.forEach(b=>{ const on=b.dataset.view===v; b.setAttribute('aria-selected', on?'true':'false'); b.tabIndex=on?0:-1;
+    if(on && b.parentElement.scrollWidth>b.parentElement.clientWidth) b.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'}); });   // if the tab row scrolls, keep the active tab in view (mobile)
   if(v==='map'){ renderMap(); applyMapFilter(); fitToSelection(); }   // build on first open + honor the current global filter
   if(v==='bracket') requestAnimationFrame(bkFit);                     // measure + scale-to-fit once the view is visible
   if(v==='scorers') renderScorers();                                  // build leaderboard + team table on open
