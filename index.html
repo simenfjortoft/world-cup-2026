@@ -1284,7 +1284,7 @@ const FLAG_ISO = {
   FRA:'fr', SEN:'sn', IRQ:'iq', NOR:'no', ARG:'ar', ALG:'dz', AUT:'at', JOR:'jo',
   POR:'pt', COD:'cd', UZB:'uz', COL:'co', ENG:'gb-eng', CRO:'hr', GHA:'gh', PAN:'pa'
 };
-const escHtml = s => String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+const escHtml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');   // safe for both element text and attribute values
 Object.keys(TEAMS).forEach(c=>{
   const iso=FLAG_ISO[c];
   if(iso) TEAMS[c][1]=`<img class="flagsvg" src="flags/${iso}.svg" alt="${escHtml(TEAMS[c][0])}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'flag-fallback',textContent:'${c}'}))">`;
@@ -1909,7 +1909,7 @@ function bracketTree(){
 */
 const PREDICT={mode:false,picks:{}};
 const PREDICT_KEY='wc2026.predictions';
-const PREDICT_WEIGHT={R32:1,R16:2,QF:4,SF:8,FINAL:16};
+const PREDICT_WEIGHT={R32:1,R16:2,QF:4,SF:8,FINAL:16,"3RD":1};   // 3rd-place sides only become pickable post-SF (when L101/L102 resolve), so score it too
 try{ PREDICT.picks=JSON.parse(localStorage.getItem(PREDICT_KEY)||'{}')||{}; }catch(e){ PREDICT.picks={}; }
 function savePredictions(){ try{ localStorage.setItem(PREDICT_KEY, JSON.stringify(PREDICT.picks)); }catch(e){} }
 // resolve a slot code (W{n} or 1A/3ABCDF/...) to a concrete team code via actual results then predictions
@@ -1989,7 +1989,7 @@ function playerFocusHTML(){
       const pen=(p.penalties&&p.penalties>0)?`<span class="sc-pen" title="${p.penalties} penalty goal${p.penalties>1?'s':''}">${p.penalties} pen</span>`:'';
       return `<li class="sc-row"><span class="sc-rank">${i+1}</span>
         <span class="sc-fl">${fl}</span>
-        <a class="sc-nm tlink" data-team="${p.code}">${p.name}</a>
+        <a class="sc-nm tlink" data-team="${p.code}">${escHtml(p.name)}</a>
         <span class="sc-pos">${p.pos||''}</span>
         <span class="sc-goals">${p.goals}${pen}</span></li>`;
     }).join('')+`</ol>`;
@@ -2082,17 +2082,24 @@ function teamFocusHTML(){
 
 /* Golden Boot race , horizontal bar chart of the top 10. The free API gives only the
    running totals (no per-match events), so this is a CURRENT-STANDINGS race with each
-   bar sized as goals / leader goals. The ▲ chip shows movement since the last load,
-   computed against a snapshot stored in localStorage and refreshed on every render. */
+   bar sized as goals / leader goals. The ▲ chip shows movement since the last visit:
+   we diff against a localStorage snapshot but only OVERWRITE that snapshot when the
+   visit ends (page hidden / unload) , otherwise the second render inside a session
+   would erase the ▲ indicators by writing the current totals as the new baseline. */
 const SCORERS_SNAP_KEY='wc2026.scorersSnap';
 function scorerDeltas(list){
   let prev={}; try{ prev=JSON.parse(localStorage.getItem(SCORERS_SNAP_KEY)||'{}')||{}; }catch(e){}
-  const cur={}, deltas={};
-  list.forEach(p=>{ const k=p.name+'|'+p.code; cur[k]=p.goals; const d=p.goals-(prev[k]||0); if(d>0) deltas[k]=d; });
-  // persist new snapshot (best-effort; ignored if storage full)
-  try{ localStorage.setItem(SCORERS_SNAP_KEY, JSON.stringify(cur)); }catch(e){}
+  const deltas={};
+  list.forEach(p=>{ const d=p.goals-(prev[p.name+'|'+p.code]||0); if(d>0) deltas[p.name+'|'+p.code]=d; });
   return deltas;
 }
+function scorersSnapshotPersist(){
+  const list=(window.SCORERS&&window.SCORERS.scorers)||[]; if(!list.length) return;
+  const cur={}; list.forEach(p=>{ cur[p.name+'|'+p.code]=p.goals; });
+  try{ localStorage.setItem(SCORERS_SNAP_KEY, JSON.stringify(cur)); }catch(e){}
+}
+document.addEventListener('visibilitychange', ()=>{ if(document.hidden) scorersSnapshotPersist(); });
+window.addEventListener('pagehide', scorersSnapshotPersist);   // pagehide is more reliable than beforeunload on mobile Safari
 function scorerRaceHTML(list){
   if(!list.length) return `<section class="sc-sec sc-race-empty"><div class="sc-empty-art">⚽</div>
     <h3 class="team-h3">Golden Boot race<span>starts 11 Jun</span></h3>
@@ -2106,7 +2113,7 @@ function scorerRaceHTML(list){
     <div class="sc-boot-ico" aria-hidden="true">🥇</div>
     <div class="sc-boot-mid">
       <div class="sc-boot-lab">Golden Boot${tiedAtTop>1?` · ${tiedAtTop}-way tie`:''}</div>
-      <a class="sc-boot-name tlink" data-team="${leader.code}"><span class="sc-boot-fl">${fl}</span>${leader.name}</a>
+      <a class="sc-boot-name tlink" data-team="${leader.code}"><span class="sc-boot-fl">${fl}</span>${escHtml(leader.name)}</a>
     </div>
     <div class="sc-boot-n"><b>${leader.goals}</b><span>goals</span></div>
   </div>`;
@@ -2114,10 +2121,10 @@ function scorerRaceHTML(list){
     const flag=TEAMS[p.code]?TEAMS[p.code][1]:'';
     const w=Math.max(4, Math.round((p.goals/topG)*100));
     const d=deltas[p.name+'|'+p.code];
-    return `<a class="sc-race-row tlink" data-team="${p.code}" title="${p.name} · ${TEAMS[p.code]?TEAMS[p.code][0]:p.code} · ${p.goals} goals">
+    return `<a class="sc-race-row tlink" data-team="${p.code}" title="${escHtml(p.name)} · ${TEAMS[p.code]?TEAMS[p.code][0]:p.code} · ${p.goals} goals">
       <span class="sc-race-rk">${i+1}</span>
       <span class="sc-race-fl">${flag}</span>
-      <span class="sc-race-nm">${p.name}</span>
+      <span class="sc-race-nm">${escHtml(p.name)}</span>
       <span class="sc-race-bar"><span class="sc-race-fill" style="width:${w}%"></span></span>
       <span class="sc-race-g">${p.goals}${d?`<span class="sc-race-d">▲ +${d}</span>`:''}</span>
     </a>`;
@@ -2242,7 +2249,7 @@ function renderTeam(code){
       .map(([k,v])=>`<div class="ts"><span>${k}</span><b>${v}</b></div>`).join('')}</div>`;
   const tsc=((window.SCORERS&&window.SCORERS.scorers)||[]).filter(p=>p.code===code).sort((a,b)=>b.goals-a.goals);
   const scorersBlock = tsc.length
-    ? `<div class="team-scorers">${tsc.map(p=>`<div class="tsc-row"><span class="tsc-nm">${p.name}</span><span class="tsc-g">${p.goals}${(p.penalties&&p.penalties>0)?` <span class="sc-pen">${p.penalties} pen</span>`:''}</span></div>`).join('')}</div>`
+    ? `<div class="team-scorers">${tsc.map(p=>`<div class="tsc-row"><span class="tsc-nm">${escHtml(p.name)}</span><span class="tsc-g">${p.goals}${(p.penalties&&p.penalties>0)?` <span class="sc-pen">${p.penalties} pen</span>`:''}</span></div>`).join('')}</div>`
     : `<p class="sq-note">No goals yet for ${name}.</p>`;
   $("#view-team").innerHTML=`
     <button class="team-back">← Back to all matches</button>
@@ -2280,7 +2287,7 @@ function renderSquad(code){
     const list=byPos[pos].slice().sort((a,b)=>(a.number||99)-(b.number||99));
     if(!list.length) return '';
     return `<div class="sq-group"><div class="sq-pos">${label[pos]} <span style="color:var(--text-faint);font-weight:700">${list.length}</span></div>${list.map(p=>
-      `<div class="sq-row"><span class="sq-no">${p.number||''}</span><span class="sq-nm">${p.name}${p.status?` <span class="sq-st sq-${p.status}">${({injured:'INJ',suspended:'SUSP',doubtful:'?'})[p.status]||p.status}</span>`:''}</span><span class="sq-cl">${p.club||''}</span></div>`).join("")}</div>`;
+      `<div class="sq-row"><span class="sq-no">${p.number||''}</span><span class="sq-nm">${escHtml(p.name)}${p.status?` <span class="sq-st sq-${p.status}">${({injured:'INJ',suspended:'SUSP',doubtful:'?'})[p.status]||escHtml(p.status)}</span>`:''}</span><span class="sq-cl">${escHtml(p.club||'')}</span></div>`).join("")}</div>`;
   }).join("");
 }
 async function loadSquads(){
