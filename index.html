@@ -475,7 +475,12 @@ body.filtering .orient,.orient b{color:var(--text-dim)}
 @media (max-width:560px){
   .teamfilter{flex:1 1 100%;order:2}
   .tf-trigger{width:100%;justify-content:space-between}
-  .tf-panel{width:100%}
+  /* phones: open as a full-width bottom sheet so all 48 teams are easy to browse */
+  .tf-panel{position:fixed;left:0;right:0;bottom:0;top:auto;width:100%;max-height:78vh;display:flex;flex-direction:column;
+    border-radius:18px 18px 0 0;padding:14px 14px 18px;transform-origin:bottom center;transform:translateY(20px)}
+  body.tf-open .tf-panel{transform:none}
+  .tf-list{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  body.tf-open{overflow:hidden}   /* lock background scroll while the sheet is open */
 }
 
 /* ---------------------------- CALENDAR VIEW ---------------------------- */
@@ -1985,6 +1990,7 @@ function route(){
   closeMatch();
   const tm=/^#team\/([A-Z]{3})$/.exec(location.hash);
   if(tm && TEAMS[tm[1]]){                                       // team sub-page
+    VIEW_NAMES.forEach(n=>{ const el=$("#view-"+n); if(el) el.hidden=true; });   // keep .hidden in sync with the route-team display:none, so the attribute matches reality (a11y + any code reading el.hidden)
     renderTeam(tm[1]); document.body.classList.add('route-team'); $("#view-team").hidden=false;
     document.title=`${TEAMS[tm[1]][0]} · ${SITE}`;
     window.scrollTo(0,0); return;
