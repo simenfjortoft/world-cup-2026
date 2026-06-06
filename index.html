@@ -103,6 +103,12 @@ header.hero{padding:clamp(34px,7vw,76px) 0 clamp(20px,3vw,30px);position:relativ
   margin:0 0 14px;
 }
 .kicker .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
+.kicker .today{margin-left:14px;padding:3px 9px;border:1px solid var(--line);border-radius:999px;font-size:.88em;letter-spacing:.04em;color:var(--text-dim);font-variant-numeric:tabular-nums}
+.kicker .today b{color:var(--text);font-weight:800;margin-right:5px;letter-spacing:.02em}
+.cd-sub{margin:10px 0 0;font-size:13px;color:var(--text-dim);text-align:center;font-weight:600;font-variant-numeric:tabular-nums;text-wrap:balance;min-height:1.2em}
+.cd-sub b{color:var(--text);font-weight:800}
+.cd-sub .cd-vs{margin:0 7px;color:var(--text-faint);font-weight:700}
+.cd-sub .cd-trophy{font-size:18px;margin-right:5px;vertical-align:-2px}
 .kicker .hosts{color:var(--text-dim);letter-spacing:.22em;font-weight:600}
 h1.title{
   font-family:"Anton",sans-serif;font-weight:400;
@@ -979,7 +985,7 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 
 <header class="hero">
   <div class="wrap">
-    <p class="kicker"><span class="dot"></span> FIFA World Cup <span class="hosts">· USA · Canada · Mexico</span></p>
+    <p class="kicker"><span class="dot"></span> FIFA World Cup <span class="hosts">· USA · Canada · Mexico</span><span class="today" id="today" title="Norwegian time"></span></p>
     <h1 class="title">World Cup <span class="yr">2026</span></h1>
     <div class="subline">
       <span class="tz-badge">
@@ -997,6 +1003,7 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
       <span class="cd-unit"><span class="cd-num" id="cd-m">-</span><span class="cd-u">Min</span></span>
       <span class="cd-unit"><span class="cd-num" id="cd-s">-</span><span class="cd-u">Sec</span></span>
     </div>
+    <p class="cd-sub" id="cd-sub" aria-live="polite"></p>   <!-- pre: opener teams · live: next match teams · post: champion -->
   </div>
 </header>
 
@@ -2517,17 +2524,64 @@ function bindMapInteractions(){
    COUNTDOWN
    ===================================================================== */
 let cdTimer;
+const TODAY_WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+// the next match whose kickoff is in the future AND that isn't already played
+function nextMatchInfo(now){
+  for(const m of MATCHES){ if(m.ts>now && m.homeScore==null) return m; }   // schedule order is chronological
+  return null;
+}
+// pretty subtitle line for a match: "Mexico vs South Africa" (resolves slots if known)
+function matchSub(m){
+  const side=c=>isTeam(c)?`<b>${TEAMS[c][0]}</b>`:`<span class="bk-slot">${slotText(c)}</span>`;
+  return `${side(m.home)}<span class="cd-vs">vs</span>${side(m.away)}`;
+}
+// once the Final has a winner, surface the champion in place of the countdown
+function champion(){
+  const final=MATCHES.find(m=>m.stage==='FINAL');
+  if(!final || final.homeScore==null) return null;
+  return final.homeScore>final.awayScore ? final.home : (final.awayScore>final.homeScore ? final.away : null);
+}
 function tick(){
-  const diff=OPENER_TS-Date.now();
-  const cd=$("#countdown");
-  if(diff<=0){ cd.classList.add('live');
-    $("#cd-d").textContent="0";$("#cd-h").textContent="00";$("#cd-m").textContent="00";$("#cd-s").textContent="00";
-    $(".cd-label",cd).textContent="Tournament"; clearInterval(cdTimer); return; }
+  // today chip (always)
+  const now=new Date();
+  $("#today").innerHTML=`<b>Today</b>${TODAY_WD[now.getDay()]} ${now.getDate()} ${MO[now.getMonth()]}`;
+  const cd=$("#countdown"), label=$(".cd-label",cd), sub=$("#cd-sub");
+  const ts=Date.now();
+  // phase 3: tournament over , a champion has been crowned
+  const champ=champion();
+  if(champ){
+    cd.classList.add('live');
+    $("#cd-d").textContent="🏆"; $("#cd-h").textContent="00"; $("#cd-m").textContent="00"; $("#cd-s").textContent="00";
+    label.textContent="Champions";
+    sub.innerHTML=`<span class="cd-trophy">🏆</span><b>${TEAMS[champ][0]}</b>`;
+    clearInterval(cdTimer); return;
+  }
+  // phase 1 or 2: count down to the next match (opener pre-tournament, next unplayed match during)
+  const next=nextMatchInfo(ts);
+  if(!next){                                                    // post-final but no champion yet (e.g. score not in feed)
+    cd.classList.add('live');
+    $("#cd-d").textContent="0"; $("#cd-h").textContent="00"; $("#cd-m").textContent="00"; $("#cd-s").textContent="00";
+    label.textContent="Tournament complete";
+    sub.textContent='';
+    clearInterval(cdTimer); return;
+  }
+  const diff=next.ts-ts;
+  // a match is in-play (within ~110 min of kickoff and not yet final) , show LIVE
+  if(diff<=0){
+    cd.classList.add('live');
+    $("#cd-d").textContent="LIVE"; $("#cd-h").textContent="00"; $("#cd-m").textContent="00"; $("#cd-s").textContent="00";
+    label.textContent="In play";
+    sub.innerHTML=matchSub(next);
+    return;
+  }
+  cd.classList.remove('live');
+  label.textContent=(next.i===0) ? 'Kickoff in' : 'Next match in';   // opener vs any subsequent match
   const d=Math.floor(diff/864e5), h=Math.floor(diff/36e5)%24, m=Math.floor(diff/6e4)%60, s=Math.floor(diff/1e3)%60;
   $("#cd-d").textContent=d;
   $("#cd-h").textContent=String(h).padStart(2,'0');
   $("#cd-m").textContent=String(m).padStart(2,'0');
   $("#cd-s").textContent=String(s).padStart(2,'0');
+  sub.innerHTML=matchSub(next);
 }
 
 /* =====================================================================
