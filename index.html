@@ -264,6 +264,20 @@ main{padding:18px 0 70px;position:relative}
 .today-pill{font-size:10px;font-weight:800;letter-spacing:.12em;color:#062013;background:var(--green);padding:4px 9px;border-radius:999px}
 
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(335px,1fr));gap:13px}
+/* finished day , collapses by default into the header + a results peek */
+.day-done .day-head{cursor:pointer;user-select:none}
+.day-done:not(.day-open) .cards{display:none}
+.day-done:not(.day-open) .day-head .line{display:none}        /* the peek takes the line's place when collapsed */
+.day-done.day-open .day-peek{display:none}
+.day:not(.day-done) .day-peek,.day:not(.day-done) .day-chev{display:none}
+.day-peek{flex:1;min-width:0;display:flex;align-items:center;gap:8px;overflow:hidden;white-space:nowrap;font-size:12px;color:var(--text-faint);font-variant-numeric:tabular-nums;-webkit-mask-image:linear-gradient(90deg,#000 86%,transparent);mask-image:linear-gradient(90deg,#000 86%,transparent)}
+.day-peek .dp-m{color:var(--text-dim)} .day-peek .dp-m b{color:var(--text);font-weight:800}
+.day-peek .dp-sep{color:var(--line-strong)}
+.day-chev{width:18px;height:18px;color:var(--text-faint);transition:transform .2s var(--ease);flex:none}
+.day-done:not(.day-open) .day-chev{transform:rotate(-90deg)}
+.day-head:hover .day-chev{color:var(--text-dim)}
+.mc-done{opacity:.62;transition:opacity .2s var(--ease)}   /* played matches recede so the eye goes to what's next */
+.mc-done:hover{opacity:1}
 
 /* match card */
 .mc{
@@ -940,7 +954,8 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 .bk-rcol .bk-m{width:100%;margin:0}
 .bk-empty{color:var(--text-faint);text-align:center;padding:48px 16px}
 /* ---------------------------- WEATHER ---------------------------- */
-.wx-chip{display:inline-flex;align-items:center;gap:3px;margin-left:auto;font-size:11px;font-weight:700;color:var(--text-dim);font-variant-numeric:tabular-nums;white-space:nowrap;line-height:1}
+.mc-vx{margin-left:auto;display:inline-flex;align-items:center;gap:9px;flex:none}   /* TV badge + weather as one right-aligned cluster , consistent across cards */
+.wx-chip{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;color:var(--text-dim);font-variant-numeric:tabular-nums;white-space:nowrap;line-height:1}
 .wx-chip b{font-weight:800;color:var(--text)}
 .wx-chip.typ{color:var(--text-faint)} .wx-chip.typ b{color:var(--text-dim)}
 .cal-entry{position:relative}                                  /* anchor the corner temp */
@@ -1339,9 +1354,9 @@ function sideHTML(code, away){
 // venue + dual-zone kickoff line (FIFA name by default, host city, Norwegian + venue-local time)
 function venueLineHTML(m){
   const tv=tvBadge(m);
-  if(!m.venue) return `<div class="mc-venue tbc"><span class="vn">⚠ venue TBC</span>${tv}</div>`;
+  if(!m.venue) return `<div class="mc-venue tbc"><span class="vn">⚠ venue TBC</span><span class="mc-vx">${tv}${wxChip(m)}</span></div>`;
   return `<div class="mc-venue">
-    <span class="vn">${venueName(m.venue)}</span><span class="vc">${m.venue.city}</span>${tv}${wxChip(m)}</div>`;
+    <span class="vn">${venueName(m.venue)}</span><span class="vc">${m.venue.city}</span><span class="mc-vx">${tv}${wxChip(m)}</span></div>`;
 }
 /* Norwegian broadcaster per match (NRK and TV 2 share all 104, free-to-air).
    Group stage is fully assigned, keyed by the sorted team pair. Knockout channels
@@ -1390,7 +1405,7 @@ function matchCardHTML(m){
       ${m.venue?`<span class="mc-local">${fmtVenueTime(m)} <em>${m.venue.city}</em></span>`:""}</div>`;
   const trophy = isFinal?`<span class="trophy">🏆</span>`:"";
   const teamAttr = (isTeam(m.home)?m.home:"")+" "+(isTeam(m.away)?m.away:"");
-  return `<article class="mc${isFinal?' is-final':''}" style="--accent:${col}" data-teams="${teamAttr.trim()}" data-mi="${m.i}">
+  return `<article class="mc${isFinal?' is-final':''}${m.homeScore!=null?' mc-done':''}" style="--accent:${col}" data-teams="${teamAttr.trim()}" data-mi="${m.i}">
     ${trophy}<div class="mc-top">${badge}${time}</div>
     <div class="mc-body">${sideHTML(m.home,false)}${m.homeScore!=null?`<span class="vs score">${m.homeScore}<i>-</i>${m.awayScore}</span>`:`<span class="vs">${isFinal?'VS':'-'}</span>`}${sideHTML(m.away,true)}</div>
     ${venueLineHTML(m)}
@@ -1420,13 +1435,18 @@ function renderSchedule(){
     const [y,mo,da]=d.split('-').map(Number);
     const wd=WD[new Date(Date.UTC(y,mo-1,da)).getUTCDay()];
     const isToday=d===todayStr;
+    const finished=day.every(m=>m.homeScore!=null);           // a fully-played day collapses by default (today + upcoming stay open)
+    const open=finished&&openDays.has(d);                     // unless the user expanded it (kept across re-renders)
     const cards=day.map(matchCardHTML).join("");
-    html+=`<section class="day" data-stage="${stage}" data-date="${d}">
-      <div class="day-head">
+    const peek=finished?day.map(m=>`<span class="dp-m">${m.home} <b>${m.homeScore}-${m.awayScore}</b> ${m.away}</span>`).join('<span class="dp-sep">·</span>'):'';
+    html+=`<section class="day${finished?' day-done':''}${open?' day-open':''}" data-stage="${stage}" data-date="${d}">
+      <div class="day-head"${finished?` role="button" tabindex="0" aria-expanded="${open?'true':'false'}"`:''}>
         <span class="day-num">${da}</span>
         <span class="day-mwd"><span class="mo">${MO[mo-1]}</span><span class="wd">${wd}</span></span>
         ${isToday?'<span class="today-pill">Today</span>':''}
+        ${finished?`<span class="day-peek">${peek}</span>`:''}
         <span class="line"></span><span class="cnt">${day.length} ${day.length>1?'matches':'match'}</span>
+        ${finished?'<svg class="day-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>':''}
       </div>
       <div class="cards">${cards}</div></section>`;
   });
@@ -1993,6 +2013,7 @@ const selected = new Set();
 try{ JSON.parse(localStorage.getItem('wc2026.sel')||'[]').forEach(c=>TEAMS[c]&&selected.add(c)); }catch(e){}
 let collapsedStages = new Set(JSON.parse(localStorage.getItem('wc2026.folds')||'[]'));
 let collapsedGroups = new Set(JSON.parse(localStorage.getItem('wc2026.gfolds')||'[]'));
+let openDays = new Set();   // finished days the user re-opened (session-only; finished days collapse by default each render)
 
 // cache node lists once after render (they never change) so filtering doesn't re-query the DOM
 let MC=[], GTEAM=[], GMATCH=[], CAL=[], DAYS=[], BANNER=[];
@@ -2169,6 +2190,10 @@ document.addEventListener('click', e=>{
   if(rb){ roundFilter=rb.dataset.round; localStorage.setItem('wc2026.round',roundFilter); applyRound(); return; } // round filter
   const gbtn=e.target.closest('.gb');
   if(gbtn){ toggleGroup(gbtn.dataset.grp); return; }                  // group filter chip = toggle the group's teams
+  const dh=e.target.closest('.day-done .day-head');
+  if(dh){ const sec=dh.closest('.day'), d=sec.dataset.date, willOpen=!openDays.has(d);   // expand/collapse a finished day
+    willOpen?openDays.add(d):openDays.delete(d); sec.classList.toggle('day-open',willOpen); dh.setAttribute('aria-expanded',willOpen?'true':'false');
+    if(willOpen) revealFade([...sec.querySelectorAll('.mc')]); return; }
   const sb=e.target.closest('.stage-banner');
   if(sb){ const s=sb.dataset.stage, wasFolded=collapsedStages.has(s); wasFolded?collapsedStages.delete(s):collapsedStages.add(s); applyStageFold(); if(wasFolded) revealFade([...document.querySelectorAll(`.day[data-stage="${s}"]`)]); return; } // fold/expand a stage
   const gcol=e.target.closest('[data-gcol]');
@@ -2191,7 +2216,7 @@ document.addEventListener('click', e=>{
 });
 document.addEventListener('keydown', e=>{
   if(e.key==='Escape'){ if(document.body.classList.contains('tf-open')){ tfOpen(false); return; } closeMatch(); return; }
-  if(e.key==='Enter'||e.key===' '){ const t=e.target.closest('.stage-banner,[data-gcol],[data-hlteam]'); if(t){ e.preventDefault(); t.click(); } }
+  if(e.key==='Enter'||e.key===' '){ const t=e.target.closest('.stage-banner,.day-done .day-head,[data-gcol],[data-hlteam]'); if(t){ e.preventDefault(); t.click(); } }
 });
 /* ---- team filter , custom multi-select dropdown ---- */
 function renderTeamFilter(){
@@ -2272,6 +2297,14 @@ function calScrollToFocus(){
   if(!el) return;
   const far = Math.abs(el.getBoundingClientRect().top) > window.innerHeight*1.5;
   el.scrollIntoView({behavior:(REDUCE.matches||far)?'auto':'smooth', block:'center'});
+}
+// on first load, land the Schedule on today's day (or the next match day) , below the sticky controls
+function schedScrollToFocus(){
+  const target = nextMatchDate(todayDateStr()) || MATCH_DATES[0];
+  const el = $(`#view-schedule .day[data-date="${target}"]`); if(!el) return;
+  const ctrlH = ($(".controls")?.getBoundingClientRect().height || 0) + 16;
+  const y = el.getBoundingClientRect().top + window.scrollY - ctrlH;
+  if(y > 60) window.scrollTo({top:y, behavior:'auto'});   // instant jump on load; only if today is below the top
 }
 
 /* =====================================================================
@@ -2537,6 +2570,7 @@ loadResults();
 loadScorers();
 loadWeather();
 route();
+if(!$("#view-schedule").hidden) setTimeout(schedScrollToFocus, 260);   // first load: land the Schedule on today's day
 tick(); cdTimer=setInterval(tick,1000);
 setTimeout(()=>document.body.classList.remove('anim-intro'), 1100);   // intro done , hand entrance duties to viewIn on tab switches
 </script>
