@@ -106,7 +106,9 @@ header.hero{padding:clamp(34px,7vw,76px) 0 clamp(20px,3vw,30px);position:relativ
 .kicker .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green);flex:none}
 .kicker .today{padding:3px 9px;border:1px solid var(--line);border-radius:999px;font-size:.88em;letter-spacing:.04em;color:var(--text-dim);font-variant-numeric:tabular-nums;white-space:nowrap}
 .kicker .today b{color:var(--text);font-weight:800;margin-right:5px;letter-spacing:.02em}
-.cd-sub{margin:10px 0 0;font-size:13px;color:var(--text-dim);text-align:center;font-weight:600;font-variant-numeric:tabular-nums;text-wrap:balance;min-height:1.2em}
+.cd-sub{margin:0;padding:10px 16px;font-size:13px;color:var(--text-dim);text-align:center;font-weight:600;font-variant-numeric:tabular-nums;text-wrap:balance;min-height:1.2em;
+  border-top:1px solid var(--line);background:rgba(0,0,0,.18)}      /* separated row inside the countdown card */
+.cd-sub:empty{display:none}                                            /* hide the row entirely when there's nothing to show (e.g. 'Tournament complete' phase) */
 .cd-sub.is-clickable{cursor:pointer}
 .cd-sub b{color:var(--text);font-weight:800}
 /* team names become tappable pills inside the line; click → team page (the rest of the line opens the match modal) */
@@ -141,10 +143,11 @@ h1.title .yr{
 
 /* countdown */
 .countdown{
-  display:inline-flex;align-items:stretch;gap:2px;margin-top:26px;
+  display:inline-flex;flex-direction:column;align-items:stretch;margin-top:26px;
   border:1px solid var(--line);border-radius:14px;overflow:hidden;
   background:linear-gradient(180deg,rgba(255,255,255,.025),transparent);
 }
+.cd-row{display:flex;align-items:stretch;gap:2px}
 .cd-label{
   display:flex;align-items:center;padding:0 16px;
   font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
@@ -1017,13 +1020,15 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
       <span class="sep"></span><span>11 Jun - 19 Jul 2026</span>
     </div>
     <div class="countdown" id="countdown" role="timer" aria-live="off">
-      <span class="cd-label" aria-live="polite">Kickoff in</span>
-      <span class="cd-unit"><span class="cd-num" id="cd-d">-</span><span class="cd-u">Days</span></span>
-      <span class="cd-unit"><span class="cd-num" id="cd-h">-</span><span class="cd-u">Hrs</span></span>
-      <span class="cd-unit"><span class="cd-num" id="cd-m">-</span><span class="cd-u">Min</span></span>
-      <span class="cd-unit"><span class="cd-num" id="cd-s">-</span><span class="cd-u">Sec</span></span>
+      <div class="cd-row">
+        <span class="cd-label" aria-live="polite">Kickoff in</span>
+        <span class="cd-unit"><span class="cd-num" id="cd-d">-</span><span class="cd-u">Days</span></span>
+        <span class="cd-unit"><span class="cd-num" id="cd-h">-</span><span class="cd-u">Hrs</span></span>
+        <span class="cd-unit"><span class="cd-num" id="cd-m">-</span><span class="cd-u">Min</span></span>
+        <span class="cd-unit"><span class="cd-num" id="cd-s">-</span><span class="cd-u">Sec</span></span>
+      </div>
+      <p class="cd-sub" id="cd-sub" aria-live="polite"></p>   <!-- pre: opener teams · live: next match teams · post: champion -->
     </div>
-    <p class="cd-sub" id="cd-sub" aria-live="polite"></p>   <!-- pre: opener teams · live: next match teams · post: champion -->
   </div>
 </header>
 
