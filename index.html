@@ -1063,7 +1063,27 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 /* the Final is centered on the bracket midline (so the SF connectors stay straight); trophy + 3rd float around it */
 .bk-center{position:relative;display:flex;align-items:center;justify-content:center;padding:0 6px;min-width:172px}
 .bk-trophy{position:absolute;left:50%;bottom:calc(50% + 44px);transform:translateX(-50%);font-size:30px;line-height:1;filter:drop-shadow(0 0 16px rgba(244,200,75,.45))}
+/* predictions toolbar */
+.bk-pred-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0 0 14px;padding:11px 14px;border-radius:12px;
+  background:linear-gradient(180deg,rgba(255,255,255,.025),transparent),var(--surface);border:1px solid var(--line)}
+.bk-pred-bar.is-on{border-color:rgba(244,200,75,.45);background:linear-gradient(180deg,rgba(244,200,75,.06),transparent 60%),var(--surface);box-shadow:0 0 0 1px rgba(244,200,75,.18) inset}
+.bk-pred-lab{flex:1;min-width:0;font-size:12px;color:var(--text-dim);font-weight:600}
+.bk-pred-score{font-size:12px;color:var(--text-dim);font-variant-numeric:tabular-nums;font-weight:700;padding:5px 10px;border-radius:7px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+.bk-pred-score b{color:var(--text);font-weight:800;font-size:14px}
+.bk-pred-score small{color:var(--text-faint);font-weight:600}
+.bk-pred-btn{appearance:none;border:1px solid var(--line-strong);background:transparent;color:var(--text-dim);font-family:inherit;font-weight:700;font-size:12.5px;padding:7px 14px;border-radius:999px;cursor:pointer;transition:color .15s var(--ease),border-color .15s var(--ease),background .15s var(--ease),transform .1s var(--ease)}
+.bk-pred-btn:hover{color:var(--text);border-color:var(--green);background:rgba(25,224,138,.08)}
+.bk-pred-btn:active{transform:scale(.96)}
+.bk-pred-btn.bk-pred-on{background:var(--st-FINAL);color:#221700;border-color:var(--st-FINAL);box-shadow:0 4px 14px rgba(244,200,75,.28)}
+.bk-pred-clear{appearance:none;border:1px solid var(--line);background:transparent;color:var(--text-faint);font-family:inherit;font-weight:700;font-size:11.5px;padding:6px 11px;border-radius:8px;cursor:pointer;transition:color .15s var(--ease),border-color .15s var(--ease)}
+.bk-pred-clear:hover{color:var(--text);border-color:rgba(239,83,80,.5)}
+/* sides in predict mode */
 .bk-m{position:relative;width:142px;margin:6px 0;background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--c,var(--green));border-radius:9px;overflow:hidden;cursor:pointer;transition:border-color .15s var(--ease),transform .1s var(--ease)}
+.bk-m-predict{cursor:default}
+.bk-m-predict .bk-side.bk-pickable{cursor:pointer;transition:background .15s var(--ease)}
+.bk-m-predict .bk-side.bk-pickable:hover{background:rgba(244,200,75,.08)}
+.bk-m-predict .bk-side.bk-pick{background:linear-gradient(90deg,rgba(244,200,75,.20),rgba(244,200,75,.06));box-shadow:inset 3px 0 0 var(--st-FINAL)}
+.bk-m-predict .bk-side.bk-pick .bk-cd{color:var(--st-FINAL)}
 .bk-m:hover{border-color:var(--line-strong)}
 .bk-m:active{transform:scale(.96)}
 .bk-side{display:flex;align-items:center;gap:7px;padding:6px 9px;font-size:12px;min-width:0}
@@ -1867,6 +1887,51 @@ function bracketTree(){
   const build=m=>!m?null:({m, home:build(feeder(m.home)), away:build(feeder(m.away))});
   return { root: build(byN[104]), third: byN[103]||null };
 }
+
+/* ---------------------------- BRACKET PREDICTIONS ----------------------------
+   Local-only bracket picks: you toggle "Predict mode" and tap a side to mark your
+   winner; the pick propagates to the next round automatically. Actual results
+   always override picks, so once a match is played the bracket reverts to truth.
+   Scored as 1·R32, 2·R16, 4·QF, 8·SF, 16·Final = 80 pts total possible.
+*/
+const PREDICT={mode:false,picks:{}};
+const PREDICT_KEY='wc2026.predictions';
+const PREDICT_WEIGHT={R32:1,R16:2,QF:4,SF:8,FINAL:16};
+try{ PREDICT.picks=JSON.parse(localStorage.getItem(PREDICT_KEY)||'{}')||{}; }catch(e){ PREDICT.picks={}; }
+function savePredictions(){ try{ localStorage.setItem(PREDICT_KEY, JSON.stringify(PREDICT.picks)); }catch(e){} }
+// resolve a slot code (W{n} or 1A/3ABCDF/...) to a concrete team code via actual results then predictions
+function effectiveCode(slotCode){
+  if(isTeam(slotCode)) return slotCode;
+  const mm=/^W(\d+)$/.exec(slotCode); if(!mm) return slotCode;
+  const feeder=MATCHES.find(x=>x.n===+mm[1]); if(!feeder) return slotCode;
+  return bkWinner(feeder) || PREDICT.picks[feeder.i] || slotCode;
+}
+function setPick(matchIdx,winnerCode){
+  if(!isTeam(winnerCode)) return;
+  const m=MATCHES[matchIdx]; if(!m || bkWinner(m)) return;                 // can't predict an already-decided match
+  if(PREDICT.picks[matchIdx]===winnerCode) delete PREDICT.picks[matchIdx]; // tapping your pick again clears it
+  else PREDICT.picks[matchIdx]=winnerCode;
+  // clearing/changing this match invalidates predictions for descendants that fed on this winner , prune them
+  const dependants=m=>MATCHES.filter(x=>x.stage!=='GROUP' && (x.home===`W${m.n}` || x.away===`W${m.n}`));
+  (function prune(curM){ dependants(curM).forEach(d=>{
+    if(PREDICT.picks[d.i] && PREDICT.picks[d.i]!==effectiveCode(d.home) && PREDICT.picks[d.i]!==effectiveCode(d.away)){
+      delete PREDICT.picks[d.i]; prune(d);                                  // cascade only if the previously-picked team is no longer in the slot
+    } });
+  })(m);
+  savePredictions(); renderBracket();
+}
+function clearPredictions(){ PREDICT.picks={}; savePredictions(); renderBracket(); }
+function predictionScore(){
+  let earned=0, possible=0, decided=0;
+  MATCHES.forEach(m=>{
+    const w=PREDICT_WEIGHT[m.stage]; if(!w) return;
+    possible+=w;
+    const actual=bkWinner(m); if(!actual) return;
+    decided+=w;
+    if(PREDICT.picks[m.i]===actual) earned+=w;
+  });
+  return {earned, possible, decided};
+}
 // post-order, home before away → each round bucket ends up ordered top→bottom
 function bracketColumns(node){
   const r={R32:[],R16:[],QF:[],SF:[]};
@@ -1875,15 +1940,22 @@ function bracketColumns(node){
 }
 const bkWinner=m=>(m.homeScore!=null&&m.awayScore!=null)?(m.homeScore>m.awayScore?m.home:(m.awayScore>m.homeScore?m.away:null)):null;
 function bkMatchHTML(m){
-  const win=bkWinner(m);
-  const side=code=>{
-    const t=isTeam(code), isW=t&&win===code, lost=win&&t&&win!==code;
-    const sc=(m.homeScore!=null)?(code===m.home?m.homeScore:m.awayScore):'';
-    const lab=t?`<span class="bk-fl">${TEAMS[code][1]}</span><span class="bk-cd">${code}</span>`
-               :`<span class="bk-slot">${code}</span>`;
-    return `<div class="bk-side${isW?' bk-win':''}${lost?' bk-lost':''}">${lab}<span class="bk-sc">${sc}</span></div>`;
+  const actualWin=bkWinner(m), pick=PREDICT.picks[m.i];
+  const homeCode=effectiveCode(m.home), awayCode=effectiveCode(m.away);
+  const isFinal=(m.stage==='FINAL'||m.stage==='3RD');
+  const side=(rawCode,resolvedCode)=>{
+    const t=isTeam(resolvedCode);
+    const isW=t && (actualWin===resolvedCode);
+    const lost=actualWin && t && actualWin!==resolvedCode;
+    const isPick=PREDICT.mode && !actualWin && t && pick===resolvedCode;     // your prediction (only when match not yet played)
+    const sc=(m.homeScore!=null)?(rawCode===m.home?m.homeScore:m.awayScore):'';
+    const lab=t?`<span class="bk-fl">${TEAMS[resolvedCode][1]}</span><span class="bk-cd">${resolvedCode}</span>`
+               :`<span class="bk-slot">${rawCode}</span>`;
+    const pickable=PREDICT.mode && !actualWin && t;
+    const role=pickable?` data-pick="${resolvedCode}" tabindex="0" role="button" aria-label="Pick ${TEAMS[resolvedCode][0]}"`:'';
+    return `<div class="bk-side${isW?' bk-win':''}${lost?' bk-lost':''}${isPick?' bk-pick':''}${pickable?' bk-pickable':''}"${role}>${lab}<span class="bk-sc">${sc}</span></div>`;
   };
-  return `<div class="bk-m" data-mi="${m.i}" style="--c:${stageColor(m.stage)}" title="${STAGES[m.stage].label}">${side(m.home)}${side(m.away)}</div>`;
+  return `<div class="bk-m${PREDICT.mode?' bk-m-predict':''}" data-mi="${m.i}" style="--c:${stageColor(m.stage)}" title="${STAGES[m.stage].label}">${side(m.home,homeCode)}${side(m.away,awayCode)}</div>`;
 }
 /* =====================================================================
    RENDER , SCORERS  (leaderboard from data/scorers.json + derived team table)
@@ -2052,6 +2124,19 @@ function renderScorers(){
     </div>`;
 }
 const bkCol=ms=>`<div class="bk-col">${ms.map(bkMatchHTML).join('')}</div>`;
+function bkToolbarHTML(){
+  const {earned,possible,decided}=predictionScore();
+  const picks=Object.keys(PREDICT.picks).length;
+  const scoreLine=decided ? `<span class="bk-pred-score"><b>${earned}</b> / ${decided} pts <small>· of ${possible} possible</small></span>` : (picks?`<span class="bk-pred-score"><b>${picks}</b> picks</span>`:'');
+  const btn = PREDICT.mode
+    ? `<button class="bk-pred-btn bk-pred-on" data-pred-toggle>Done predicting</button>`
+    : `<button class="bk-pred-btn" data-pred-toggle>${picks?'Edit predictions':'Predict the bracket'}</button>`;
+  const clear = picks ? `<button class="bk-pred-clear" data-pred-clear title="Clear all your predictions">Reset</button>` : '';
+  return `<div class="bk-pred-bar${PREDICT.mode?' is-on':''}">
+    <span class="bk-pred-lab">${PREDICT.mode?'Tap a side to pick your winner , your picks propagate forward':'Predict who advances. Local-only , no account needed.'}</span>
+    ${scoreLine}${btn}${clear}
+  </div>`;
+}
 function renderBracket(){
   const view=$("#view-bracket"); if(!view) return;
   const {root,third}=bracketTree();
@@ -2066,7 +2151,7 @@ function renderBracket(){
   const byRound=r=>MATCHES.filter(m=>m.stage===r).sort((a,b)=>a.ts-b.ts);
   const tabs=RND.map((r,i)=>`<button class="bk-rtab${i?'':' on'}" data-r="${r}">${r==='FINAL'?'Final':r}</button>`).join('');
   const cols=RND.map((r,i)=>`<div class="bk-rcol${i?'':' on'}" data-r="${r}">${byRound(r).map(bkMatchHTML).join('')}${r==='FINAL'?third3:''}</div>`).join('');
-  view.innerHTML=desktop+`<div class="bk-mobile"><div class="bk-rtabs">${tabs}</div>${cols}</div>`;
+  view.innerHTML=bkToolbarHTML()+desktop+`<div class="bk-mobile"><div class="bk-rtabs">${tabs}</div>${cols}</div>`;
   bkFit();
 }
 // draw elbow connectors from measured (unscaled) offsets, then scale the whole bracket to fit the width
@@ -2531,6 +2616,15 @@ document.addEventListener('click', e=>{
   if(calMore){ jumpToDate(calMore.dataset.date, 'schedule'); return; } // "+N more" = open that day's full list on the Schedule
   const hl=e.target.closest('[data-hlteam]');
   if(hl){ toggleTeam(hl.dataset.hlteam); setHlBtn(hl); return; }       // "show this team" on its page
+  // bracket predictions toolbar
+  if(e.target.closest('[data-pred-toggle]')){ PREDICT.mode=!PREDICT.mode; renderBracket(); return; }
+  if(e.target.closest('[data-pred-clear]')){ if(confirm('Clear all your bracket predictions?')) clearPredictions(); return; }
+  // tap a side in predict mode to pick a winner (must come BEFORE the generic data-team / data-mi handlers below)
+  if(PREDICT.mode){
+    const pick=e.target.closest('[data-pick]');
+    const node=e.target.closest('.bk-m');
+    if(pick && node){ setPick(+node.dataset.mi, pick.dataset.pick); return; }
+  }
   const team=e.target.closest('[data-team]');
   if(team){ location.hash=`#team/${team.dataset.team}`; return; }     // team name = open its sub-page
   const mi=e.target.closest('[data-mi]');
