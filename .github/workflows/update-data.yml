@@ -57,13 +57,25 @@ jobs:
         run: node scripts/fetch-weather.mjs   # Open-Meteo, no API key
 
       - name: Commit & push if changed
+        # Pull-rebase + retry the push: long-running fetches (5 min jobs during the
+        # tournament) frequently overlap with human pushes to main, so a naive `git push`
+        # is rejected as non-fast-forward. Rebase the data commit on top of whatever
+        # landed and retry up to 3 times before giving up.
         run: |
           git config user.name  "wc2026-data-bot"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/results.json data/squads.json data/scorers.json data/weather.json
           if git diff --staged --quiet; then
-            echo "No data changes."
-          else
-            git commit -m "data: auto-update results [skip ci]"
-            git push
+            echo "No data changes."; exit 0
           fi
+          git commit -m "data: auto-update results [skip ci]"
+          for i in 1 2 3; do
+            git pull --rebase --autostash origin main || true
+            if git push; then
+              echo "Pushed on attempt $i."; exit 0
+            fi
+            echo "Push attempt $i rejected; pulling and retrying..."
+            sleep $((RANDOM % 5 + 2))
+          done
+          echo "::error::Push failed after 3 attempts , probable persistent contention on main."
+          exit 1
