@@ -965,6 +965,34 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 .sc-head{display:flex;align-items:baseline;gap:10px;margin:2px 0 18px}
 .sc-title{font-family:"Anton",sans-serif;font-weight:400;font-size:30px;text-transform:uppercase;letter-spacing:.02em;margin:0;color:var(--text);text-wrap:balance}
 .sc-meta{color:var(--text-faint);font-size:12px;font-weight:600}
+/* ---- Stats view ---- */
+.st-pulse{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:8px 0 22px}
+.st-kpi{padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);display:flex;flex-direction:column;gap:4px}
+.st-kpi-n{font-family:"Anton",sans-serif;font-size:34px;line-height:1;color:var(--text);font-variant-numeric:tabular-nums}
+.st-kpi-l{font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--text-faint);text-transform:uppercase}
+@media (max-width:560px){.st-pulse{grid-template-columns:repeat(2,1fr);gap:8px}.st-kpi-n{font-size:28px}}
+.st-stg{display:grid;grid-template-columns:160px 1fr auto;align-items:center;gap:12px;padding:7px 4px;border-bottom:1px solid var(--line)}
+.st-stg-l{font-weight:800;color:var(--c);font-size:12.5px;letter-spacing:.02em}
+.st-stg-bar{height:8px;border-radius:99px;background:rgba(255,255,255,.04);position:relative;overflow:hidden}
+.st-stg-fill{position:absolute;inset:0;width:0;border-radius:99px;transition:width .6s var(--ease);opacity:.85}
+.st-stg-n{font-family:"Anton",sans-serif;font-size:18px;color:var(--text);font-variant-numeric:tabular-nums;display:inline-flex;align-items:baseline;gap:6px;min-width:90px;justify-content:flex-end}
+.st-stg-n small{font-family:"Hanken Grotesk",sans-serif;font-size:10.5px;color:var(--text-faint);font-weight:600;letter-spacing:.02em}
+@media (max-width:560px){.st-stg{grid-template-columns:100px 1fr auto;gap:8px}}
+.st-tbl{width:100%;border-collapse:collapse;margin-top:2px;font-variant-numeric:tabular-nums}
+.st-tbl th{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint);text-align:right;padding:7px 6px;border-bottom:1px solid var(--line)}
+.st-tbl th:first-child{text-align:left}
+.st-tbl td{padding:9px 6px;text-align:right;border-bottom:1px solid var(--line);font-weight:700;color:var(--text-dim)}
+.st-tbl td:first-child{text-align:left;color:var(--text);font-weight:800;display:flex;align-items:center;gap:8px}
+.st-conf-dot{width:9px;height:9px;border-radius:50%}
+.st-perf{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.st-perf-card{padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);display:flex;flex-direction:column;gap:6px;min-width:0}
+.st-perf-l{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--text-faint)}
+.st-perf-v{font-weight:700;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px}
+.st-perf-v b{color:var(--text);font-weight:800;font-variant-numeric:tabular-nums}
+.st-perf-v .fl{font-size:15px;line-height:1;margin-right:6px}
+.st-perf-v .fl .flagsvg{width:1.18em;height:.885em;vertical-align:-2px}
+@media (max-width:760px){.st-perf{grid-template-columns:1fr}}
+
 /* ---- Golden Boot race ---- */
 .sc-boot{display:flex;align-items:center;gap:14px;margin:8px 0 16px;padding:14px 16px;border-radius:14px;
   background:linear-gradient(180deg,rgba(244,200,75,.10),rgba(244,200,75,.025) 60%,transparent),var(--surface);
@@ -1109,7 +1137,7 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
       <button role="tab" id="tab-schedule" aria-controls="view-schedule" aria-selected="true" tabindex="0" data-view="schedule">Schedule</button>
       <button role="tab" id="tab-groups" aria-controls="view-groups" aria-selected="false" tabindex="-1" data-view="groups">Groups</button>
       <button role="tab" id="tab-calendar" aria-controls="view-calendar" aria-selected="false" tabindex="-1" data-view="calendar">Calendar</button>
-      <button role="tab" id="tab-map" aria-controls="view-map" aria-selected="false" tabindex="-1" data-view="map">Map</button>
+      <button role="tab" id="tab-stats" aria-controls="view-stats" aria-selected="false" tabindex="-1" data-view="stats">Stats</button>
       <button role="tab" id="tab-bracket" aria-controls="view-bracket" aria-selected="false" tabindex="-1" data-view="bracket">Bracket</button>
       <button role="tab" id="tab-scorers" aria-controls="view-scorers" aria-selected="false" tabindex="-1" data-view="scorers">Scorers</button>
     </div>
@@ -1157,7 +1185,8 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
     <section class="view" id="view-schedule" role="tabpanel" aria-labelledby="tab-schedule" tabindex="0"></section>
     <section class="view" id="view-groups" role="tabpanel" aria-labelledby="tab-groups" tabindex="0" hidden></section>
     <section class="view" id="view-calendar" role="tabpanel" aria-labelledby="tab-calendar" tabindex="0" hidden></section>
-    <section class="view" id="view-map" role="tabpanel" aria-labelledby="tab-map" tabindex="0" hidden></section>
+    <section class="view" id="view-stats" role="tabpanel" aria-labelledby="tab-stats" tabindex="0" hidden></section>
+    <section class="view" id="view-map" role="tabpanel" aria-label="World map (deep link)" tabindex="0" hidden></section>
     <section class="view" id="view-bracket" role="tabpanel" aria-labelledby="tab-bracket" tabindex="0" hidden></section>
     <section class="view" id="view-scorers" role="tabpanel" aria-labelledby="tab-scorers" tabindex="0" hidden></section>
     <section class="view" id="view-team" aria-label="Team page" hidden></section>
@@ -1859,6 +1888,83 @@ function bkMatchHTML(m){
 /* =====================================================================
    RENDER , SCORERS  (leaderboard from data/scorers.json + derived team table)
    ===================================================================== */
+/* ---------------------------- STATS VIEW ---------------------------- */
+function renderStats(){
+  const view=$("#view-stats"); if(!view) return;
+  const played=MATCHES.filter(m=>m.homeScore!=null);
+  const totalGoals=played.reduce((s,m)=>s+m.homeScore+m.awayScore,0);
+  const avgGoals=played.length?totalGoals/played.length:0;
+  const cleanSheets=played.filter(m=>m.homeScore===0||m.awayScore===0).length;
+
+  // Tournament pulse , always show, fills in as the tournament progresses
+  const pulse=`<div class="st-pulse">
+    <div class="st-kpi"><span class="st-kpi-n">${played.length}</span><span class="st-kpi-l">of 104 matches</span></div>
+    <div class="st-kpi"><span class="st-kpi-n">${totalGoals}</span><span class="st-kpi-l">total goals</span></div>
+    <div class="st-kpi"><span class="st-kpi-n">${played.length?avgGoals.toFixed(2):','}</span><span class="st-kpi-l">goals per match</span></div>
+    <div class="st-kpi"><span class="st-kpi-n">${cleanSheets}</span><span class="st-kpi-l">clean sheets</span></div>
+  </div>`;
+
+  // By-stage goals breakdown , bars per round
+  const byStage={GROUP:[0,0],R32:[0,0],R16:[0,0],QF:[0,0],SF:[0,0],"3RD":[0,0],FINAL:[0,0]};
+  played.forEach(m=>{ if(byStage[m.stage]){ byStage[m.stage][0]+=m.homeScore+m.awayScore; byStage[m.stage][1]++; } });
+  const stageMax=Math.max(1, ...Object.values(byStage).map(v=>v[1]?v[0]/v[1]:0));
+  const stageRows=Object.entries(byStage).map(([s,[g,c]])=>{
+    const avg=c?(g/c):0; const w=Math.round((avg/stageMax)*100);
+    return `<div class="st-stg"><span class="st-stg-l" style="--c:${stageColor(s)}">${STAGES[s].label}</span>
+      <span class="st-stg-bar"><span class="st-stg-fill" style="width:${w}%;background:${stageColor(s)}"></span></span>
+      <span class="st-stg-n">${c?avg.toFixed(2):','}<small>g/m · ${c}</small></span></div>`;
+  }).join('');
+
+  // Confederation derby , per-pair W-D-L from inter-confederation matches
+  const confs=['UEFA','CONMEBOL','CONCACAF','CAF','AFC','OFC'];
+  const confOf=c=>(teamObj(c)||{}).conf;
+  const derby={};
+  confs.forEach(a=>confs.forEach(b=>{ if(a!==b) derby[a+'|'+b]={w:0,d:0,l:0,gf:0,ga:0}; }));
+  played.forEach(m=>{
+    if(!isTeam(m.home)||!isTeam(m.away)) return;
+    const ca=confOf(m.home), cb=confOf(m.away); if(!ca||!cb||ca===cb) return;
+    const ka=ca+'|'+cb, kb=cb+'|'+ca;
+    derby[ka].gf+=m.homeScore; derby[ka].ga+=m.awayScore;
+    derby[kb].gf+=m.awayScore; derby[kb].ga+=m.homeScore;
+    if(m.homeScore>m.awayScore){ derby[ka].w++; derby[kb].l++; }
+    else if(m.homeScore<m.awayScore){ derby[ka].l++; derby[kb].w++; }
+    else { derby[ka].d++; derby[kb].d++; }
+  });
+  const confTotals=confs.map(c=>{
+    let w=0,d=0,l=0,gf=0,ga=0;
+    confs.forEach(o=>{ if(o!==c){ const r=derby[c+'|'+o]; w+=r.w; d+=r.d; l+=r.l; gf+=r.gf; ga+=r.ga; } });
+    return {c,w,d,l,gf,ga,p:w*3+d};
+  }).sort((a,b)=>b.p-a.p || b.w-a.w || (b.gf-b.ga)-(a.gf-a.ga));
+  const confRows=confTotals.map(t=>`<tr class="st-conf-row"><td class="st-conf-c"><span class="st-conf-dot" style="background:${CONF_META[t.c].color}"></span>${CONF_META[t.c].label}</td>
+      <td>${t.w}</td><td>${t.d}</td><td>${t.l}</td><td>${t.gf}</td><td>${t.ga}</td><td>${t.gf-t.ga>0?'+':''}${t.gf-t.ga}</td></tr>`).join('');
+  const confTable=played.length
+    ? `<table class="st-tbl"><thead><tr><th>Confederation</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th></tr></thead><tbody>${confRows}</tbody></table>`
+    : `<p class="sq-note">Inter-confederation results appear once the knockout rounds start.</p>`;
+
+  // Top performers , highest-scoring match + biggest win + most goals scored team
+  const teamGF={}; played.forEach(m=>{ teamGF[m.home]=(teamGF[m.home]||0)+m.homeScore; teamGF[m.away]=(teamGF[m.away]||0)+m.awayScore; });
+  const topScoringTeam=Object.entries(teamGF).filter(([c])=>isTeam(c)).sort((a,b)=>b[1]-a[1])[0];
+  const sortedByGoals=[...played].sort((a,b)=>(b.homeScore+b.awayScore)-(a.homeScore+a.awayScore));
+  const sortedByMargin=[...played].sort((a,b)=>Math.abs(b.homeScore-b.awayScore)-Math.abs(a.homeScore-a.awayScore));
+  const highest=sortedByGoals[0], biggest=sortedByMargin[0];
+  const scoreLine=m=>`<a class="tlink" data-mi="${m.i}">${TEAMS[m.home][0]} <b>${m.homeScore}-${m.awayScore}</b> ${TEAMS[m.away][0]}</a>`;
+  const performers=`<div class="st-perf">
+    <div class="st-perf-card"><span class="st-perf-l">Most goals (team)</span>
+      <span class="st-perf-v">${topScoringTeam?`<a class="tlink" data-team="${topScoringTeam[0]}"><span class="fl">${TEAMS[topScoringTeam[0]][1]}</span>${TEAMS[topScoringTeam[0]][0]}</a> · <b>${topScoringTeam[1]}</b>`:','}</span></div>
+    <div class="st-perf-card"><span class="st-perf-l">Highest-scoring match</span>
+      <span class="st-perf-v">${highest?scoreLine(highest):','}</span></div>
+    <div class="st-perf-card"><span class="st-perf-l">Biggest win (margin)</span>
+      <span class="st-perf-v">${biggest && Math.abs(biggest.homeScore-biggest.awayScore)>0?scoreLine(biggest):','}</span></div>
+  </div>`;
+
+  view.innerHTML=`
+    <div class="sc-head"><h2 class="sc-title">Tournament stats</h2><span class="sc-meta">${played.length?'live':'pre-tournament'}</span></div>
+    ${pulse}
+    <section class="sc-sec"><h3 class="team-h3">Goals by stage<span>average per match</span></h3>${stageRows}</section>
+    <section class="sc-sec"><h3 class="team-h3">Confederation derby<span>inter-confederation results only</span></h3>${confTable}</section>
+    <section class="sc-sec"><h3 class="team-h3">Standouts<span>so far</span></h3>${performers}</section>`;
+}
+
 /* Golden Boot race , horizontal bar chart of the top 10. The free API gives only the
    running totals (no per-match events), so this is a CURRENT-STANDINGS race with each
    bar sized as goals / leader goals. The ▲ chip shows movement since the last load,
@@ -2193,7 +2299,7 @@ window.WC_STATS = { teamGoalStats };
      (empty)/#schedule · #groups · #calendar · #map · #team/CODE
    Each route sets the document title so tabs, history and bookmarks read correctly. */
 const SITE='World Cup 2026';
-const VIEW_LABELS={schedule:'Schedule',groups:'Groups',calendar:'Calendar',map:'Map',bracket:'Bracket',scorers:'Scorers'};
+const VIEW_LABELS={schedule:'Schedule',groups:'Groups',calendar:'Calendar',map:'Map',stats:'Stats',bracket:'Bracket',scorers:'Scorers'};
 function route(){
   closeMatch();
   const tm=/^#team\/([A-Z]{3})$/.exec(location.hash);
@@ -2462,13 +2568,14 @@ $("#tfSearch")?.addEventListener('input', e=>{
 
 // view toggle (ARIA tablist: roving tabindex + arrow-key navigation)
 const tabs=[...document.querySelectorAll('.segmented button')];
-const VIEW_NAMES=['schedule','groups','calendar','map','bracket','scorers'];
+const VIEW_NAMES=['schedule','groups','calendar','stats','map','bracket','scorers'];   // map kept for deep-link backwards compat; no longer in the tab nav
 function setActiveView(v){                                      // pure activation; routing is driven by the hash
   tabs.forEach(b=>{ const on=b.dataset.view===v; b.setAttribute('aria-selected', on?'true':'false'); b.tabIndex=on?0:-1;
     if(on && b.parentElement.scrollWidth>b.parentElement.clientWidth) b.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'}); });   // if the tab row scrolls, keep the active tab in view (mobile)
   if(v==='map'){ renderMap(); applyMapFilter(); fitToSelection(); }   // build on first open + honor the current global filter
   if(v==='bracket') requestAnimationFrame(bkFit);                     // measure + scale-to-fit once the view is visible
   if(v==='scorers') renderScorers();                                  // build leaderboard + team table on open
+  if(v==='stats') renderStats();                                      // build tournament stats on open
   VIEW_NAMES.forEach(n=>{ const el=$("#view-"+n); if(el) el.hidden = v!==n; });
   if(v==='calendar') requestAnimationFrame(calScrollToFocus);         // land on today / next match, not the empty start of June
   localStorage.setItem('wc2026.view', v);
