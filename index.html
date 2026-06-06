@@ -1099,14 +1099,26 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 .bk-m-predict .bk-side.bk-pick .bk-cd{color:var(--st-FINAL)}
 .bk-m:hover{border-color:var(--line-strong)}
 .bk-m:active{transform:scale(.96)}
-.bk-side{display:flex;align-items:center;gap:7px;padding:6px 9px;font-size:12px;min-width:0}
+/* status header: FT / LIVE / kickoff time on each bracket node , read instantly */
+.bk-head{display:flex;align-items:center;justify-content:flex-end;padding:3px 8px 0;min-height:14px}
+.bk-st{font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint);font-variant-numeric:tabular-nums;line-height:1.1;display:inline-flex;align-items:center;gap:4px}
+.bk-st-ft{color:var(--green-bright)}
+.bk-st-live{color:var(--st-FINAL)}
+.bk-st-dot{width:6px;height:6px;border-radius:50%;background:var(--st-FINAL);box-shadow:0 0 8px var(--st-FINAL);animation:bkPulse 1.4s infinite}
+@keyframes bkPulse{0%,100%{opacity:1}50%{opacity:.35}}
+.bk-st-time{color:var(--text-faint)}
+.bk-m.bk-settled{border-left-width:4px}
+.bk-side{display:flex;align-items:center;gap:7px;padding:5px 9px 6px;font-size:12px;min-width:0}
 .bk-side+.bk-side{border-top:1px solid var(--line)}
 .bk-fl{font-size:14px;line-height:1;flex:none}
 .bk-cd{font-weight:700;color:var(--text);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bk-slot{color:var(--text-faint);font-weight:600;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bk-sc{margin-left:auto;font-weight:800;color:var(--text-dim);padding-left:6px}
+.bk-sc{margin-left:auto;font-weight:800;color:var(--text-dim);padding-left:6px;font-variant-numeric:tabular-nums;font-size:13px}
 .bk-win .bk-cd,.bk-win .bk-sc{color:var(--green-bright)}
+.bk-win .bk-sc{font-size:15px}                                          /* winner score stands out */
+.bk-adv{margin-left:5px;color:var(--green);font-weight:800;font-size:13px;line-height:1}   /* → on advancing side */
 .bk-lost{opacity:.45}
+.bk-lost .bk-sc{font-size:12px}
 .bk-center>.bk-m{width:172px;border:1px solid var(--st-FINAL);border-left:3px solid var(--st-FINAL)}   /* the Final only, not the 3rd-place node */
 .bk-third{position:absolute;left:50%;top:calc(50% + 44px);transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;width:max-content}
 .bk-third-lab{font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--text-faint)}
@@ -1952,6 +1964,18 @@ function bracketColumns(node){
   return r;
 }
 const bkWinner=m=>(m.homeScore!=null&&m.awayScore!=null)?(m.homeScore>m.awayScore?m.home:(m.awayScore>m.homeScore?m.away:null)):null;
+/* short status header for a bracket node , 'FT' / 'LIVE' / '29 Jun 21:00' / pure '' if the match has no useful meta yet */
+function bkStatusHTML(m){
+  // LIVE / HT take priority , an in-play match already has a 0-0 score, so we'd otherwise misread it as FT
+  if(m.status==='LIVE') return `<span class="bk-st bk-st-live"><span class="bk-st-dot"></span>LIVE</span>`;
+  if(m.status==='HT') return `<span class="bk-st bk-st-live"><span class="bk-st-dot"></span>HT</span>`;
+  if(m.status==='FT' || m.homeScore!=null) return `<span class="bk-st bk-st-ft">FT</span>`;
+  if(m.date && m.kickoffLocal){
+    const [_y,mo,da]=m.date.split('-').map(Number);
+    return `<span class="bk-st bk-st-time">${da} ${MO[mo-1]} · ${m.kickoffLocal}</span>`;
+  }
+  return '';
+}
 function bkMatchHTML(m){
   const actualWin=bkWinner(m), pick=PREDICT.picks[m.i];
   const homeCode=effectiveCode(m.home), awayCode=effectiveCode(m.away);
@@ -1962,13 +1986,18 @@ function bkMatchHTML(m){
     const lost=actualWin && t && actualWin!==resolvedCode;
     const isPick=PREDICT.mode && !actualWin && t && pick===resolvedCode;     // your prediction (only when match not yet played)
     const sc=(m.homeScore!=null)?(rawCode===m.home?m.homeScore:m.awayScore):'';
+    const adv=isW && !isFinal ? `<span class="bk-adv" aria-label="Advances">→</span>` : '';   // small arrow flags the side that goes through
     const lab=t?`<span class="bk-fl">${TEAMS[resolvedCode][1]}</span><span class="bk-cd">${resolvedCode}</span>`
                :`<span class="bk-slot">${rawCode}</span>`;
     const pickable=PREDICT.mode && !actualWin && t;
     const role=pickable?` data-pick="${resolvedCode}" tabindex="0" role="button" aria-label="Pick ${TEAMS[resolvedCode][0]}"`:'';
-    return `<div class="bk-side${isW?' bk-win':''}${lost?' bk-lost':''}${isPick?' bk-pick':''}${pickable?' bk-pickable':''}"${role}>${lab}<span class="bk-sc">${sc}</span></div>`;
+    return `<div class="bk-side${isW?' bk-win':''}${lost?' bk-lost':''}${isPick?' bk-pick':''}${pickable?' bk-pickable':''}"${role}>${lab}<span class="bk-sc">${sc===''?'':sc}</span>${adv}</div>`;
   };
-  return `<div class="bk-m${PREDICT.mode?' bk-m-predict':''}" data-mi="${m.i}" style="--c:${stageColor(m.stage)}" title="${STAGES[m.stage].label}">${side(m.home,homeCode)}${side(m.away,awayCode)}</div>`;
+  const settled = actualWin ? ' bk-settled' : '';                            // styling hook: a match with a real winner gets a stronger left-border colour
+  return `<div class="bk-m${PREDICT.mode?' bk-m-predict':''}${settled}" data-mi="${m.i}" data-winner="${actualWin||''}" style="--c:${stageColor(m.stage)}" title="${STAGES[m.stage].label}${m.venue?' · '+m.venue.city:''}">
+    <div class="bk-head">${bkStatusHTML(m)}</div>
+    ${side(m.home,homeCode)}${side(m.away,awayCode)}
+  </div>`;
 }
 /* =====================================================================
    RENDER , SCORERS  (leaderboard from data/scorers.json + derived team table)
@@ -2194,17 +2223,24 @@ function bkConnectors(){
   const base=full.getBoundingClientRect();                                   // measured pre-scale → unscaled bracket coords (robust to offsetParent nesting)
   const box=el=>{ const r=el.getBoundingClientRect(); return {l:r.left-base.left, t:r.top-base.top, w:r.width, h:r.height}; };
   const nodes={}; full.querySelectorAll('.bk-m').forEach(el=>{ if(el.dataset.mi!=null) nodes[el.dataset.mi]=el; });
-  const segs=[];
-  (function walk(n){ if(!n) return; const p=nodes[n.m.i];
+  const open=[], settled=[];
+  (function walk(n){ if(!n) return; const p=nodes[n.m.i], pWin=bkWinner(n.m);
     [n.home,n.away].forEach(ch=>{ if(!ch) return; const c=nodes[ch.m.i];
       if(p&&c){ const P=box(p), C=box(c), cl=C.l<P.l;
         const cx=C.l+(cl?C.w:0), cy=C.t+C.h/2, px=cl?P.l:P.l+P.w, py=P.t+P.h/2, mx=(cx+px)/2;
-        segs.push(`M${cx} ${cy}H${mx}V${py}H${px}`); }
+        const d=`M${cx} ${cy}H${mx}V${py}H${px}`;
+        // a connector is "settled" if the upstream child (ch.m) has a winner AND that winner now occupies a slot in the parent (so the path is confirmed)
+        const childWin=bkWinner(ch.m);
+        const advanced=childWin && (effectiveCode(n.m.home)===childWin || effectiveCode(n.m.away)===childWin);
+        (advanced ? settled : open).push(d);
+      }
       walk(ch); });
   })(bracketTree().root);
   const W=full.scrollWidth, H=full.scrollHeight;
   svg.setAttribute('viewBox',`0 0 ${W} ${H}`); svg.setAttribute('width',W); svg.setAttribute('height',H);
-  svg.innerHTML=`<path d="${segs.join(' ')}" fill="none" stroke="var(--line-strong)" stroke-width="1.5"/>`;
+  svg.innerHTML=
+    `<path d="${open.join(' ')}" fill="none" stroke="var(--line-strong)" stroke-width="1.5"/>` +
+    `<path d="${settled.join(' ')}" fill="none" stroke="var(--green)" stroke-width="2" opacity=".85" stroke-linecap="round"/>`;
 }
 function bkFit(){
   const sc=$(".bk-scaler"), full=$(".bk-full"); if(!sc||!full||!sc.clientWidth) return;   // skip while hidden (clientWidth 0)
