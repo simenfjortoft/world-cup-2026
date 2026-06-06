@@ -284,6 +284,31 @@ main{padding:18px 0 70px;position:relative}
 .today-pill{font-size:10px;font-weight:800;letter-spacing:.12em;color:#062013;background:var(--green);padding:4px 9px;border-radius:999px}
 
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(335px,1fr));gap:13px}
+/* ---- "Since you were here" digest (above the schedule) ---- */
+.dg-card{margin:14px 0 26px;padding:14px 16px;border:1px solid var(--line-strong);border-radius:14px;
+  background:linear-gradient(180deg,rgba(25,224,138,.08),rgba(25,224,138,.015) 60%,transparent),var(--surface);
+  box-shadow:0 12px 34px rgba(0,0,0,.32),inset 0 0 0 1px rgba(25,224,138,.12)}
+.dg-h{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.dg-tag{font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--green-bright);
+  background:rgba(25,224,138,.12);padding:4px 9px;border-radius:999px;border:1px solid rgba(25,224,138,.35)}
+.dg-since{font-size:11.5px;color:var(--text-faint);font-weight:600}
+.dg-x{margin-left:auto;appearance:none;border:1px solid var(--line);background:transparent;color:var(--text-dim);
+  width:28px;height:28px;border-radius:8px;font-size:18px;cursor:pointer;line-height:1;transition:color .15s var(--ease),border-color .15s var(--ease),background .15s var(--ease),transform .1s var(--ease)}
+.dg-x:hover{color:var(--text);border-color:var(--green);background:rgba(25,224,138,.08)}
+.dg-x:active{transform:scale(.96)}
+.dg-list{display:flex;flex-wrap:wrap;gap:8px}
+.dg-m{appearance:none;display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:9px;
+  border:1px solid var(--line);background:rgba(0,0,0,.22);color:var(--text-dim);font-family:inherit;font-weight:700;
+  font-size:12.5px;cursor:pointer;font-variant-numeric:tabular-nums;transition:color .15s var(--ease),border-color .15s var(--ease),background .15s var(--ease),transform .1s var(--ease)}
+.dg-m:hover{color:var(--text);border-color:var(--line-strong);background:rgba(255,255,255,.03)}
+.dg-m:active{transform:scale(.96)}
+.dg-m b{color:var(--text);font-weight:800}
+.dg-fl{font-size:13px;line-height:1;display:inline-flex;align-items:center}
+.dg-fl .flagsvg{width:1.18em;height:.885em}
+.dg-grp{margin-top:10px;display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:8px;border:1px solid var(--line);
+  background:transparent;color:var(--text-dim);font-family:inherit;font-weight:700;font-size:11.5px;cursor:pointer;
+  transition:color .15s var(--ease),border-color .15s var(--ease),background .15s var(--ease)}
+.dg-grp:hover{color:var(--green-bright);border-color:rgba(25,224,138,.4);background:rgba(25,224,138,.08)}
 /* finished day , collapses by default into the header + a results peek */
 .day-done .day-head{cursor:pointer;user-select:none}
 .day-done:not(.day-open) .cards{display:none}
@@ -1458,11 +1483,66 @@ function matchCardHTML(m){
 /* =====================================================================
    RENDER , SCHEDULE
    ===================================================================== */
+/* ---------------------------- DIGEST: "Since you were here" ----------------------------
+   Compare the current MATCHES state to a snapshot from the last dismiss/visit and surface
+   what changed: which matches finished (with scores) and which groups had a top-2 shift.
+   Snapshot is updated only on user dismiss, so closing the tab without dismissing keeps the
+   digest live next time. Renders only when there's something new.
+*/
+const DIGEST_KEY='wc2026.lastSeen';
+function digestSnapshot(){
+  const finished=MATCHES.filter(m=>m.homeScore!=null).map(m=>m.i).sort((a,b)=>a-b);
+  const leaders={};
+  Object.keys(GROUPS).forEach(g=>{
+    try{ const r=rankGroup(g)||[]; leaders[g]=[r[0]?.code, r[1]?.code].filter(Boolean).join(','); }catch(e){ leaders[g]=''; }
+  });
+  return { ts:Date.now(), finished, leaders };
+}
+function digestSinceLast(){
+  let last; try{ last=JSON.parse(localStorage.getItem(DIGEST_KEY)||'null'); }catch(e){ last=null; }
+  if(!last) return null;                                            // first visit , nothing to diff
+  const cur=digestSnapshot();
+  const prevFinished=new Set(last.finished||[]);
+  const newlyFinished=cur.finished.filter(i=>!prevFinished.has(i)).map(i=>MATCHES[i]);
+  const standingsShifted=Object.keys(GROUPS).filter(g=> (last.leaders||{})[g] && cur.leaders[g] !== last.leaders[g]);
+  if(!newlyFinished.length && !standingsShifted.length) return null;
+  return { newlyFinished, standingsShifted, lastTs:last.ts };
+}
+function fmtRel(ts){
+  const d=Math.round((Date.now()-ts)/60000);                       // minutes ago
+  if(d<2) return 'just now';
+  if(d<60) return `${d} min ago`;
+  const h=Math.round(d/60); if(h<24) return `${h}h ago`;
+  const days=Math.round(h/24); return days===1 ? 'yesterday' : `${days} days ago`;
+}
+function digestHTML(diff){
+  const m=diff.newlyFinished.map(x=>{
+    const home=isTeam(x.home)?`<span class="dg-fl">${TEAMS[x.home][1]}</span>${x.home}`:slotText(x.home);
+    const away=isTeam(x.away)?`${x.away}<span class="dg-fl">${TEAMS[x.away][1]}</span>`:slotText(x.away);
+    return `<button class="dg-m" type="button" data-mi="${x.i}">${home}<b>${x.homeScore}-${x.awayScore}</b>${away}</button>`;
+  }).join('');
+  const g=diff.standingsShifted.length?`<button class="dg-grp" type="button" data-dg-grp>Group ${diff.standingsShifted.join(', ')} standings shifted</button>`:'';
+  return `<section class="dg-card" aria-label="Since you were last here">
+    <header class="dg-h"><span class="dg-tag">Since you were here</span><span class="dg-since">${fmtRel(diff.lastTs)}</span>
+      <button class="dg-x" type="button" data-dg-dismiss aria-label="Dismiss">×</button></header>
+    ${m?`<div class="dg-list">${m}</div>`:''}
+    ${g}
+  </section>`;
+}
+function dismissDigest(){
+  try{ localStorage.setItem(DIGEST_KEY, JSON.stringify(digestSnapshot())); }catch(e){}
+  const el=document.querySelector('.dg-card'); if(el) el.remove();
+}
+function ensureDigestBaseline(){                                    // first visit: stamp a baseline so the next visit can diff
+  if(!localStorage.getItem(DIGEST_KEY)){ try{ localStorage.setItem(DIGEST_KEY, JSON.stringify(digestSnapshot())); }catch(e){} }
+}
+
 function renderSchedule(){
   const todayStr=todayDateStr();
   const byDate={}; MATCHES.forEach(m=>{ (byDate[m.date]=byDate[m.date]||[]).push(m); });
   const dates=Object.keys(byDate).sort();
   let html="", prevStage=null;
+  const diff=digestSinceLast(); if(diff) html += digestHTML(diff);
   dates.forEach((d,i)=>{
     const day=byDate[d].slice().sort((a,b)=>a.ts-b.ts);
     const stage=day[0].stage;
@@ -2224,6 +2304,8 @@ function revealFade(nodes){ if(REDUCE.matches) return; nodes.forEach(el=>{ el.st
 document.addEventListener('click', e=>{
   if(e.target.closest('.team-back')){ const sv=localStorage.getItem('wc2026.view')||'schedule'; location.hash = sv==='schedule'?'#schedule':'#'+sv; return; }   // back to the view you came from
   if(e.target.closest('[data-mclose]') || e.target.id==='match-modal'){ closeMatch(); return; }              // close popover
+  if(e.target.closest('[data-dg-dismiss]')){ dismissDigest(); return; }                                      // dismiss "since you were here"
+  if(e.target.closest('[data-dg-grp]')){ dismissDigest(); location.hash='#groups'; return; }                 // jump to Groups when standings shifted
   const rt=e.target.closest('.bk-rtab');
   if(rt){ const r=rt.dataset.r, w=rt.closest('.bk-mobile');           // mobile bracket round picker
     w.querySelectorAll('.bk-rtab').forEach(b=>b.classList.toggle('on',b===rt));
@@ -2657,6 +2739,7 @@ function rerenderViews(){ renderSchedule(); renderGroups(); renderCalendar(); re
 
 document.body.classList.add('anim-intro');   // staggered first-paint entrance; removed after it settles so re-renders/switches don't replay it
 applyOverlays();                 // compose any saved manual scores onto MATCHES before first paint
+ensureDigestBaseline();          // stamp baseline on first ever visit so the next visit can show a digest
 renderTeamFilter();
 renderGroupFilter();
 renderLegend();
