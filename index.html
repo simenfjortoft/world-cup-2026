@@ -7,6 +7,8 @@
 <meta name="description" content="Interactive 2026 FIFA World Cup hub: all 104 matches in Norwegian time (CEST) with venue-local kickoffs, live group standings, 48-team squads, and a world map of the qualified nations. Hosted by USA, Canada and Mexico, 11 Jun to 19 Jul 2026.">
 <meta name="theme-color" content="#070d0a">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%23070d0a'/%3E%3Ctext%20x='16'%20y='23'%20font-family='Arial,sans-serif'%20font-size='17'%20font-weight='bold'%20fill='%235dffb2'%20text-anchor='middle'%3E26%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
 <link rel="canonical" href="https://simenfjortoft.github.io/world-cup-2026/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="World Cup 2026">
@@ -106,6 +108,11 @@ header.hero{padding:clamp(34px,7vw,76px) 0 clamp(20px,3vw,30px);position:relativ
 .kicker .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green);flex:none}
 .kicker .today{padding:3px 9px;border:1px solid var(--line);border-radius:999px;font-size:.88em;letter-spacing:.04em;color:var(--text-dim);font-variant-numeric:tabular-nums;white-space:nowrap}
 .kicker .today b{color:var(--text);font-weight:800;margin-right:5px;letter-spacing:.02em}
+.kicker-install{appearance:none;padding:3px 11px;border:1px solid rgba(25,224,138,.55);border-radius:999px;
+  background:rgba(25,224,138,.10);color:var(--green-bright);font-family:inherit;font-weight:800;font-size:.88em;letter-spacing:.04em;
+  cursor:pointer;transition:background .15s var(--ease),color .15s var(--ease),transform .1s var(--ease)}
+.kicker-install:hover{background:rgba(25,224,138,.18);color:var(--text)}
+.kicker-install:active{transform:scale(.96)}
 /* cd-sub is the slot below the timer; each .cd-line inside is one match (1+ stacked when matches kick off simultaneously) */
 .cd-sub{margin:0;padding:6px 8px;font-size:13px;color:var(--text-dim);text-align:center;font-weight:600;font-variant-numeric:tabular-nums;min-height:1.2em;
   border-top:1px solid var(--line);background:rgba(0,0,0,.18);
@@ -1127,7 +1134,7 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 
 <header class="hero">
   <div class="wrap">
-    <p class="kicker"><span class="dot"></span><span class="kc-title">FIFA World Cup</span><span class="hosts">· USA · Canada · Mexico</span><span class="today" id="today" title="Norwegian time"></span></p>
+    <p class="kicker"><span class="dot"></span><span class="kc-title">FIFA World Cup</span><span class="hosts">· USA · Canada · Mexico</span><span class="today" id="today" title="Norwegian time"></span><button id="installBtn" class="kicker-install" hidden type="button" aria-label="Install this app to your home screen">＋ Install</button></p>
     <h1 class="title">World Cup <span class="yr">2026</span></h1>
     <div class="subline">
       <span class="tz-badge">
@@ -3054,6 +3061,25 @@ route();
 if(!$("#view-schedule").hidden) setTimeout(schedScrollToFocus, 260);   // first load: land the Schedule on today's day
 tick(); cdTimer=setInterval(tick,1000);
 setTimeout(()=>document.body.classList.remove('anim-intro'), 1100);   // intro done , hand entrance duties to viewIn on tab switches
+
+/* PWA , register the service worker for offline + install. Quietly tolerates being run
+   on localhost without HTTPS where SW registration fails. */
+if('serviceWorker' in navigator && location.protocol!=='file:'){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('./sw.js').catch(e=>console.log('[sw] registration skipped:', e.message));
+  });
+}
+/* Install prompt , catch beforeinstallprompt (Chrome / Edge / Android) and surface a small
+   "Install" button in the hero kicker. iOS Safari never fires this; users add via Share menu. */
+let _installPrompt=null;
+window.addEventListener('beforeinstallprompt', e=>{
+  e.preventDefault(); _installPrompt=e;
+  const btn=document.getElementById('installBtn'); if(btn) btn.hidden=false;
+});
+window.addEventListener('appinstalled', ()=>{ _installPrompt=null; const btn=document.getElementById('installBtn'); if(btn) btn.hidden=true; });
+document.addEventListener('click', e=>{
+  if(e.target.closest('#installBtn') && _installPrompt){ _installPrompt.prompt(); _installPrompt=null; const btn=document.getElementById('installBtn'); if(btn) btn.hidden=true; }
+});
 </script>
 </body>
 </html>
