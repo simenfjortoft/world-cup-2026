@@ -1,5 +1,14 @@
 {
  "lastUpdated": "2026-06-11",
  "source": "football-data.org , competition WC",
- "scorers": []
+ "scorers": [
+  {
+   "name": "Julián Quiñones",
+   "code": "MEX",
+   "nat": "Colombia",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  }
+ ]
 }
