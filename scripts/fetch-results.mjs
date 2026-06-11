@@ -95,7 +95,10 @@ for(const fx of fixtures){
     if(!hCode || !aCode){ unmapped.push(`group ${fx.homeTeam?.name} v ${fx.awayTeam?.name} (unknown code)`); continue; }
     const tgt = groupByPair.get([hCode, aCode].sort().join('-'));
     if(!tgt){ unmapped.push(`group ${hCode} v ${aCode} (no fixture in schedule)`); continue; }
-    if(!hasScore) continue;                          // not played yet
+    if(!hasScore){                                   // not played yet , but a FINISHED match with no score is the free tier's score delay: say so in the log
+      if(status) unmapped.push(`group ${hCode} v ${aCode} (${fx.status} but score withheld , free-tier delay)`);
+      continue;
+    }
     const apiHomeIsOurs = tgt.home === hCode;        // orient goals to OUR home/away
     out[tgt.i] = { hs: apiHomeIsOurs ? gh : ga, as: apiHomeIsOurs ? ga : gh, status: status || 'FT' };
     mapped++;
