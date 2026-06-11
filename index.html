@@ -671,6 +671,24 @@ body.route-team .legend{display:none !important}
 .mm-team:hover .nm2{color:var(--green-bright)}
 .mm-team.slot{color:var(--text-dim);font-weight:700;font-size:13px;cursor:default}
 .mm-vs{font-family:"Anton",sans-serif;color:var(--text-faint);font-size:16px;flex:none}
+/* finished match: the score is the hero */
+.mm-vs-final{display:flex;flex-direction:column;align-items:center;gap:8px}
+.mm-fs-row{display:flex;align-items:center;gap:10px}
+.mm-fs-row i{font-style:normal;color:var(--text-faint);font-size:24px;line-height:1}
+.mm-fs{font-family:"Anton",sans-serif;font-size:46px;line-height:1;color:var(--text-dim);font-variant-numeric:tabular-nums}
+.mm-fs-w{color:var(--green-bright);text-shadow:0 0 26px rgba(25,224,138,.35)}
+.mm-ftpill{font-family:"Hanken Grotesk",sans-serif;font-size:9px;font-weight:800;letter-spacing:.14em;color:var(--text-faint);border:1px solid var(--line-strong);border-radius:999px;padding:3px 9px}
+.mm-ftpill-live{color:var(--st-FINAL);border-color:rgba(244,200,75,.5);animation:bkPulse 1.4s infinite}
+.mm-team.mm-won .nm2{color:var(--green-bright)}
+.mm-team.mm-lostt{opacity:.55}
+/* scorers strip under the teams row */
+.mm-scorers{display:flex;align-items:flex-start;gap:12px;margin:12px 4px 2px;font-size:12px}
+.mm-gs-side{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;color:var(--text-dim);font-weight:600}
+.mm-gs-away{text-align:right;align-items:flex-end}
+.mm-gs i{font-style:normal;color:var(--text-faint);font-weight:700}
+.mm-gs-none{color:var(--text-faint)}
+.mm-gs-ball{flex:none;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:13px;opacity:.85;padding-top:1px}
+.mm-gs-tag{font-style:normal;font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text-faint)}
 .mm-kick{text-align:center;font-size:14px;color:var(--text-dim);padding:12px 0;margin-top:10px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
 .mm-kick b{color:var(--text)}
 .mm-next{font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--text-faint);border:1px solid var(--line-strong);border-radius:5px;padding:1px 5px;vertical-align:1px}
@@ -758,6 +776,13 @@ body.show-only.filtering .cal-entry:not(.on):not([data-teams=""]){display:none}
 .mc-time .nxt.res{color:var(--green-bright);border-color:var(--green)}
 .ce-res{font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;margin-left:6px}
 .tfx-score{font-weight:800;color:var(--text);font-variant-numeric:tabular-nums}
+/* team-page fixture result chip , W/D/L from this team's perspective + the score, leads the row once played */
+.tfx-res{margin-left:auto;display:inline-flex;align-items:center;gap:7px;font-weight:800;font-size:14.5px;color:var(--text);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tfx-res i{font-style:normal;width:20px;height:20px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
+.tfx-res-W i{background:rgba(25,224,138,.18);color:var(--green-bright);box-shadow:inset 0 0 0 1px rgba(25,224,138,.45)}
+.tfx-res-L i{background:rgba(239,83,80,.15);color:#ff8a85;box-shadow:inset 0 0 0 1px rgba(239,83,80,.4)}
+.tfx-res-D i{background:rgba(255,255,255,.07);color:var(--text-dim);box-shadow:inset 0 0 0 1px var(--line-strong)}
+.tfx-played .tfx-time{opacity:.75}
 .sq-st{font-size:9px;font-weight:800;letter-spacing:.04em;padding:1px 5px;border-radius:4px;margin-left:6px;vertical-align:1px}
 .sq-injured{background:rgba(239,83,80,.16);color:#ff8a85;border:1px solid rgba(239,83,80,.4)}
 .sq-suspended{background:rgba(244,200,75,.14);color:#f4c84b;border:1px solid rgba(244,200,75,.4)}
@@ -2264,14 +2289,20 @@ function renderTeam(code){
     const [y,mo,da]=m.date.split('-').map(Number);
     const wd=WD[new Date(Date.UTC(y,mo-1,da)).getUTCDay()].slice(0,3);
     const venueNm=m.venue?`${venueName(m.venue)}, ${m.venue.city}`:'Venue TBC';
-    return `<div class="tfx">
+    // result block from THIS team's perspective , finished matches lead with W/D/L + score, not the kickoff time
+    const played=m.homeScore!=null;
+    const us=home?m.homeScore:m.awayScore, them=home?m.awayScore:m.homeScore;
+    const wdl=played ? (us>them?'W':us<them?'L':'D') : null;
+    const res=played?`<span class="tfx-res tfx-res-${wdl}"><i>${wdl}</i>${m.homeScore}-${m.awayScore}</span>`:'';
+    return `<div class="tfx${played?' tfx-played':''}">
       <div class="tfx-date"><b>${da} ${MO[mo-1]}</b><span>${wd}</span></div>
       <div class="tfx-main">
         <span class="tfx-ha">${home?'HOME':'AWAY'}</span>
         <span class="tfx-opp">vs ${teamLink(opp)}</span>
         <span class="tfx-badge" style="--accent:${matchColor(m)}">${m.stage==='GROUP'?'Group '+m.group+' · MD'+m.md:STAGES[m.stage].label}</span>
+        ${res}
       </div>
-      <div class="tfx-meta"><span>${venueNm}${tvOf(m)?` · ${tvBadge(m)}`:''}</span><span class="tfx-time">${m.homeScore!=null?`<b class="tfx-score">${m.homeScore}-${m.awayScore}</b> · `:''}${m.kickoffLocal}${m.plus?'+':''} NOR · ${fmtVenueTime(m)} local</span></div>
+      <div class="tfx-meta"><span>${venueNm}${tvOf(m)?` · ${tvBadge(m)}`:''}</span><span class="tfx-time">${played?'FT · ':''}${m.kickoffLocal}${m.plus?'+':''} NOR · ${fmtVenueTime(m)} local</span></div>
     </div>`;
   }).join("");
   const gs=teamGoalStats(code);
@@ -2605,10 +2636,28 @@ function applyRound(){
 }
 
 // match detail popover
-function mmSide(code){
+function mmSide(code, cls=''){
   return isTeam(code)
-    ? `<a class="mm-team" data-team="${code}"><span class="fl">${TEAMS[code][1]}</span><span class="nm2">${TEAMS[code][0]}</span></a>`
+    ? `<a class="mm-team${cls}" data-team="${code}"><span class="fl">${TEAMS[code][1]}</span><span class="nm2">${TEAMS[code][0]}</span></a>`
     : `<span class="mm-team slot"><span class="nm2">${slotText(code)}</span></span>`;
+}
+/* scorers strip for a finished/live match , the free feed only has TOURNAMENT
+   totals per player (no per-match events), so per team we list its scorers
+   with running counts; while a team has played a single match the totals ARE
+   that match's scorers, afterwards a small "tournament" tag keeps it honest. */
+function mmScorersHTML(m){
+  if(m.homeScore==null || !isTeam(m.home) || !isTeam(m.away)) return '';
+  const all=(window.SCORERS&&window.SCORERS.scorers)||[]; if(!all.length) return '';
+  const list=code=>all.filter(p=>p.code===code).sort((a,b)=>b.goals-a.goals)
+    .map(p=>`<span class="mm-gs">${escHtml(p.name)}${p.goals>1?` <i>×${p.goals}</i>`:''}</span>`).join('');
+  const h=list(m.home), a=list(m.away);
+  if(!h && !a) return '';
+  const exact=teamGoalStats(m.home).P<=1 && teamGoalStats(m.away).P<=1;   // single match played → totals are this match's scorers
+  return `<div class="mm-scorers">
+    <div class="mm-gs-side">${h||'<span class="mm-gs-none">,</span>'}</div>
+    <span class="mm-gs-ball" aria-hidden="true">⚽${exact?'':'<i class="mm-gs-tag">tournament</i>'}</span>
+    <div class="mm-gs-side mm-gs-away">${a||'<span class="mm-gs-none">,</span>'}</div>
+  </div>`;
 }
 function openMatch(i){
   const m=MATCHES[i]; if(!m) return;
@@ -2618,10 +2667,19 @@ function openMatch(i){
   const wd=WD[new Date(Date.UTC(y,mo-1,da)).getUTCDay()];
   const koWd=m.plus?WD[new Date(Date.UTC(y,mo-1,da)+864e5).getUTCDay()]:"";   // after-midnight kickoffs land the next day
   const stageLabel=m.stage==='GROUP'?`Group ${m.group} · Matchday ${m.md}`:`${STAGES[m.stage].label}${m.n?` · Match ${m.n}`:''}`;
+  // finished/live: the score IS the story , hero numerals, winner bright / loser dimmed, status pill, scorers strip
+  const played=m.homeScore!=null;
+  const win=played ? (m.homeScore>m.awayScore?m.home:(m.awayScore>m.homeScore?m.away:null)) : null;
+  const sideCls=c=>!win?'':(c===win?' mm-won':' mm-lostt');
+  const centre=played
+    ? `<span class="mm-vs mm-vs-final"><span class="mm-fs-row"><b class="mm-fs${win===m.home?' mm-fs-w':''}">${m.homeScore}</b><i>-</i><b class="mm-fs${win===m.away?' mm-fs-w':''}">${m.awayScore}</b></span>
+       <span class="mm-ftpill${m.status==='LIVE'||m.status==='HT'?' mm-ftpill-live':''}">${m.status==='LIVE'?'LIVE':m.status==='HT'?'HT':'FULL TIME'}</span></span>`
+    : `<span class="mm-vs">${m.stage==='FINAL'?'VS':'-'}</span>`;
   $("#match-modal").innerHTML=`<div class="mm-card" style="--accent:${matchColor(m)}">
     <button class="mm-x" data-mclose aria-label="Close">×</button>
     <div class="mm-stage">${stageLabel}</div>
-    <div class="mm-teams">${mmSide(m.home)}<span class="mm-vs">${m.homeScore!=null?`${m.homeScore}-${m.awayScore}`:(m.stage==='FINAL'?'VS':'-')}</span>${mmSide(m.away)}</div>
+    <div class="mm-teams">${mmSide(m.home,sideCls(m.home))}${centre}${mmSide(m.away,sideCls(m.away))}</div>
+    ${mmScorersHTML(m)}
     <div class="mm-kick"><b>${m.kickoffLocal}</b> Norwegian${m.plus?` <span class="mm-next">${koWd}</span>`:''}${v?` &nbsp;·&nbsp; <b>${fmtVenueTime(m)}</b> ${v.city} local`:''}</div>
     <div class="mm-meta">
       <div class="mm-row"><span>Date</span><b>${wd} ${da} ${MO[mo-1]} 2026</b></div>
