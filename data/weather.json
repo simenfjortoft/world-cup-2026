@@ -1,5 +1,5 @@
 {
- "lastUpdated": "2026-06-10T22:51:48.447Z",
+ "lastUpdated": "2026-06-11T02:57:34.917Z",
  "source": "open-meteo.com",
  "matches": {
   "0": {
@@ -423,40 +423,46 @@
    "lo": 18
   },
   "60": {
-   "c": 23,
-   "hi": 29,
-   "lo": 19,
-   "typical": true
+   "c": null,
+   "feels": null,
+   "code": null,
+   "hi": null,
+   "lo": null
   },
   "61": {
-   "c": 22,
-   "hi": 27,
-   "lo": 18,
-   "typical": true
+   "c": null,
+   "feels": null,
+   "code": null,
+   "hi": null,
+   "lo": null
   },
   "62": {
-   "c": 29,
-   "hi": 33,
-   "lo": 25,
-   "typical": true
+   "c": null,
+   "feels": null,
+   "code": null,
+   "hi": null,
+   "lo": null
   },
   "63": {
-   "c": 20,
-   "hi": 26,
-   "lo": 16,
-   "typical": true
+   "c": null,
+   "feels": null,
+   "code": null,
+   "hi": null,
+   "lo": null
   },
   "64": {
-   "c": 19,
-   "hi": 23,
-   "lo": 15,
-   "typical": true
+   "c": null,
+   "feels": null,
+   "code": null,
+   "hi": null,
+   "lo": null
   },
   "65": {
-   "c": 19,
-   "hi": 26,
-   "lo": 14,
-   "typical": true
+   "c": null,
+   "feels": null,
+   "code": null,
+   "hi": null,
+   "lo": null
   },
   "66": {
    "c": 24,
@@ -545,6 +551,12 @@
   "80": {
    "c": 18,
    "hi": 23,
+   "lo": 14,
+   "typical": true
+  },
+  "81": {
+   "c": 20,
+   "hi": 28,
    "lo": 14,
    "typical": true
   },
