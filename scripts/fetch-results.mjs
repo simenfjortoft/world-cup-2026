@@ -69,6 +69,12 @@ async function getMatches(){
 const fixtures = await getMatches();
 if(fixtures === null) process.exit(0);
 
+// status histogram , distinguishes "upstream is stale" (all TIMED hours after kickoff)
+// from "our mapping broke" (FINISHED fixtures present but 0 mapped) when reading run logs
+const hist = {};
+fixtures.forEach(fx => { hist[fx.status] = (hist[fx.status]||0) + 1; });
+console.log('• upstream statuses:', Object.entries(hist).map(([k,v])=>`${k}:${v}`).join(' ') || '(none)');
+
 const M = readMatches();
 const groupByPair = new Map();
 M.filter(m => m.stage === 'GROUP').forEach(m => groupByPair.set([m.home, m.away].sort().join('-'), m));
