@@ -6,7 +6,7 @@
    Bump CACHE_NAME on every meaningful release , the old cache is cleared on
    activate and waiting clients are claimed so the new SW takes over immediately.
 */
-const CACHE_NAME = 'wc2026-v1';
+const CACHE_NAME = 'wc2026-v2';   // bumped to force a clean cache (clears any stale results.json from the v1 cache)
 const APP_SHELL = [
   './',
   './index.html',
