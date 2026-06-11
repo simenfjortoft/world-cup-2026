@@ -123,6 +123,20 @@ for(const fx of fixtures){
   }
 }
 
+/* Monotonic persistence: the free tier FLAPS , the opener went 1-0 LIVE →
+   FINISHED-with-no-score → back to TIMED within an hour. A naive overwrite
+   regresses scores we already had to nothing. Merge instead: an entry the API
+   no longer reports is KEPT from the previous file; fresh data for the same
+   match always replaces it (so corrections and FT upgrades still win). */
+const OUT = fileURLToPath(new URL('../data/results.json', import.meta.url));
+let kept = 0;
+try{
+  const prev = JSON.parse(readFileSync(OUT, 'utf8')).matches || {};
+  for(const [i, e] of Object.entries(prev)){
+    if(!(i in out)){ out[i] = e; kept++; }
+  }
+}catch(e){ /* no previous file , nothing to keep */ }
+
 const payload = {
   lastUpdated: new Date().toISOString().slice(0,10),
   source: `football-data.org , competition ${COMP}`,
@@ -132,7 +146,7 @@ const payload = {
 if(DRY){
   console.log(JSON.stringify(payload, null, 1));
 } else {
-  writeFileSync(fileURLToPath(new URL('../data/results.json', import.meta.url)), JSON.stringify(payload, null, 1));
+  writeFileSync(OUT, JSON.stringify(payload, null, 1));
 }
-console.log(`✓ ${DRY?'(dry-run) ':''}results , ${mapped} of ${fixtures.length} matches mapped, ${Object.keys(out).length} entries`);
+console.log(`✓ ${DRY?'(dry-run) ':''}results , ${mapped} of ${fixtures.length} matches mapped, ${Object.keys(out).length} entries${kept?` (${kept} kept from previous file , upstream stopped reporting them)`:''}`);
 if(unmapped.length) console.log('  unmapped:', unmapped.slice(0,12), unmapped.length>12?`(+${unmapped.length-12} more)`:'');
