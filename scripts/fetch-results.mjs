@@ -31,6 +31,18 @@ const mapStatus = s =>
   s === 'PAUSED'   ? 'HT' :
   s === 'IN_PLAY'  ? 'LIVE' : null;
 
+/* Current score for a fixture. fullTime is only reliably populated once the
+   match is FINISHED , during IN_PLAY/PAUSED the running score lives in
+   regularTime (or halfTime before the break), so fall through in that order.
+   Returns [home, away] or null when no source has both values (not started). */
+function liveScore(fx){
+  for(const k of ['fullTime', 'regularTime', 'halfTime']){
+    const s = fx.score?.[k];
+    if(s && s.home != null && s.away != null) return [s.home, s.away];
+  }
+  return null;
+}
+
 // team object -> our 3-letter code (by name/shortName, then its 3-letter abbreviation)
 const codeOf = t => !t ? null :
   (teamCode(t.name) || teamCode(t.shortName) || (t.tla && t.tla.length === 3 ? t.tla : null));
@@ -69,8 +81,9 @@ for(const fx of fixtures){
   const isGroup = fx.stage === 'GROUP_STAGE';
   const hCode = codeOf(fx.homeTeam), aCode = codeOf(fx.awayTeam);
   const status = mapStatus(fx.status);
-  const gh = fx.score?.fullTime?.home, ga = fx.score?.fullTime?.away;
-  const hasScore = gh != null && ga != null;
+  const sc = liveScore(fx);                          // fullTime → regularTime → halfTime fallback (in-play scores)
+  const [gh, ga] = sc || [null, null];
+  const hasScore = sc != null;
 
   if(isGroup){
     if(!hCode || !aCode){ unmapped.push(`group ${fx.homeTeam?.name} v ${fx.awayTeam?.name} (unknown code)`); continue; }
