@@ -3,9 +3,33 @@
  "source": "football-data.org , competition WC",
  "scorers": [
   {
+   "name": "Hyun-Gyu Oh",
+   "code": "KOR",
+   "nat": "South Korea",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "In-beom Hwang",
+   "code": "KOR",
+   "nat": "South Korea",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Julián Quiñones",
    "code": "MEX",
    "nat": "Colombia",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Ladislav Krejčí",
+   "code": "CZE",
+   "nat": "Czech Republic",
    "pos": null,
    "goals": 1,
    "penalties": null
