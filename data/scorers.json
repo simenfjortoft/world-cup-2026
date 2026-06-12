@@ -3,6 +3,14 @@
  "source": "football-data.org , competition WC",
  "scorers": [
   {
+   "name": "Cyle Larin",
+   "code": "CAN",
+   "nat": "Canada",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Hyun-Gyu Oh",
    "code": "KOR",
    "nat": "South Korea",
