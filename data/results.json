@@ -24,8 +24,8 @@
   },
   "4": {
    "hs": 0,
-   "as": 0,
-   "status": "LIVE"
+   "as": 1,
+   "status": "HT"
   }
  }
 }
