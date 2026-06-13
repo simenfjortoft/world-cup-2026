@@ -59,6 +59,14 @@
    "penalties": null
   },
   {
+   "name": "Ismael Saibari",
+   "code": "MAR",
+   "nat": "Morocco",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Jovo Lukić",
    "code": "BIH",
    "nat": "Bosnia-Herzegovina",
@@ -94,6 +102,14 @@
    "name": "Raúl Jiménez",
    "code": "MEX",
    "nat": "Mexico",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Vinicius Junior",
+   "code": "BRA",
+   "nat": "Brazil",
    "pos": null,
    "goals": 1,
    "penalties": null
