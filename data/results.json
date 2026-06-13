@@ -23,9 +23,9 @@
    "status": "FT"
   },
   "4": {
-   "hs": 0,
+   "hs": 1,
    "as": 1,
-   "status": "HT"
+   "status": "FT"
   }
  }
 }
