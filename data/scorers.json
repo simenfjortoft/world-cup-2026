@@ -3,9 +3,25 @@
  "source": "football-data.org , competition WC",
  "scorers": [
   {
+   "name": "Folarin Balogun",
+   "code": "USA",
+   "nat": "USA",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Cyle Larin",
    "code": "CAN",
    "nat": "Canada",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Gio Reyna",
+   "code": "USA",
+   "nat": "USA",
    "pos": null,
    "goals": 1,
    "penalties": null
@@ -46,6 +62,14 @@
    "name": "Ladislav Krejčí",
    "code": "CZE",
    "nat": "Czech Republic",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Mauricio",
+   "code": "PAR",
+   "nat": "Paraguay",
    "pos": null,
    "goals": 1,
    "penalties": null
