@@ -43,6 +43,14 @@
    "penalties": null
   },
   {
+   "name": "Felix Kalu Nmecha",
+   "code": "GER",
+   "nat": "Germany",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Gio Reyna",
    "code": "USA",
    "nat": "USA",
@@ -107,6 +115,14 @@
    "penalties": null
   },
   {
+   "name": "Livano Comenencia",
+   "code": "CUR",
+   "nat": "Curaçao",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Mauricio",
    "code": "PAR",
    "nat": "Paraguay",
@@ -118,6 +134,14 @@
    "name": "Nestor Irankunda",
    "code": "AUS",
    "nat": "Australia",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Nico Schlotterbeck",
+   "code": "GER",
+   "nat": "Germany",
    "pos": null,
    "goals": 1,
    "penalties": null
