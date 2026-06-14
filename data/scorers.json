@@ -11,6 +11,14 @@
    "penalties": null
   },
   {
+   "name": "Kai Havertz",
+   "code": "GER",
+   "nat": "Germany",
+   "pos": null,
+   "goals": 2,
+   "penalties": 1
+  },
+  {
    "name": "Boualem Khoukhi",
    "code": "QAT",
    "nat": "Qatar",
@@ -38,6 +46,14 @@
    "name": "Cyle Larin",
    "code": "CAN",
    "nat": "Canada",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Deniz Undav",
+   "code": "GER",
+   "nat": "Germany",
    "pos": null,
    "goals": 1,
    "penalties": null
@@ -78,6 +94,14 @@
    "name": "Ismael Saibari",
    "code": "MAR",
    "nat": "Morocco",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Jamal Musiala",
+   "code": "GER",
+   "nat": "Germany",
    "pos": null,
    "goals": 1,
    "penalties": null
@@ -126,6 +150,14 @@
    "name": "Mauricio",
    "code": "PAR",
    "nat": "Paraguay",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Nathaniel Brown",
+   "code": "GER",
+   "nat": "Germany",
    "pos": null,
    "goals": 1,
    "penalties": null
