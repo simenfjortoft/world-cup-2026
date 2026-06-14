@@ -27,6 +27,14 @@
    "penalties": 1
   },
   {
+   "name": "Connor Metcalfe",
+   "code": "AUS",
+   "nat": "Australia",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Cyle Larin",
    "code": "CAN",
    "nat": "Canada",
@@ -102,6 +110,14 @@
    "name": "Mauricio",
    "code": "PAR",
    "nat": "Paraguay",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Nestor Irankunda",
+   "code": "AUS",
+   "nat": "Australia",
    "pos": null,
    "goals": 1,
    "penalties": null

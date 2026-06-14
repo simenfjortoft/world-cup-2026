@@ -38,9 +38,9 @@
    "status": "FT"
   },
   "7": {
-   "hs": 0,
+   "hs": 2,
    "as": 0,
-   "status": "LIVE"
+   "status": "FT"
   }
  }
 }
