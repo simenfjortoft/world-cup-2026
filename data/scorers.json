@@ -1,5 +1,5 @@
 {
- "lastUpdated": "2026-06-13",
+ "lastUpdated": "2026-06-14",
  "source": "football-data.org , competition WC",
  "scorers": [
   {
@@ -62,6 +62,14 @@
    "name": "Ismael Saibari",
    "code": "MAR",
    "nat": "Morocco",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "John McGinn",
+   "code": "SCO",
+   "nat": "Scotland",
    "pos": null,
    "goals": 1,
    "penalties": null
