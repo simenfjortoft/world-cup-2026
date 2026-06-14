@@ -43,6 +43,14 @@
    "penalties": null
   },
   {
+   "name": "Crysencio Summerville",
+   "code": "NED",
+   "nat": "Netherlands",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Cyle Larin",
    "code": "CAN",
    "nat": "Canada",
@@ -131,6 +139,14 @@
    "penalties": null
   },
   {
+   "name": "Keito Nakamura",
+   "code": "JPN",
+   "nat": "Japan",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Ladislav Krejčí",
    "code": "CZE",
    "nat": "Czech Republic",
@@ -190,6 +206,14 @@
    "name": "Vinicius Junior",
    "code": "BRA",
    "nat": "Brazil",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Virgil van Dijk",
+   "code": "NED",
+   "nat": "Netherlands",
    "pos": null,
    "goals": 1,
    "penalties": null
