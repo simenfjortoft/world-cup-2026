@@ -19,6 +19,30 @@
    "penalties": 1
   },
   {
+   "name": "Yasin Ayari",
+   "code": "SWE",
+   "nat": "Sweden",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
+   "name": "Alexander Isak",
+   "code": "SWE",
+   "nat": "Sweden",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Amad Diallo",
+   "code": "CIV",
+   "nat": "Ivory Coast",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Boualem Khoukhi",
    "code": "QAT",
    "nat": "Qatar",
@@ -171,6 +195,14 @@
    "penalties": null
   },
   {
+   "name": "Mattias Svanberg",
+   "code": "SWE",
+   "nat": "Sweden",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Mauricio",
    "code": "PAR",
    "nat": "Paraguay",
@@ -203,9 +235,25 @@
    "penalties": null
   },
   {
+   "name": "Omar Rekik",
+   "code": "TUN",
+   "nat": "Tunisia",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Raúl Jiménez",
    "code": "MEX",
    "nat": "Mexico",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Viktor Gyökeres",
+   "code": "SWE",
+   "nat": "Sweden",
    "pos": null,
    "goals": 1,
    "penalties": null
