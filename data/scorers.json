@@ -1,5 +1,5 @@
 {
- "lastUpdated": "2026-06-15",
+ "lastUpdated": "2026-06-16",
  "source": "football-data.org , competition WC",
  "scorers": [
   {
@@ -222,6 +222,14 @@
    "name": "Mauricio",
    "code": "PAR",
    "nat": "Paraguay",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Maximiliano Araújo",
+   "code": "URU",
+   "nat": "Uruguay",
    "pos": null,
    "goals": 1,
    "penalties": null
