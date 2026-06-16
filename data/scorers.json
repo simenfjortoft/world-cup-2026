@@ -3,6 +3,14 @@
  "source": "football-data.org , competition WC",
  "scorers": [
   {
+   "name": "Elijah Just",
+   "code": "NZL",
+   "nat": "New Zealand",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Folarin Balogun",
    "code": "USA",
    "nat": "USA",
@@ -235,6 +243,14 @@
    "penalties": null
   },
   {
+   "name": "Mohammad Mohebi",
+   "code": "IRN",
+   "nat": "Iran",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Nathaniel Brown",
    "code": "GER",
    "nat": "Germany",
@@ -262,6 +278,14 @@
    "name": "Omar Rekik",
    "code": "TUN",
    "nat": "Tunisia",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Ramin Rezaeian",
+   "code": "IRN",
+   "nat": "Iran",
    "pos": null,
    "goals": 1,
    "penalties": null
