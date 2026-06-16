@@ -11,6 +11,14 @@
    "penalties": null
   },
   {
+   "name": "Erling Haaland",
+   "code": "NOR",
+   "nat": "Norway",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Folarin Balogun",
    "code": "USA",
    "nat": "USA",
@@ -62,6 +70,14 @@
    "name": "Amad Diallo",
    "code": "CIV",
    "nat": "Ivory Coast",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Aymen Hussein",
+   "code": "IRQ",
+   "nat": "Iraq",
    "pos": null,
    "goals": 1,
    "penalties": null
