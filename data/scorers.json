@@ -67,6 +67,14 @@
    "penalties": null
   },
   {
+   "name": "Bradley Barcola",
+   "code": "FRA",
+   "nat": "France",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Breel Embolo",
    "code": "SUI",
    "nat": "Switzerland",
@@ -198,6 +206,14 @@
    "name": "Keito Nakamura",
    "code": "JPN",
    "nat": "Japan",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Kylian Mbappé",
+   "code": "FRA",
+   "nat": "France",
    "pos": null,
    "goals": 1,
    "penalties": null
