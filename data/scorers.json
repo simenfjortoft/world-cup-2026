@@ -75,6 +75,14 @@
    "penalties": null
   },
   {
+   "name": "Ali Olwan",
+   "code": "JOR",
+   "nat": "Jordan",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Amad Diallo",
    "code": "CIV",
    "nat": "Ivory Coast",
@@ -275,6 +283,14 @@
    "penalties": null
   },
   {
+   "name": "Marko Arnautovic",
+   "code": "AUT",
+   "nat": "Austria",
+   "pos": null,
+   "goals": 1,
+   "penalties": 1
+  },
+  {
    "name": "Mattias Svanberg",
    "code": "SWE",
    "nat": "Sweden",
@@ -350,6 +366,14 @@
    "name": "Raúl Jiménez",
    "code": "MEX",
    "nat": "Mexico",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Romano Schmid",
+   "code": "AUT",
+   "nat": "Austria",
    "pos": null,
    "goals": 1,
    "penalties": null
