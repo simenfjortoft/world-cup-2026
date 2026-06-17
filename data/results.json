@@ -93,7 +93,12 @@
    "status": "FT"
   },
   "18": {
-   "hs": 1,
+   "hs": 3,
+   "as": 0,
+   "status": "FT"
+  },
+  "19": {
+   "hs": 0,
    "as": 0,
    "status": "LIVE"
   }
