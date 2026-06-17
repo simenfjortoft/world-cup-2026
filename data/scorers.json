@@ -1,5 +1,5 @@
 {
- "lastUpdated": "2026-06-16",
+ "lastUpdated": "2026-06-17",
  "source": "football-data.org , competition WC",
  "scorers": [
   {
@@ -246,6 +246,22 @@
    "name": "Ladislav Krejčí",
    "code": "CZE",
    "nat": "Czech Republic",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Leo Østigård",
+   "code": "NOR",
+   "nat": "Norway",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Lionel Messi",
+   "code": "ARG",
+   "nat": "Argentina",
    "pos": null,
    "goals": 1,
    "penalties": null
