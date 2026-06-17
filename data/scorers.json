@@ -35,6 +35,14 @@
    "penalties": null
   },
   {
+   "name": "Harry Kane",
+   "code": "ENG",
+   "nat": "England",
+   "pos": null,
+   "goals": 2,
+   "penalties": 1
+  },
+  {
    "name": "Kai Havertz",
    "code": "GER",
    "nat": "Germany",
@@ -251,6 +259,14 @@
    "penalties": null
   },
   {
+   "name": "Jude Bellingham",
+   "code": "ENG",
+   "nat": "England",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Julián Quiñones",
    "code": "MEX",
    "nat": "Colombia",
@@ -297,6 +313,14 @@
    "pos": null,
    "goals": 1,
    "penalties": 1
+  },
+  {
+   "name": "Martin Baturina",
+   "code": "CRO",
+   "nat": "Croatia",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
   },
   {
    "name": "Mattias Svanberg",
@@ -358,6 +382,14 @@
    "name": "Omar Rekik",
    "code": "TUN",
    "nat": "Tunisia",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Petar Musa",
+   "code": "CRO",
+   "nat": "Croatia",
    "pos": null,
    "goals": 1,
    "penalties": null
