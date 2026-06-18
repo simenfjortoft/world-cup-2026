@@ -11,6 +11,14 @@
    "penalties": null
   },
   {
+   "name": "Cyle Larin",
+   "code": "CAN",
+   "nat": "Canada",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Elijah Just",
    "code": "NZL",
    "nat": "New Zealand",
@@ -46,6 +54,14 @@
    "name": "Johan Manzambi",
    "code": "SUI",
    "nat": "Switzerland",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
+   "name": "Jonathan David",
+   "code": "CAN",
+   "nat": "Canada",
    "pos": null,
    "goals": 2,
    "penalties": null
@@ -166,14 +182,6 @@
    "name": "Crysencio Summerville",
    "code": "NED",
    "nat": "Netherlands",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Cyle Larin",
-   "code": "CAN",
-   "nat": "Canada",
    "pos": null,
    "goals": 1,
    "penalties": null
