@@ -1,5 +1,5 @@
 {
- "lastUpdated": "2026-06-17",
+ "lastUpdated": "2026-06-18",
  "source": "football-data.org , competition WC",
  "scorers": [
   {
@@ -129,6 +129,14 @@
    "pos": null,
    "goals": 1,
    "penalties": 1
+  },
+  {
+   "name": "Caleb Yirenkyi",
+   "code": "GHA",
+   "nat": "Ghana",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
   },
   {
    "name": "Connor Metcalfe",
