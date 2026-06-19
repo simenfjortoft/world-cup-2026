@@ -1,7 +1,15 @@
 {
- "lastUpdated": "2026-06-18",
+ "lastUpdated": "2026-06-19",
  "source": "football-data.org , competition WC",
  "scorers": [
+  {
+   "name": "Jonathan David",
+   "code": "CAN",
+   "nat": "Canada",
+   "pos": null,
+   "goals": 3,
+   "penalties": null
+  },
   {
    "name": "Lionel Messi",
    "code": "ARG",
@@ -54,14 +62,6 @@
    "name": "Johan Manzambi",
    "code": "SUI",
    "nat": "Switzerland",
-   "pos": null,
-   "goals": 2,
-   "penalties": null
-  },
-  {
-   "name": "Jonathan David",
-   "code": "CAN",
-   "nat": "Canada",
    "pos": null,
    "goals": 2,
    "penalties": null
@@ -438,6 +438,14 @@
    "name": "Mohammad Mohebi",
    "code": "IRN",
    "nat": "Iran",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Nathan-Dylan Saliba",
+   "code": "CAN",
+   "nat": "Canada",
    "pos": null,
    "goals": 1,
    "penalties": null
