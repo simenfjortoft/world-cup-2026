@@ -1,5 +1,5 @@
 {
- "lastUpdated": "2026-06-19",
+ "lastUpdated": "2026-06-20",
  "source": "football-data.org , competition WC",
  "scorers": [
   {
@@ -86,6 +86,22 @@
    "name": "Kylian Mbappé",
    "code": "FRA",
    "nat": "France",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
+   "name": "Matheus Cunha",
+   "code": "BRA",
+   "nat": "Brazil",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
+   "name": "Vinicius Junior",
+   "code": "BRA",
+   "nat": "Brazil",
    "pos": null,
    "goals": 2,
    "penalties": null
@@ -550,14 +566,6 @@
    "name": "Viktor Gyökeres",
    "code": "SWE",
    "nat": "Sweden",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Vinicius Junior",
-   "code": "BRA",
-   "nat": "Brazil",
    "pos": null,
    "goals": 1,
    "penalties": null
