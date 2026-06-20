@@ -19,6 +19,22 @@
    "penalties": null
   },
   {
+   "name": "Brian Brobbey",
+   "code": "NED",
+   "nat": "Netherlands",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
+   "name": "Cody Gakpo",
+   "code": "NED",
+   "nat": "Netherlands",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Cyle Larin",
    "code": "CAN",
    "nat": "Canada",
@@ -158,6 +174,14 @@
    "name": "Amad Diallo",
    "code": "CIV",
    "nat": "Ivory Coast",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Anthony Elanga",
+   "code": "SWE",
+   "nat": "Sweden",
    "pos": null,
    "goals": 1,
    "penalties": null
@@ -462,6 +486,14 @@
    "name": "Maximiliano Araújo",
    "code": "URU",
    "nat": "Uruguay",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Memphis Depay",
+   "code": "NED",
+   "nat": "Netherlands",
    "pos": null,
    "goals": 1,
    "penalties": null
