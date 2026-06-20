@@ -168,9 +168,9 @@
    "status": "FT"
   },
   "33": {
-   "hs": 0,
+   "hs": 2,
    "as": 1,
-   "status": "HT"
+   "status": "FT"
   }
  }
 }
