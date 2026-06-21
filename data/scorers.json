@@ -51,6 +51,14 @@
    "penalties": null
   },
   {
+   "name": "Daichi Kamada",
+   "code": "JPN",
+   "nat": "Japan",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Elijah Just",
    "code": "NZL",
    "nat": "New Zealand",
@@ -246,14 +254,6 @@
    "name": "Crysencio Summerville",
    "code": "NED",
    "nat": "Netherlands",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Daichi Kamada",
-   "code": "JPN",
-   "nat": "Japan",
    "pos": null,
    "goals": 1,
    "penalties": null
