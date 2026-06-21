@@ -139,6 +139,14 @@
    "penalties": null
   },
   {
+   "name": "Maximiliano Araújo",
+   "code": "URU",
+   "nat": "Uruguay",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Mikel Oyarzabal",
    "code": "ESP",
    "nat": "Spain",
@@ -174,6 +182,14 @@
    "name": "Abdulelah Al Amri",
    "code": "KSA",
    "nat": "Saudi Arabia",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Agustín Canobbio",
+   "code": "URU",
+   "nat": "Uruguay",
    "pos": null,
    "goals": 1,
    "penalties": null
@@ -331,6 +347,14 @@
    "penalties": 1
   },
   {
+   "name": "Hélio Varela",
+   "code": "CPV",
+   "nat": "Cape Verde Islands",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Hyun-Gyu Oh",
    "code": "KOR",
    "nat": "South Korea",
@@ -427,6 +451,14 @@
    "penalties": null
   },
   {
+   "name": "Kevin Pina",
+   "code": "CPV",
+   "nat": "Cape Verde Islands",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Ladislav Krejčí",
    "code": "CZE",
    "nat": "Czech Republic",
@@ -518,14 +550,6 @@
    "name": "Mauricio",
    "code": "PAR",
    "nat": "Paraguay",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Maximiliano Araújo",
-   "code": "URU",
-   "nat": "Uruguay",
    "pos": null,
    "goals": 1,
    "penalties": null
