@@ -1,5 +1,5 @@
 {
- "lastUpdated": "2026-06-21",
+ "lastUpdated": "2026-06-22",
  "source": "football-data.org , competition WC",
  "scorers": [
   {
@@ -318,6 +318,14 @@
    "name": "Felix Kalu Nmecha",
    "code": "GER",
    "nat": "Germany",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Finn Surman",
+   "code": "NZL",
+   "nat": "New Zealand",
    "pos": null,
    "goals": 1,
    "penalties": null
