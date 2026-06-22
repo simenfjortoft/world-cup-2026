@@ -203,9 +203,9 @@
    "status": "FT"
   },
   "40": {
-   "hs": 1,
+   "hs": 2,
    "as": 0,
-   "status": "LIVE"
+   "status": "FT"
   }
  }
 }
