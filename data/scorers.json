@@ -579,9 +579,25 @@
    "penalties": null
   },
   {
+   "name": "Mohamed Salah",
+   "code": "EGY",
+   "nat": "Egypt",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Mohammad Mohebi",
    "code": "IRN",
    "nat": "Iran",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Mostafa Ziko",
+   "code": "EGY",
+   "nat": "Egypt",
    "pos": null,
    "goals": 1,
    "penalties": null
@@ -673,6 +689,14 @@
    "pos": null,
    "goals": 1,
    "penalties": 1
+  },
+  {
+   "name": "Trezeguet",
+   "code": "EGY",
+   "nat": "Egypt",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
   },
   {
    "name": "Viktor Gyökeres",
