@@ -3,6 +3,14 @@
  "source": "football-data.org , competition WC",
  "scorers": [
   {
+   "name": "Lionel Messi",
+   "code": "ARG",
+   "nat": "Argentina",
+   "pos": null,
+   "goals": 4,
+   "penalties": null
+  },
+  {
    "name": "Deniz Undav",
    "code": "GER",
    "nat": "Germany",
@@ -14,14 +22,6 @@
    "name": "Jonathan David",
    "code": "CAN",
    "nat": "Canada",
-   "pos": null,
-   "goals": 3,
-   "penalties": null
-  },
-  {
-   "name": "Lionel Messi",
-   "code": "ARG",
-   "nat": "Argentina",
    "pos": null,
    "goals": 3,
    "penalties": null
