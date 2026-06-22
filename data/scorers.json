@@ -27,6 +27,14 @@
    "penalties": null
   },
   {
+   "name": "Kylian Mbappé",
+   "code": "FRA",
+   "nat": "France",
+   "pos": null,
+   "goals": 3,
+   "penalties": null
+  },
+  {
    "name": "Ayase Ueda",
    "code": "JPN",
    "nat": "Japan",
@@ -121,14 +129,6 @@
    "pos": null,
    "goals": 2,
    "penalties": 1
-  },
-  {
-   "name": "Kylian Mbappé",
-   "code": "FRA",
-   "nat": "France",
-   "pos": null,
-   "goals": 2,
-   "penalties": null
   },
   {
    "name": "Matheus Cunha",
