@@ -235,6 +235,14 @@
    "penalties": null
   },
   {
+   "name": "Amine Gouiri",
+   "code": "ALG",
+   "nat": "Algeria",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Anthony Elanga",
    "code": "SWE",
    "nat": "Sweden",
@@ -619,6 +627,14 @@
    "penalties": null
   },
   {
+   "name": "Nadhir Benbouali",
+   "code": "ALG",
+   "nat": "Algeria",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Nathan-Dylan Saliba",
    "code": "CAN",
    "nat": "Canada",
@@ -646,6 +662,14 @@
    "name": "Nico Schlotterbeck",
    "code": "GER",
    "nat": "Germany",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Nizar Al Rashdan",
+   "code": "JOR",
+   "nat": "Jordan",
    "pos": null,
    "goals": 1,
    "penalties": null
