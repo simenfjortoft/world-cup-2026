@@ -223,9 +223,9 @@
    "status": "FT"
   },
   "44": {
-   "hs": 2,
+   "hs": 5,
    "as": 0,
-   "status": "LIVE"
+   "status": "FT"
   },
   "74": {
    "h": "GER"
