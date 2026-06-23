@@ -115,6 +115,14 @@
    "penalties": null
   },
   {
+   "name": "Ismaïla Sarr",
+   "code": "SEN",
+   "nat": "Senegal",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Johan Manzambi",
    "code": "SUI",
    "nat": "Switzerland",
@@ -382,14 +390,6 @@
    "name": "In-beom Hwang",
    "code": "KOR",
    "nat": "South Korea",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Ismaïla Sarr",
-   "code": "SEN",
-   "nat": "Senegal",
    "pos": null,
    "goals": 1,
    "penalties": null
