@@ -307,6 +307,14 @@
    "penalties": null
   },
   {
+   "name": "Cristiano Ronaldo",
+   "code": "POR",
+   "nat": "Portugal",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Daniel Muñoz",
    "code": "COL",
    "nat": "Colombia",
@@ -662,6 +670,14 @@
    "name": "Nizar Al Rashdan",
    "code": "JOR",
    "nat": "Jordan",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Nuno Mendes",
+   "code": "POR",
+   "nat": "Portugal",
    "pos": null,
    "goals": 1,
    "penalties": null
