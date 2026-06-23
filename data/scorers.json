@@ -67,6 +67,14 @@
    "penalties": null
   },
   {
+   "name": "Cristiano Ronaldo",
+   "code": "POR",
+   "nat": "Portugal",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Crysencio Summerville",
    "code": "NED",
    "nat": "Netherlands",
@@ -198,6 +206,14 @@
    "name": "Abdulelah Al Amri",
    "code": "KSA",
    "nat": "Saudi Arabia",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Abduvakhid Nematov",
+   "code": "POR",
+   "nat": "Uzbekistan",
    "pos": null,
    "goals": 1,
    "penalties": null
@@ -667,6 +683,14 @@
    "penalties": null
   },
   {
+   "name": "Nuno Mendes",
+   "code": "POR",
+   "nat": "Portugal",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Omar Rekik",
    "code": "TUN",
    "nat": "Tunisia",
@@ -686,6 +710,14 @@
    "name": "Petar Musa",
    "code": "CRO",
    "nat": "Croatia",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Rafael Leão",
+   "code": "POR",
+   "nat": "Portugal",
    "pos": null,
    "goals": 1,
    "penalties": null
