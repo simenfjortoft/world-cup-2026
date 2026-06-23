@@ -67,6 +67,14 @@
    "penalties": null
   },
   {
+   "name": "Crysencio Summerville",
+   "code": "NED",
+   "nat": "Netherlands",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Cyle Larin",
    "code": "CAN",
    "nat": "Canada",
@@ -294,14 +302,6 @@
    "name": "Connor Metcalfe",
    "code": "AUS",
    "nat": "Australia",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Crysencio Summerville",
-   "code": "NED",
-   "nat": "Netherlands",
    "pos": null,
    "goals": 1,
    "penalties": null
@@ -582,14 +582,6 @@
    "name": "Mauricio",
    "code": "PAR",
    "nat": "Paraguay",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Memphis Depay",
-   "code": "NED",
-   "nat": "Netherlands",
    "pos": null,
    "goals": 1,
    "penalties": null
