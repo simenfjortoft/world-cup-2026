@@ -1,5 +1,5 @@
 {
- "lastUpdated": "2026-06-22",
+ "lastUpdated": "2026-06-23",
  "source": "football-data.org , competition WC",
  "scorers": [
   {
@@ -8,6 +8,22 @@
    "nat": "Argentina",
    "pos": null,
    "goals": 5,
+   "penalties": null
+  },
+  {
+   "name": "Erling Haaland",
+   "code": "NOR",
+   "nat": "Norway",
+   "pos": null,
+   "goals": 4,
+   "penalties": null
+  },
+  {
+   "name": "Kylian Mbappé",
+   "code": "FRA",
+   "nat": "France",
+   "pos": null,
+   "goals": 4,
    "penalties": null
   },
   {
@@ -22,14 +38,6 @@
    "name": "Jonathan David",
    "code": "CAN",
    "nat": "Canada",
-   "pos": null,
-   "goals": 3,
-   "penalties": null
-  },
-  {
-   "name": "Kylian Mbappé",
-   "code": "FRA",
-   "nat": "France",
    "pos": null,
    "goals": 3,
    "penalties": null
@@ -78,14 +86,6 @@
    "name": "Elijah Just",
    "code": "NZL",
    "nat": "New Zealand",
-   "pos": null,
-   "goals": 2,
-   "penalties": null
-  },
-  {
-   "name": "Erling Haaland",
-   "code": "NOR",
-   "nat": "Norway",
    "pos": null,
    "goals": 2,
    "penalties": null
@@ -387,6 +387,14 @@
    "penalties": null
   },
   {
+   "name": "Ismaïla Sarr",
+   "code": "SEN",
+   "nat": "Senegal",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Jamal Musiala",
    "code": "GER",
    "nat": "Germany",
@@ -515,6 +523,14 @@
    "penalties": null
   },
   {
+   "name": "Marcus Pedersen",
+   "code": "NOR",
+   "nat": "Norway",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Marcus Rashford",
    "code": "ENG",
    "nat": "England",
@@ -638,6 +654,14 @@
    "name": "Omar Rekik",
    "code": "TUN",
    "nat": "Tunisia",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Ousmane Dembélé",
+   "code": "FRA",
+   "nat": "France",
    "pos": null,
    "goals": 1,
    "penalties": null

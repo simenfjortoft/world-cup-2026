@@ -1,5 +1,5 @@
 {
- "lastUpdated": "2026-06-22",
+ "lastUpdated": "2026-06-23",
  "source": "football-data.org , competition WC",
  "matches": {
   "0": {
@@ -208,9 +208,14 @@
    "status": "FT"
   },
   "41": {
-   "hs": 1,
+   "hs": 3,
    "as": 0,
-   "status": "HT"
+   "status": "FT"
+  },
+  "42": {
+   "hs": 3,
+   "as": 1,
+   "status": "LIVE"
   }
  }
 }
