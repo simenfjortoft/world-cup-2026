@@ -51,6 +51,14 @@
    "penalties": null
   },
   {
+   "name": "Vinicius Junior",
+   "code": "BRA",
+   "nat": "Brazil",
+   "pos": null,
+   "goals": 3,
+   "penalties": null
+  },
+  {
    "name": "Ayase Ueda",
    "code": "JPN",
    "nat": "Japan",
@@ -198,14 +206,6 @@
    "name": "Ruben Vargas",
    "code": "SUI",
    "nat": "Switzerland",
-   "pos": null,
-   "goals": 2,
-   "penalties": null
-  },
-  {
-   "name": "Vinicius Junior",
-   "code": "BRA",
-   "nat": "Brazil",
    "pos": null,
    "goals": 2,
    "penalties": null
