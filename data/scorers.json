@@ -1,5 +1,5 @@
 {
- "lastUpdated": "2026-06-23",
+ "lastUpdated": "2026-06-24",
  "source": "football-data.org , competition WC",
  "scorers": [
   {
@@ -262,6 +262,14 @@
    "name": "Amine Gouiri",
    "code": "ALG",
    "nat": "Algeria",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
+   "name": "Ante Budimir",
+   "code": "CRO",
+   "nat": "Croatia",
    "pos": null,
    "goals": 1,
    "penalties": null
