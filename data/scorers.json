@@ -27,6 +27,14 @@
    "penalties": null
   },
   {
+   "name": "Vinicius Junior",
+   "code": "BRA",
+   "nat": "Brazil",
+   "pos": null,
+   "goals": 4,
+   "penalties": null
+  },
+  {
    "name": "Deniz Undav",
    "code": "GER",
    "nat": "Germany",
@@ -59,7 +67,7 @@
    "penalties": null
   },
   {
-   "name": "Vinicius Junior",
+   "name": "Matheus Cunha",
    "code": "BRA",
    "nat": "Brazil",
    "pos": null,
@@ -177,14 +185,6 @@
    "pos": null,
    "goals": 2,
    "penalties": 1
-  },
-  {
-   "name": "Matheus Cunha",
-   "code": "BRA",
-   "nat": "Brazil",
-   "pos": null,
-   "goals": 2,
-   "penalties": null
   },
   {
    "name": "Maximiliano Araújo",
