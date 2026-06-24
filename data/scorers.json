@@ -99,6 +99,14 @@
    "penalties": null
   },
   {
+   "name": "Daniel Muñoz",
+   "code": "COL",
+   "nat": "Colombia",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Elijah Just",
    "code": "NZL",
    "nat": "New Zealand",
@@ -326,14 +334,6 @@
    "name": "Connor Metcalfe",
    "code": "AUS",
    "nat": "Australia",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Daniel Muñoz",
-   "code": "COL",
-   "nat": "Colombia",
    "pos": null,
    "goals": 1,
    "penalties": null
