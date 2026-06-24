@@ -35,6 +35,14 @@
    "penalties": null
   },
   {
+   "name": "Johan Manzambi",
+   "code": "SUI",
+   "nat": "Switzerland",
+   "pos": null,
+   "goals": 3,
+   "penalties": null
+  },
+  {
    "name": "Jonathan David",
    "code": "CAN",
    "nat": "Canada",
@@ -115,6 +123,14 @@
    "penalties": null
   },
   {
+   "name": "Ermin Mahmic",
+   "code": "BIH",
+   "nat": "Bosnia and Herzegovina",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Folarin Balogun",
    "code": "USA",
    "nat": "USA",
@@ -147,14 +163,6 @@
    "penalties": null
   },
   {
-   "name": "Johan Manzambi",
-   "code": "SUI",
-   "nat": "Switzerland",
-   "pos": null,
-   "goals": 2,
-   "penalties": null
-  },
-  {
    "name": "Kai Havertz",
    "code": "GER",
    "nat": "Germany",
@@ -182,6 +190,14 @@
    "name": "Mikel Oyarzabal",
    "code": "ESP",
    "nat": "Spain",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
+   "name": "Ruben Vargas",
+   "code": "SUI",
+   "nat": "Switzerland",
    "pos": null,
    "goals": 2,
    "penalties": null
@@ -339,14 +355,6 @@
    "penalties": null
   },
   {
-   "name": "Ermin Mahmic",
-   "code": "BIH",
-   "nat": "Bosnia and Herzegovina",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
    "name": "Felix Kalu Nmecha",
    "code": "GER",
    "nat": "Germany",
@@ -486,14 +494,6 @@
    "name": "Keito Nakamura",
    "code": "JPN",
    "nat": "Japan",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Kerim Alajbegović",
-   "code": "BIH",
-   "nat": "Bosnia-Herzegovina",
    "pos": null,
    "goals": 1,
    "penalties": null
@@ -723,6 +723,14 @@
    "penalties": null
   },
   {
+   "name": "Promise Akinpelu",
+   "code": "CAN",
+   "nat": "Canada",
+   "pos": null,
+   "goals": 1,
+   "penalties": null
+  },
+  {
    "name": "Rafael Leão",
    "code": "POR",
    "nat": "Portugal",
@@ -750,14 +758,6 @@
    "name": "Romano Schmid",
    "code": "AUT",
    "nat": "Austria",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Ruben Vargas",
-   "code": "SUI",
-   "nat": "Switzerland",
    "pos": null,
    "goals": 1,
    "penalties": null
