@@ -35,6 +35,14 @@
    "penalties": null
   },
   {
+   "name": "Ismael Saibari",
+   "code": "MAR",
+   "nat": "Morocco",
+   "pos": null,
+   "goals": 3,
+   "penalties": null
+  },
+  {
    "name": "Johan Manzambi",
    "code": "SUI",
    "nat": "Switzerland",
@@ -153,14 +161,6 @@
    "pos": null,
    "goals": 2,
    "penalties": 1
-  },
-  {
-   "name": "Ismael Saibari",
-   "code": "MAR",
-   "nat": "Morocco",
-   "pos": null,
-   "goals": 2,
-   "penalties": null
   },
   {
    "name": "Ismaïla Sarr",
