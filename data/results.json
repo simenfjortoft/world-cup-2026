@@ -285,12 +285,12 @@
   "56": {
    "hs": 0,
    "as": 2,
-   "status": "LIVE"
+   "status": "HT"
   },
   "57": {
    "hs": 0,
    "as": 0,
-   "status": "LIVE"
+   "status": "HT"
   },
   "72": {
    "h": "RSA",
