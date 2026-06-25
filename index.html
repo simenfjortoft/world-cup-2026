@@ -688,7 +688,6 @@ body.route-team .legend{display:none !important}
 .mm-gs i{font-style:normal;color:var(--text-faint);font-weight:700}
 .mm-gs-none{color:var(--text-faint)}
 .mm-gs-ball{flex:none;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:13px;opacity:.85;padding-top:1px}
-.mm-gs-tag{font-style:normal;font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text-faint)}
 .mm-kick{text-align:center;font-size:14px;color:var(--text-dim);padding:12px 0;margin-top:10px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
 .mm-kick b{color:var(--text)}
 .mm-next{font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--text-faint);border:1px solid var(--line-strong);border-radius:5px;padding:1px 5px;vertical-align:1px}
@@ -2717,10 +2716,14 @@ function mmScorersHTML(m){
     .map(p=>`<span class="mm-gs">${escHtml(p.name)}${p.goals>1?` <i>×${p.goals}</i>`:''}</span>`).join('');
   const h=list(m.home), a=list(m.away);
   if(!h && !a) return '';
-  const exact=teamGoalStats(m.home).P<=1 && teamGoalStats(m.away).P<=1;   // single match played → totals are this match's scorers
+  // the free feed only has tournament totals, not per-match events. Show the strip
+  // ONLY when each team has played a single match, so the totals ARE this match's
+  // scorers; hide it otherwise rather than show a misleading tournament tally.
+  const exact=teamGoalStats(m.home).P<=1 && teamGoalStats(m.away).P<=1;
+  if(!exact) return '';
   return `<div class="mm-scorers">
     <div class="mm-gs-side">${h||'<span class="mm-gs-none">,</span>'}</div>
-    <span class="mm-gs-ball" aria-hidden="true">⚽${exact?'':'<i class="mm-gs-tag">tournament</i>'}</span>
+    <span class="mm-gs-ball" aria-hidden="true">⚽</span>
     <div class="mm-gs-side mm-gs-away">${a||'<span class="mm-gs-none">,</span>'}</div>
   </div>`;
 }
