@@ -35,6 +35,14 @@
    "penalties": null
   },
   {
+   "name": "Brian Brobbey",
+   "code": "NED",
+   "nat": "Netherlands",
+   "pos": null,
+   "goals": 3,
+   "penalties": null
+  },
+  {
    "name": "Deniz Undav",
    "code": "GER",
    "nat": "Germany",
@@ -78,14 +86,6 @@
    "name": "Ayase Ueda",
    "code": "JPN",
    "nat": "Japan",
-   "pos": null,
-   "goals": 2,
-   "penalties": null
-  },
-  {
-   "name": "Brian Brobbey",
-   "code": "NED",
-   "nat": "Netherlands",
    "pos": null,
    "goals": 2,
    "penalties": null
