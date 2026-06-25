@@ -123,6 +123,11 @@ for(const fx of fixtures){
   }
 }
 
+/* Resolve completed-group R32 slots from the FRESH standings, before the merge
+   below, so a corrected group score re-resolves the slot rather than being pinned
+   to a stale value the merge would otherwise re-inject. */
+const decided = fillDecidedSlots(out, M);
+
 /* Monotonic persistence: the free tier FLAPS , the opener went 1-0 LIVE →
    FINISHED-with-no-score → back to TIMED within an hour. A naive overwrite
    regresses scores we already had to nothing. Merge instead: an entry the API
@@ -170,12 +175,13 @@ function fillDecidedSlots(out, M){
     const rows = codes.map(c => ({ c, ...(tally[g]?.[c] || {P:0,Pts:0,GF:0,GA:0}) }));
     if(rows.some(r => r.P < 3)) continue;              // group not complete yet
     rows.sort((a,b) => cmp(rank(a), rank(b)));
-    if(!tied(rows[0], rows[1])) place('1'+g, rows[0].c);
-    if(!tied(rows[1], rows[2])) place('2'+g, rows[1].c);
+    const firstClear = !tied(rows[0], rows[1]);          // 1st separated from 2nd
+    const secondClear = firstClear && !tied(rows[1], rows[2]);   // ...and 2nd separated from 3rd
+    if(firstClear) place('1'+g, rows[0].c);
+    if(secondClear) place('2'+g, rows[1].c);             // skip 2nd while 1st/2nd order is itself a tie
   }
   return added;
 }
-const decided = fillDecidedSlots(out, M);
 
 const payload = {
   lastUpdated: new Date().toISOString().slice(0,10),
