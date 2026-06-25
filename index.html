@@ -1082,7 +1082,7 @@ body.chips-open .chips-toggle .chev{transform:rotate(180deg)}
 .sc-nm:hover{color:var(--green-bright)}
 .sc-pos{color:var(--text-faint);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
 .sc-goals{font-weight:800;font-variant-numeric:tabular-nums;color:var(--text)}
-.sc-pen{margin-left:7px;font-size:9px;font-weight:800;color:var(--text-faint);border:1px solid var(--line-strong);border-radius:5px;padding:2px 5px;letter-spacing:.04em;vertical-align:middle}
+.sc-pen{margin-right:7px;font-size:9px;font-weight:800;color:var(--text-faint);border:1px solid var(--line-strong);border-radius:5px;padding:2px 5px;letter-spacing:.04em;vertical-align:middle}
 .sc-teams{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:13px}
 .sc-teams th{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-faint);font-weight:800;padding:6px 6px;text-align:center;border-bottom:1px solid var(--line-strong)}
 .sc-teams td{padding:7px 6px;text-align:center;border-bottom:1px solid var(--line);color:var(--text)}
@@ -2046,7 +2046,7 @@ function playerFocusHTML(){
         <span class="sc-fl">${fl}</span>
         <a class="sc-nm tlink" data-team="${p.code}">${escHtml(p.name)}</a>
         <span class="sc-pos">${p.pos||''}</span>
-        <span class="sc-goals">${p.goals}${pen}</span></li>`;
+        <span class="sc-goals">${pen}${p.goals}</span></li>`;
     }).join('')+`</ol>`;
   }
   return `${scorerRaceHTML(list)}
@@ -2317,7 +2317,7 @@ function renderTeam(code){
       .map(([k,v])=>`<div class="ts"><span>${k}</span><b>${v}</b></div>`).join('')}</div>`;
   const tsc=((window.SCORERS&&window.SCORERS.scorers)||[]).filter(p=>p.code===code).sort((a,b)=>b.goals-a.goals);
   const scorersBlock = tsc.length
-    ? `<div class="team-scorers">${tsc.map(p=>`<div class="tsc-row"><span class="tsc-nm">${escHtml(p.name)}</span><span class="tsc-g">${p.goals}${(p.penalties&&p.penalties>0)?` <span class="sc-pen">${p.penalties} pen</span>`:''}</span></div>`).join('')}</div>`
+    ? `<div class="team-scorers">${tsc.map(p=>`<div class="tsc-row"><span class="tsc-nm">${escHtml(p.name)}</span><span class="tsc-g">${(p.penalties&&p.penalties>0)?`<span class="sc-pen">${p.penalties} pen</span>`:''}${p.goals}</span></div>`).join('')}</div>`
     : `<p class="sq-note">No goals yet for ${name}.</p>`;
   // group table with THIS team's row highlighted (the tr carries data-team first, so the first replace hits the row)
   const groupTbl=standingsTableHTML(group, computeStandings()).replace(`data-team="${code}"`, `data-team="${code}" data-me`);
