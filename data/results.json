@@ -263,14 +263,14 @@
    "status": "FT"
   },
   "52": {
-   "hs": 0,
+   "hs": 1,
    "as": 0,
-   "status": "HT"
+   "status": "FT"
   },
   "53": {
    "hs": 0,
-   "as": 0,
-   "status": "HT"
+   "as": 3,
+   "status": "FT"
   },
   "74": {
    "h": "GER"

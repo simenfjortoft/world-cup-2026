@@ -179,6 +179,14 @@
    "penalties": null
   },
   {
+   "name": "Julián Quiñones",
+   "code": "MEX",
+   "nat": "Colombia",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Kai Havertz",
    "code": "GER",
    "nat": "Germany",
@@ -470,14 +478,6 @@
    "name": "Jude Bellingham",
    "code": "ENG",
    "nat": "England",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Julián Quiñones",
-   "code": "MEX",
-   "nat": "Colombia",
    "pos": null,
    "goals": 1,
    "penalties": null
