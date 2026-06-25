@@ -17,7 +17,7 @@
    ===================================================================== */
 import { writeFileSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { teamCode, readMatches } from './codes.mjs';
+import { teamCode, readMatches, GROUPS } from './codes.mjs';
 
 const args = process.argv.slice(2);
 const opt = k => { const i = args.indexOf(k); return i >= 0 ? (args[i+1] ?? true) : undefined; };
@@ -137,6 +137,46 @@ try{
   }
 }catch(e){ /* no previous file , nothing to keep */ }
 
+/* Resolve Round-of-32 slots from COMPLETED group standings. The API only fills
+   a knockout slot once it publishes the bracket (laggy , often a day late), but a
+   group with all six matches played already has a final 1st/2nd we can place now.
+   Tiebreak order = FIFA's first three (points, goal difference, goals scored); if
+   two teams tie through goals scored we skip that slot (head-to-head needed). We
+   never overwrite a slot the API already resolved. */
+function fillDecidedSlots(out, M){
+  const tally = {};                                   // group -> code -> {P,Pts,GF,GA}
+  for(const m of M){
+    if(m.stage !== 'GROUP') continue;
+    const r = out[m.i]; if(!r || r.hs == null || r.as == null) continue;
+    const g = tally[m.group] ??= {};
+    const H = g[m.home] ??= {P:0,Pts:0,GF:0,GA:0};
+    const A = g[m.away] ??= {P:0,Pts:0,GF:0,GA:0};
+    H.P++; A.P++; H.GF += r.hs; H.GA += r.as; A.GF += r.as; A.GA += r.hs;
+    if(r.hs > r.as) H.Pts += 3; else if(r.hs < r.as) A.Pts += 3; else { H.Pts++; A.Pts++; }
+  }
+  const rank = s => [s.Pts, s.GF - s.GA, s.GF];        // higher is better, lexicographically
+  const cmp = (a,b) => b[0]-a[0] || b[1]-a[1] || b[2]-a[2];
+  const tied = (a,b) => cmp(rank(a), rank(b)) === 0;
+  const slot = {};                                     // "1A"/"2B"/... -> { i, k:'h'|'a' }
+  for(const m of M){ if(m.stage !== 'R32') continue;
+    slot[m.home] = { i:m.i, k:'h' }; slot[m.away] = { i:m.i, k:'a' };
+  }
+  let added = 0;
+  const place = (code, team) => { const s = slot[code]; if(!s) return;
+    const e = out[s.i] ??= {}; if(e[s.k]) return;      // keep any API-resolved team
+    e[s.k] = team; added++;
+  };
+  for(const [g, codes] of Object.entries(GROUPS)){
+    const rows = codes.map(c => ({ c, ...(tally[g]?.[c] || {P:0,Pts:0,GF:0,GA:0}) }));
+    if(rows.some(r => r.P < 3)) continue;              // group not complete yet
+    rows.sort((a,b) => cmp(rank(a), rank(b)));
+    if(!tied(rows[0], rows[1])) place('1'+g, rows[0].c);
+    if(!tied(rows[1], rows[2])) place('2'+g, rows[1].c);
+  }
+  return added;
+}
+const decided = fillDecidedSlots(out, M);
+
 const payload = {
   lastUpdated: new Date().toISOString().slice(0,10),
   source: `football-data.org , competition ${COMP}`,
@@ -148,5 +188,5 @@ if(DRY){
 } else {
   writeFileSync(OUT, JSON.stringify(payload, null, 1));
 }
-console.log(`✓ ${DRY?'(dry-run) ':''}results , ${mapped} of ${fixtures.length} matches mapped, ${Object.keys(out).length} entries${kept?` (${kept} kept from previous file , upstream stopped reporting them)`:''}`);
+console.log(`✓ ${DRY?'(dry-run) ':''}results , ${mapped} of ${fixtures.length} matches mapped, ${Object.keys(out).length} entries${kept?` (${kept} kept)`:''}${decided?`, ${decided} R32 slots from completed groups`:''}`);
 if(unmapped.length) console.log('  unmapped:', unmapped.slice(0,12), unmapped.length>12?`(+${unmapped.length-12} more)`:'');
