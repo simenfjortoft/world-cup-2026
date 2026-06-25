@@ -211,6 +211,14 @@
    "penalties": null
   },
   {
+   "name": "Nicolas Pépé",
+   "code": "CIV",
+   "nat": "Ivory Coast",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Ruben Vargas",
    "code": "SUI",
    "nat": "Switzerland",
@@ -718,14 +726,6 @@
    "name": "Petar Musa",
    "code": "CRO",
    "nat": "Croatia",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Promise Akinpelu",
-   "code": "CAN",
-   "nat": "Canada",
    "pos": null,
    "goals": 1,
    "penalties": null
