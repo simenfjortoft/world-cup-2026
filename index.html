@@ -2897,7 +2897,7 @@ function setActiveView(v){                                      // pure activati
   }
   activeView = v;
 }
-function goTab(v){ location.hash = v==='schedule' ? '#schedule' : '#'+v; route(); }   // set the URL + activate now (hashchange also covers back/forward)
+function goTab(v){ location.hash = v==='schedule' ? '#schedule' : '#'+v; }   // just set the URL; the single hashchange listener drives route() (a redundant direct route() here double-ran and raced scroll positioning)
 tabs.forEach(btn=>btn.addEventListener('click', ()=>goTab(btn.dataset.view)));
 $(".segmented").addEventListener('keydown', e=>{
   const i=tabs.indexOf(document.activeElement); if(i<0) return;
