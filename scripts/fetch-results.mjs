@@ -79,6 +79,8 @@ const M = readMatches();
 const groupByPair = new Map();
 M.filter(m => m.stage === 'GROUP').forEach(m => groupByPair.set([m.home, m.away].sort().join('-'), m));
 const knockouts = M.filter(m => m.stage !== 'GROUP');
+// football-data.org stage label -> our stage code, so a knockout fixture only maps to a slot of the SAME round (prevents cross-stage misassignment by nearest-time)
+const STAGE_MAP = { LAST_32:'R32', ROUND_OF_32:'R32', LAST_16:'R16', ROUND_OF_16:'R16', QUARTER_FINALS:'QF', QUARTER_FINAL:'QF', SEMI_FINALS:'SF', SEMI_FINAL:'SF', THIRD_PLACE:'3RD', PLAY_OFF_FOR_THIRD_PLACE:'3RD', FINAL:'FINAL' };
 
 const out = {}, unmapped = [], usedKO = new Set();
 let mapped = 0;
@@ -105,9 +107,11 @@ for(const fx of fixtures){
   } else {
     const fxUtc = Date.parse(fx.utcDate);
     if(!Number.isFinite(fxUtc)){ unmapped.push(`knockout ${fx.stage} (bad date)`); continue; }
+    const ourStage = STAGE_MAP[fx.stage] || null;    // when the API round is recognised, only match within that round
     let best = null, bd = Infinity;                  // nearest unused knockout slot by kick-off instant
     for(const k of knockouts){
       if(usedKO.has(k.i)) continue;
+      if(ourStage && k.stage !== ourStage) continue;
       const d = Math.abs(k.utc - fxUtc);
       if(d < bd){ bd = d; best = k; }
     }
@@ -115,7 +119,8 @@ for(const fx of fixtures){
     const entry = {};
     if(hCode) entry.h = hCode;                        // resolve the slot to its decided teams
     if(aCode) entry.a = aCode;
-    if(hasScore){ entry.hs = gh; entry.as = ga; entry.status = status || 'FT'; }
+    if(hasScore){ entry.hs = gh; entry.as = ga; entry.status = status || 'FT';
+      if(gh === ga){ if(fx.score?.winner === 'HOME_TEAM') entry.w = 'h'; else if(fx.score?.winner === 'AWAY_TEAM') entry.w = 'a'; } }   // level after regular/extra time → record shootout winner so the bracket can advance
     if(!Object.keys(entry).length) continue;          // teams still TBD and not played
     usedKO.add(best.i);
     out[best.i] = entry;

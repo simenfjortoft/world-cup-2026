@@ -50,6 +50,7 @@ export function readMatches(){
   if(!m) throw new Error('Could not locate the MATCHES array in index.html');
   // eslint-disable-next-line no-eval , trusted local source file
   const arr = eval(m[1]);                                   // object literals only, no helper calls
+  if(!Array.isArray(arr) || arr.length < 100) throw new Error(`readMatches: parsed ${Array.isArray(arr)?arr.length:typeof arr} matches (expected ~104) , the MATCHES regex likely truncated the array`);
   return arr.map((match, i) => ({ ...match, i, utc: kickoffUTC(match) }));
 }
 

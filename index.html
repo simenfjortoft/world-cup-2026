@@ -1512,7 +1512,7 @@ MATCHES.forEach((m,i) => { m.i = i; m.kickoffDate = kickoff(m.date, m.kickoffLoc
 const ALL = MATCHES;                                   // single source; every view derives from this
 const MATCH_DATES = [...new Set(MATCHES.map(m=>m.date))].sort();   // sorted unique match days (for the date picker)
 // today as local YYYY-MM-DD; and the first scheduled match day on/after `from` (undefined past the last match)
-const todayDateStr = () => { const t=new Date(); return `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`; };
+const todayDateStr = () => new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Oslo'}).format(new Date());   // Norwegian calendar day (matches the schedule's CEST dates), not the viewer's local timezone
 const nextMatchDate = from => MATCH_DATES.find(d=>d>=from);
 const STAGE_COUNT = ALL.reduce((acc,m)=>{ acc[m.stage]=(acc[m.stage]||0)+1; return acc; },{});
 const OPENER_TS = Math.min(...ALL.map(m=>m.ts));
@@ -1633,10 +1633,8 @@ function matchCardHTML(m){
 const DIGEST_KEY='wc2026.lastSeen';
 function digestSnapshot(){
   const finished=MATCHES.filter(m=>m.homeScore!=null).map(m=>m.i).sort((a,b)=>a-b);
-  const leaders={};
-  Object.keys(GROUPS).forEach(g=>{
-    try{ const r=rankGroup(g)||[]; leaders[g]=[r[0]?.code, r[1]?.code].filter(Boolean).join(','); }catch(e){ leaders[g]=''; }
-  });
+  const leaders={}, ranked=computeStandings();                        // rankGroup takes the rows array, not the group letter
+  Object.keys(GROUPS).forEach(g=>{ const r=ranked[g]||[]; leaders[g]=[r[0]?.code, r[1]?.code].filter(Boolean).join(','); });
   return { ts:Date.now(), finished, leaders };
 }
 function digestSinceLast(){
@@ -1800,7 +1798,8 @@ function rankGroup(rows){
 function thirdPlaceRanking(ranked){
   ranked = ranked || computeStandings();
   const thirds=Object.keys(GROUPS).map(g=> ({...ranked[g][2], group:g}));
-  thirds.sort((a,b)=> b.Pts-a.Pts || b.GD-a.GD || b.GF-a.GF || a.name.localeCompare(b.name));
+  const seed = r => GROUPS[r.group].indexOf(r.code);                  // FIFA's final steps (fair play, drawing of lots) need data we lack; fall back to the official draw seeding, consistent with rankGroup
+  thirds.sort((a,b)=> b.Pts-a.Pts || b.GD-a.GD || b.GF-a.GF || seed(a)-seed(b));
   thirds.forEach((r,idx)=> r.advancing = idx<8);
   return thirds;
 }
@@ -1846,6 +1845,7 @@ function renderGroups(){
   let html = '<div class="groups-grid">';
   Object.keys(GROUPS).forEach((g,gi)=>{
     const gms = MATCHES.filter(m=>m.stage==="GROUP"&&m.group===g).sort((a,b)=>a.ts-b.ts);
+    if(!gms.length) return;                                            // skip a group with no fixtures (data desync) instead of crashing the view
     const playedN = gms.filter(m=>m.homeScore!=null).length;
     const [fy,fmo,fda] = gms[0].date.split('-').map(Number);
     const sub = playedN===0 ? `Not started · ${fda} ${MO[fmo-1]}`     // live group status replaces the static count
@@ -1948,8 +1948,10 @@ function bracketTree(){
 */
 const PREDICT={mode:false,picks:{}};
 const PREDICT_KEY='wc2026.predictions';
-const PREDICT_WEIGHT={R32:1,R16:2,QF:4,SF:8,FINAL:16,"3RD":1};   // 3rd-place sides only become pickable post-SF (when L101/L102 resolve), so score it too
+const PREDICT_WEIGHT={R32:1,R16:2,QF:4,SF:8,FINAL:16};   // 16·1+8·2+4·4+2·8+1·16 = 80 pts. The 3rd-place playoff isn't predictable (loser slots never resolve), so it isn't scored.
 try{ PREDICT.picks=JSON.parse(localStorage.getItem(PREDICT_KEY)||'{}')||{}; }catch(e){ PREDICT.picks={}; }
+// drop stale/garbage picks (fixture order changed across versions, or a corrupted store): keep only a real knockout match index mapped to a real team code
+PREDICT.picks = Object.fromEntries(Object.entries(PREDICT.picks).filter(([i,c])=> MATCHES[+i] && MATCHES[+i].stage!=='GROUP' && isTeam(c)));
 function savePredictions(){ try{ localStorage.setItem(PREDICT_KEY, JSON.stringify(PREDICT.picks)); }catch(e){} }
 // resolve a slot code (W{n} or 1A/3ABCDF/...) to a concrete team code via actual results then predictions
 function effectiveCode(slotCode){
@@ -1990,7 +1992,12 @@ function bracketColumns(node){
   (function rec(n){ if(!n) return; rec(n.home); rec(n.away); if(r[n.m.stage]) r[n.m.stage].push(n.m); })(node);
   return r;
 }
-const bkWinner=m=>(m.homeScore!=null&&m.awayScore!=null)?(m.homeScore>m.awayScore?m.home:(m.awayScore>m.homeScore?m.away:null)):null;
+const bkWinner=m=>{
+  if(m.homeScore==null||m.awayScore==null) return null;
+  if(m.homeScore>m.awayScore) return m.home;
+  if(m.awayScore>m.homeScore) return m.away;
+  return m.win==='h'?m.home:(m.win==='a'?m.away:null);   // level after regular/extra time → shootout winner from results.json (.w)
+};
 /* short status header for a bracket node , 'FT' / 'LIVE' / '29 Jun 21:00' / pure '' if the match has no useful meta yet */
 function bkStatusHTML(m){
   // LIVE / HT take priority , an in-play match already has a 0-0 score, so we'd otherwise misread it as FT
@@ -2238,8 +2245,9 @@ function renderBracket(){
   const desktop=`<div class="bk-scaler"><div class="bk-full"><svg class="bk-lines" aria-hidden="true"></svg><div class="bk-half">${left}</div>${center}<div class="bk-half">${right}</div></div></div>`;
   const RND=['R32','R16','QF','SF','FINAL'];
   const byRound=r=>MATCHES.filter(m=>m.stage===r).sort((a,b)=>a.ts-b.ts);
-  const tabs=RND.map((r,i)=>`<button class="bk-rtab${i?'':' on'}" data-r="${r}">${r==='FINAL'?'Final':r}</button>`).join('');
-  const cols=RND.map((r,i)=>`<div class="bk-rcol${i?'':' on'}" data-r="${r}">${byRound(r).map(bkMatchHTML).join('')}${r==='FINAL'?third3:''}</div>`).join('');
+  if(!RND.includes(bkRound)) bkRound='R32';
+  const tabs=RND.map(r=>`<button class="bk-rtab${r===bkRound?' on':''}" data-r="${r}">${r==='FINAL'?'Final':r}</button>`).join('');
+  const cols=RND.map(r=>`<div class="bk-rcol${r===bkRound?' on':''}" data-r="${r}">${byRound(r).map(bkMatchHTML).join('')}${r==='FINAL'?third3:''}</div>`).join('');
   view.innerHTML=bkToolbarHTML()+desktop+`<div class="bk-mobile"><div class="bk-rtabs">${tabs}</div>${cols}</div>`;
   bkFit();
 }
@@ -2496,6 +2504,7 @@ function applyOverlays(){
     // knockout slot resolution; otherwise fall back to the pristine slot code
     m.home = (a.h && TEAMS[a.h]) ? a.h : m.baseHome;
     m.away = (a.a && TEAMS[a.a]) ? a.a : m.baseAway;
+    m.win = a.w || null;                              // knockout shootout winner ('h'/'a') when the match finished level
     if(a.hs!=null && a.as!=null){ m.homeScore=a.hs; m.awayScore=a.as; m.status=a.status||'FT'; }
     else { m.homeScore=null; m.awayScore=null; m.status=undefined; }
   });
@@ -2580,8 +2589,9 @@ function renderLegend(){
    ===================================================================== */
 const selected = new Set();
 try{ JSON.parse(localStorage.getItem('wc2026.sel')||'[]').forEach(c=>TEAMS[c]&&selected.add(c)); }catch(e){}
-let collapsedStages = new Set(JSON.parse(localStorage.getItem('wc2026.folds')||'[]'));
-let collapsedGroups = new Set(JSON.parse(localStorage.getItem('wc2026.gfolds')||'[]'));
+const _foldSet = k => { try{ const a=JSON.parse(localStorage.getItem(k)||'[]'); return Array.isArray(a)?a:[]; }catch(e){ return []; } };   // tolerate a corrupted store instead of aborting boot
+let collapsedStages = new Set(_foldSet('wc2026.folds'));
+let collapsedGroups = new Set(_foldSet('wc2026.gfolds'));
 let openDays = new Set();   // finished days the user re-opened (session-only; finished days collapse by default each render)
 
 // cache node lists once after render (they never change) so filtering doesn't re-query the DOM
@@ -2714,7 +2724,7 @@ function mmSide(code, cls=''){
    with running counts; while a team has played a single match the totals ARE
    that match's scorers, afterwards a small "tournament" tag keeps it honest. */
 function mmScorersHTML(m){
-  if(m.homeScore==null || !isTeam(m.home) || !isTeam(m.away)) return '';
+  if(m.homeScore==null || m.status==='LIVE' || m.status==='HT' || !isTeam(m.home) || !isTeam(m.away)) return '';   // finished matches only , not in-play (tournament totals would mislead during a live game)
   const all=(window.SCORERS&&window.SCORERS.scorers)||[]; if(!all.length) return '';
   const list=code=>all.filter(p=>p.code===code).sort((a,b)=>b.goals-a.goals)
     .map(p=>`<span class="mm-gs">${escHtml(p.name)}${p.goals>1?` <i>×${p.goals}</i>`:''}</span>`).join('');
@@ -2785,7 +2795,7 @@ document.addEventListener('click', e=>{
   if(e.target.closest('[data-dg-dismiss]')){ dismissDigest(); return; }                                      // dismiss "since you were here"
   if(e.target.closest('[data-dg-grp]')){ dismissDigest(); location.hash='#groups'; return; }                 // jump to Groups when standings shifted
   const rt=e.target.closest('.bk-rtab');
-  if(rt){ const r=rt.dataset.r, w=rt.closest('.bk-mobile');           // mobile bracket round picker
+  if(rt){ const r=rt.dataset.r, w=rt.closest('.bk-mobile'); bkRound=r;  // mobile bracket round picker (remembered so re-renders don't snap back to R32)
     w.querySelectorAll('.bk-rtab').forEach(b=>b.classList.toggle('on',b===rt));
     w.querySelectorAll('.bk-rcol').forEach(c=>c.classList.toggle('on',c.dataset.r===r)); return; }
   const tfo=e.target.closest('.tf-opt');
@@ -2873,8 +2883,8 @@ function setActiveView(v){                                      // pure activati
   if(v==='bracket') requestAnimationFrame(bkFit);                     // measure + scale-to-fit once the view is visible
   if(v==='stats') renderStats();                                      // build tournament stats on open (Players + Teams sub-tabs)
   VIEW_NAMES.forEach(n=>{ const el=$("#view-"+n); if(el) el.hidden = v!==n; });
-  requestAnimationFrame(()=>{                                    // once the view is shown, place the scroll deliberately
-    if(v in viewScroll) window.scrollTo(0, viewScroll[v]);       // returning to a view , restore where you were
+  if(prev!==v) requestAnimationFrame(()=>{                       // reposition scroll ONLY on a real view switch, never on data-refresh re-renders (poll/visibilitychange also call route())
+    if(v in viewScroll){ const max=Math.max(0, document.documentElement.scrollHeight-window.innerHeight); window.scrollTo(0, Math.min(viewScroll[v], max)); }   // restore, clamped to the (possibly shorter) re-rendered page
     else if(v==='calendar') calScrollToFocus();                  // first open , land on today / next match
     else if(v==='schedule'){ if(prev!=null) schedScrollToFocus(); }   // first switch-in (initial load is handled at boot)
     else window.scrollTo(0,0);                                   // first open of any other view , start at the top, not the previous view's offset
