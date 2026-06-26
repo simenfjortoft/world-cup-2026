@@ -56,6 +56,9 @@ jobs:
       - name: Fetch weather
         run: node scripts/fetch-weather.mjs   # Open-Meteo, no API key
 
+      - name: Fetch match scorers
+        run: node scripts/fetch-match-scorers.mjs   # Wikipedia per-match goalscorers, no API key
+
       - name: Commit & push if changed
         # Pull-rebase + retry the push: long-running fetches (5 min jobs during the
         # tournament) frequently overlap with human pushes to main, so a naive `git push`
@@ -64,7 +67,7 @@ jobs:
         run: |
           git config user.name  "wc2026-data-bot"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/results.json data/squads.json data/scorers.json data/weather.json
+          git add data/results.json data/squads.json data/scorers.json data/weather.json data/match-scorers.json
           if git diff --staged --quiet; then
             echo "No data changes."; exit 0
           fi

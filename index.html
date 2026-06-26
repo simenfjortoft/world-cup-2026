@@ -2448,6 +2448,15 @@ async function loadScorers(){
     if(vt && !vt.hidden && m && TEAMS[m[1]]) renderTeam(m[1]);
   }catch(e){ console.log('[scorers] data/scorers.json not available yet (run scripts/fetch-scorers.mjs)'); }
 }
+// per-match goalscorers (name + minute) from data/match-scorers.json (scripts/fetch-match-scorers.mjs · Wikipedia)
+let MATCH_SCORERS={};
+async function loadMatchScorers(){
+  try{
+    const res=await fetch('data/match-scorers.json?t='+Date.now(), {cache:'no-store'}); if(!res.ok) return;
+    const d=await res.json(); MATCH_SCORERS=d.matches||{}; window.MATCH_SCORERS=MATCH_SCORERS;
+    console.log('[match-scorers] loaded ·', d.lastUpdated, '·', Object.keys(MATCH_SCORERS).length, 'matches');
+  }catch(e){ console.log('[match-scorers] data/match-scorers.json not available yet (run scripts/fetch-match-scorers.mjs)'); }
+}
 
 /* =====================================================================
    WEATHER , per-match kickoff weather from data/weather.json
@@ -2533,7 +2542,7 @@ async function loadResults(){
     AUTO_RESULTS = data.matches||{};
     if(data.lastUpdated) window.RESULTS_UPDATED=data.lastUpdated;
     console.log('[results]', first?'loaded':'refreshed', '·', data.lastUpdated||'(no date)', '·', Object.keys(AUTO_RESULTS).length, 'updates');
-    if(Object.keys(AUTO_RESULTS).length){ applyOverlays(); rerenderViews(); route(); loadScorers(); }   // only re-render when there are actual results (avoids a needless re-render flash pre-tournament); refresh scorers on the same edge
+    if(Object.keys(AUTO_RESULTS).length){ applyOverlays(); rerenderViews(); route(); loadScorers(); loadMatchScorers(); }   // only re-render when there are actual results (avoids a needless re-render flash pre-tournament); refresh scorers on the same edge
     // once every match is final the data is frozen , stop polling for good
     if(resultsTimer && MATCHES.every(m=>m.status==='FT')){ clearInterval(resultsTimer); resultsTimer=0; console.log('[results] all matches final , polling stopped'); }
   }catch(e){ console.log('[results] data/results.json not available yet (run scripts/fetch-results.mjs)'); }
@@ -2721,23 +2730,18 @@ function mmSide(code, cls=''){
     ? `<a class="mm-team${cls}" data-team="${code}"><span class="fl">${TEAMS[code][1]}</span><span class="nm2">${TEAMS[code][0]}</span></a>`
     : `<span class="mm-team slot"><span class="nm2">${slotText(code)}</span></span>`;
 }
-/* scorers strip for a finished/live match , the free feed only has TOURNAMENT
-   totals per player (no per-match events), so per team we list its scorers
-   with running counts; while a team has played a single match the totals ARE
-   that match's scorers, afterwards a small "tournament" tag keeps it honest. */
+/* scorers strip for a finished match , real per-match goalscorers (name + minute)
+   from data/match-scorers.json (Wikipedia). The football-data feed has no goal
+   events, so when a match isn't in the Wikipedia data yet we show nothing rather
+   than a tournament tally that wouldn't match the score. */
 function mmScorersHTML(m){
-  if(m.homeScore==null || m.status==='LIVE' || m.status==='HT' || !isTeam(m.home) || !isTeam(m.away)) return '';   // finished matches only , not in-play (tournament totals would mislead during a live game)
-  const all=(window.SCORERS&&window.SCORERS.scorers)||[]; if(!all.length) return '';
-  const list=code=>all.filter(p=>p.code===code).sort((a,b)=>b.goals-a.goals)
-    .map(p=>`<span class="mm-gs">${escHtml(p.name)}${p.goals>1?` <i>×${p.goals}</i>`:''}</span>`).join('');
-  const h=list(m.home), a=list(m.away);
+  if(m.homeScore==null || m.status==='LIVE' || m.status==='HT' || !isTeam(m.home) || !isTeam(m.away)) return '';   // finished matches only , not in-play
+  const ms=(window.MATCH_SCORERS||{})[m.i]; if(!ms) return '';   // no per-match scorers for this match (yet)
+  const list=arr=>(arr||[]).map(s=>`<span class="mm-gs">${escHtml(s.n)}${s.m!=null?` <i>${s.m}'${s.pen?' (P)':s.og?' (OG)':''}</i>`:''}</span>`).join('');
+  const h=list(ms.h), a=list(ms.a);
   if(!h && !a) return '';
-  // the free feed has no per-match goal events , only tournament totals per player.
-  // After matchday 1 these are season totals, so the heading says so rather than
-  // implying they are this match's scorers.
-  const exact=teamGoalStats(m.home).P<=1 && teamGoalStats(m.away).P<=1;
   return `<div class="mm-scorers">
-    <div class="mm-gs-head">${exact?'Goals':'Goals this tournament'}</div>
+    <div class="mm-gs-head">Goals</div>
     <div class="mm-gs-row">
       <div class="mm-gs-side">${h||'<span class="mm-gs-none">,</span>'}</div>
       <span class="mm-gs-ball" aria-hidden="true">⚽</span>
@@ -3269,6 +3273,7 @@ applyGroupCollapse();
 loadSquads();
 loadResults();
 loadScorers();
+loadMatchScorers();
 loadWeather();
 route();
 if(!$("#view-schedule").hidden) setTimeout(schedScrollToFocus, 260);   // first load: land the Schedule on today's day
