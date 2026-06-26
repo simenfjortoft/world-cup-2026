@@ -682,7 +682,9 @@ body.route-team .legend{display:none !important}
 .mm-team.mm-won .nm2{color:var(--green-bright)}
 .mm-team.mm-lostt{opacity:.55}
 /* scorers strip under the teams row */
-.mm-scorers{display:flex;align-items:flex-start;gap:12px;margin:12px 4px 2px;font-size:12px}
+.mm-scorers{display:flex;flex-direction:column;gap:6px;margin:12px 4px 2px;font-size:12px}
+.mm-gs-head{text-align:center;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint)}
+.mm-gs-row{display:flex;align-items:flex-start;gap:12px}
 .mm-gs-side{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;color:var(--text-dim);font-weight:600}
 .mm-gs-away{text-align:right;align-items:flex-end}
 .mm-gs i{font-style:normal;color:var(--text-faint);font-weight:700}
@@ -2718,15 +2720,17 @@ function mmScorersHTML(m){
     .map(p=>`<span class="mm-gs">${escHtml(p.name)}${p.goals>1?` <i>×${p.goals}</i>`:''}</span>`).join('');
   const h=list(m.home), a=list(m.away);
   if(!h && !a) return '';
-  // the free feed only has tournament totals, not per-match events. Show the strip
-  // ONLY when each team has played a single match, so the totals ARE this match's
-  // scorers; hide it otherwise rather than show a misleading tournament tally.
+  // the free feed has no per-match goal events , only tournament totals per player.
+  // After matchday 1 these are season totals, so the heading says so rather than
+  // implying they are this match's scorers.
   const exact=teamGoalStats(m.home).P<=1 && teamGoalStats(m.away).P<=1;
-  if(!exact) return '';
   return `<div class="mm-scorers">
-    <div class="mm-gs-side">${h||'<span class="mm-gs-none">,</span>'}</div>
-    <span class="mm-gs-ball" aria-hidden="true">⚽</span>
-    <div class="mm-gs-side mm-gs-away">${a||'<span class="mm-gs-none">,</span>'}</div>
+    <div class="mm-gs-head">${exact?'Goals':'Goals this tournament'}</div>
+    <div class="mm-gs-row">
+      <div class="mm-gs-side">${h||'<span class="mm-gs-none">,</span>'}</div>
+      <span class="mm-gs-ball" aria-hidden="true">⚽</span>
+      <div class="mm-gs-side mm-gs-away">${a||'<span class="mm-gs-none">,</span>'}</div>
+    </div>
   </div>`;
 }
 function openMatch(i){
