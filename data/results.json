@@ -304,13 +304,13 @@
   },
   "60": {
    "hs": 1,
-   "as": 3,
-   "status": "LIVE"
+   "as": 4,
+   "status": "FT"
   },
   "61": {
-   "hs": 4,
+   "hs": 5,
    "as": 0,
-   "status": "LIVE"
+   "status": "FT"
   },
   "72": {
    "h": "RSA",
