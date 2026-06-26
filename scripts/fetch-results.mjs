@@ -75,20 +75,6 @@ const hist = {};
 fixtures.forEach(fx => { hist[fx.status] = (hist[fx.status]||0) + 1; });
 console.log('• upstream statuses:', Object.entries(hist).map(([k,v])=>`${k}:${v}`).join(' ') || '(none)');
 
-// TEMP PROBE , does this tier expose per-match goal scorers? (remove after reading run logs)
-if(!MOCK){
-  const fin = fixtures.find(f => f.status === 'FINISHED');
-  if(fin){
-    console.log('PROBE list keys:', Object.keys(fin).join(','));
-    console.log('PROBE list goals:', Array.isArray(fin.goals) ? `array(${fin.goals.length})` : typeof fin.goals);
-    try{
-      const r = await fetch(`https://api.football-data.org/v4/matches/${fin.id}`, { headers: { 'X-Auth-Token': process.env.FOOTBALL_DATA_TOKEN } });
-      const d = await r.json();
-      console.log('PROBE detail http', r.status, '| goals:', Array.isArray(d.goals) ? `array(${d.goals.length}) sample=${JSON.stringify(d.goals[0]||null)}` : (typeof d.goals), '| keys:', Object.keys(d).join(','), d.message?`| message=${d.message}`:'');
-    }catch(e){ console.log('PROBE detail error', e.message); }
-  } else { console.log('PROBE no FINISHED fixture to inspect'); }
-}
-
 const M = readMatches();
 const groupByPair = new Map();
 M.filter(m => m.stage === 'GROUP').forEach(m => groupByPair.set([m.home, m.away].sort().join('-'), m));
