@@ -293,14 +293,14 @@
    "status": "FT"
   },
   "58": {
-   "hs": 2,
+   "hs": 3,
    "as": 2,
-   "status": "LIVE"
+   "status": "FT"
   },
   "59": {
    "hs": 0,
    "as": 0,
-   "status": "LIVE"
+   "status": "FT"
   },
   "72": {
    "h": "RSA",
