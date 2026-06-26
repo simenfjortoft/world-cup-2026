@@ -27,6 +27,14 @@
    "penalties": null
   },
   {
+   "name": "Ousmane Dembélé",
+   "code": "FRA",
+   "nat": "France",
+   "pos": null,
+   "goals": 4,
+   "penalties": null
+  },
+  {
    "name": "Vinicius Junior",
    "code": "BRA",
    "nat": "Brazil",
@@ -710,14 +718,6 @@
    "name": "Omar Rekik",
    "code": "TUN",
    "nat": "Tunisia",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Ousmane Dembélé",
-   "code": "FRA",
-   "nat": "France",
    "pos": null,
    "goals": 1,
    "penalties": null
