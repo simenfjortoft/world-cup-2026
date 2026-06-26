@@ -2233,6 +2233,7 @@ function bkToolbarHTML(){
     ${scoreLine}${btn}${clear}
   </div>`;
 }
+let bkRound='R32';                                                    // remembered mobile round tab, so re-renders (polls) don't snap back to R32
 function renderBracket(){
   const view=$("#view-bracket"); if(!view) return;
   const {root,third}=bracketTree();
