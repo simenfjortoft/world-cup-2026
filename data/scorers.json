@@ -1,5 +1,5 @@
 {
- "lastUpdated": "2026-06-25",
+ "lastUpdated": "2026-06-26",
  "source": "football-data.org , competition WC",
  "scorers": [
   {
@@ -80,6 +80,14 @@
    "nat": "Brazil",
    "pos": null,
    "goals": 3,
+   "penalties": null
+  },
+  {
+   "name": "Anthony Elanga",
+   "code": "SWE",
+   "nat": "Sweden",
+   "pos": null,
+   "goals": 2,
    "penalties": null
   },
   {
@@ -302,14 +310,6 @@
    "name": "Ante Budimir",
    "code": "CRO",
    "nat": "Croatia",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Anthony Elanga",
-   "code": "SWE",
-   "nat": "Sweden",
    "pos": null,
    "goals": 1,
    "penalties": null
