@@ -67,6 +67,14 @@
    "penalties": null
   },
   {
+   "name": "Ismaïla Sarr",
+   "code": "SEN",
+   "nat": "Senegal",
+   "pos": null,
+   "goals": 3,
+   "penalties": null
+  },
+  {
    "name": "Johan Manzambi",
    "code": "SUI",
    "nat": "Switzerland",
@@ -187,14 +195,6 @@
    "penalties": 1
   },
   {
-   "name": "Ismaïla Sarr",
-   "code": "SEN",
-   "nat": "Senegal",
-   "pos": null,
-   "goals": 2,
-   "penalties": null
-  },
-  {
    "name": "Julián Quiñones",
    "code": "MEX",
    "nat": "Colombia",
@@ -230,6 +230,14 @@
    "name": "Nicolas Pépé",
    "code": "CIV",
    "nat": "Ivory Coast",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
+   "name": "Pape Gueye",
+   "code": "SEN",
+   "nat": "Senegal",
    "pos": null,
    "goals": 2,
    "penalties": null
@@ -310,14 +318,6 @@
    "name": "Amine Gouiri",
    "code": "ALG",
    "nat": "Algeria",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Ante Budimir",
-   "code": "CRO",
-   "nat": "Croatia",
    "pos": null,
    "goals": 1,
    "penalties": null

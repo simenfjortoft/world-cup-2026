@@ -305,12 +305,12 @@
   "60": {
    "hs": 1,
    "as": 3,
-   "status": "FT"
+   "status": "LIVE"
   },
   "61": {
-   "hs": 1,
+   "hs": 4,
    "as": 0,
-   "status": "FT"
+   "status": "LIVE"
   },
   "72": {
    "h": "RSA",
