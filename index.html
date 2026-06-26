@@ -2548,6 +2548,7 @@ function route(){
   closeMatch();
   const tm=/^#team\/([A-Z]{3})$/.exec(location.hash);
   if(tm && TEAMS[tm[1]]){                                       // team sub-page
+    if(activeView) viewScroll[activeView] = window.scrollY;     // remember where you were so returning to the view restores it
     VIEW_NAMES.forEach(n=>{ const el=$("#view-"+n); if(el) el.hidden=true; });   // keep .hidden in sync with the route-team display:none, so the attribute matches reality (a11y + any code reading el.hidden)
     renderTeam(tm[1]); document.body.classList.add('route-team'); $("#view-team").hidden=false;
     document.title=`${TEAMS[tm[1]][0]} · ${SITE}`;
@@ -2561,6 +2562,7 @@ function route(){
   document.title = v==='schedule' ? `${SITE} · Schedule (Norwegian time)` : `${VIEW_LABELS[v]} · ${SITE}`;
 }
 window.addEventListener('hashchange', route);
+if('scrollRestoration' in history) history.scrollRestoration='manual';   // we manage per-view scroll; stop the browser also restoring it on back/forward
 
 /* =====================================================================
    CHIPS + LEGEND
@@ -2856,18 +2858,28 @@ $("#tfSearch")?.addEventListener('input', e=>{
 // view toggle (ARIA tablist: roving tabindex + arrow-key navigation)
 const tabs=[...document.querySelectorAll('.segmented button')];
 const VIEW_NAMES=['schedule','groups','calendar','stats','map','bracket'];   // map kept for deep-link backwards compat; no longer in the tab nav. Scorers merged into Stats (Players sub-tab); #scorers redirects.
+const viewScroll = {};                                          // per-view scroll memory so going back-and-forth keeps your place
+let activeView = null;
 function setActiveView(v){                                      // pure activation; routing is driven by the hash
+  const prev = activeView;
+  if(prev && prev!==v) viewScroll[prev] = window.scrollY;       // stash the outgoing view's scroll before it's hidden
   tabs.forEach(b=>{ const on=b.dataset.view===v; b.setAttribute('aria-selected', on?'true':'false'); b.tabIndex=on?0:-1;
     if(on && b.parentElement.scrollWidth>b.parentElement.clientWidth) b.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'}); });   // if the tab row scrolls, keep the active tab in view (mobile)
   if(v==='map'){ renderMap(); applyMapFilter(); fitToSelection(); }   // build on first open + honor the current global filter
   if(v==='bracket') requestAnimationFrame(bkFit);                     // measure + scale-to-fit once the view is visible
   if(v==='stats') renderStats();                                      // build tournament stats on open (Players + Teams sub-tabs)
   VIEW_NAMES.forEach(n=>{ const el=$("#view-"+n); if(el) el.hidden = v!==n; });
-  if(v==='calendar') requestAnimationFrame(calScrollToFocus);         // land on today / next match, not the empty start of June
+  requestAnimationFrame(()=>{                                    // once the view is shown, place the scroll deliberately
+    if(v in viewScroll) window.scrollTo(0, viewScroll[v]);       // returning to a view , restore where you were
+    else if(v==='calendar') calScrollToFocus();                  // first open , land on today / next match
+    else if(v==='schedule'){ if(prev!=null) schedScrollToFocus(); }   // first switch-in (initial load is handled at boot)
+    else window.scrollTo(0,0);                                   // first open of any other view , start at the top, not the previous view's offset
+  });
   localStorage.setItem('wc2026.view', v);
   if(!document.body.classList.contains('anim-intro')){             // gentle entrance on user switches (not first paint or re-render)
     const el=$("#view-"+v); if(el){ el.classList.remove('view-in'); void el.offsetWidth; el.classList.add('view-in'); }
   }
+  activeView = v;
 }
 function goTab(v){ location.hash = v==='schedule' ? '#schedule' : '#'+v; route(); }   // set the URL + activate now (hashchange also covers back/forward)
 tabs.forEach(btn=>btn.addEventListener('click', ()=>goTab(btn.dataset.view)));
