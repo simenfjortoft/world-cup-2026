@@ -1880,14 +1880,15 @@ function slotText(code){ const L=slotLabel(code); return `${L.top} ${L.bot}`; }
 const CAL_DOW=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 function calEntryHTML(m, extra){
   const c=matchColor(m), local=fmtVenueTime(m);
-  const teams = isTeam(m.home)
+  const bothTeams = isTeam(m.home) && isTeam(m.away);   // a half-resolved knockout (one side decided, other still a slot) shows the slot label, not a crash
+  const teams = bothTeams
     ? `<span class="ce-tm" data-team="${m.home}"><span class="ce-fl">${TEAMS[m.home][1]}</span>${m.home}</span><span class="ce-d">-</span><span class="ce-tm" data-team="${m.away}"><span class="ce-fl">${TEAMS[m.away][1]}</span>${m.away}</span>`
     : `<span class="ce-slot">${m.stage}${m.n?` #${m.n}`:''}</span>`;
   const nm=m.venue?`${venueName(m.venue)}, ${m.venue.city}`:'Venue TBC';
   const ha=`${isTeam(m.home)?TEAMS[m.home][0]:slotText(m.home)} vs ${isTeam(m.away)?TEAMS[m.away][0]:slotText(m.away)}`;
   const title=`${ha} · ${nm} · ${m.kickoffLocal} NOR / ${local||'?'} local`;
   const teamAttr=(isTeam(m.home)?m.home:"")+" "+(isTeam(m.away)?m.away:"");
-  return `<div class="cal-entry${extra?' cal-extra':''}${isTeam(m.home)?'':' cal-ko'}" style="--c:${c}" data-teams="${teamAttr.trim()}" data-mi="${m.i}" data-stage="${m.stage}" title="${title.replace(/"/g,'&quot;')}">
+  return `<div class="cal-entry${extra?' cal-extra':''}${bothTeams?'':' cal-ko'}" style="--c:${c}" data-teams="${teamAttr.trim()}" data-mi="${m.i}" data-stage="${m.stage}" title="${title.replace(/"/g,'&quot;')}">
     <span class="ce-time">${m.kickoffLocal}${m.plus?'+':''}<i>${local}</i></span>
     <span class="ce-teams">${teams}${m.homeScore!=null?`<span class="ce-res">${m.homeScore}-${m.awayScore}</span>`:''}</span>${wxChip(m)}</div>`;
 }
