@@ -2885,12 +2885,12 @@ function setActiveView(v){                                      // pure activati
   if(v==='bracket') requestAnimationFrame(bkFit);                     // measure + scale-to-fit once the view is visible
   if(v==='stats') renderStats();                                      // build tournament stats on open (Players + Teams sub-tabs)
   VIEW_NAMES.forEach(n=>{ const el=$("#view-"+n); if(el) el.hidden = v!==n; });
-  if(prev!==v) requestAnimationFrame(()=>{                       // reposition scroll ONLY on a real view switch, never on data-refresh re-renders (poll/visibilitychange also call route())
-    if(v in viewScroll){ const max=Math.max(0, document.documentElement.scrollHeight-window.innerHeight); window.scrollTo(0, Math.min(viewScroll[v], max)); }   // restore, clamped to the (possibly shorter) re-rendered page
+  if(prev!==v) requestAnimationFrame(()=>requestAnimationFrame(()=>{   // double rAF: reposition ONLY on a real view switch (not data-refresh re-renders), and AFTER the show/hide reflow so scroll math sees the new view's real height
+    if(v in viewScroll){ const max=Math.max(0, document.documentElement.scrollHeight-window.innerHeight); window.scrollTo(0, Math.min(viewScroll[v], max)); }   // restore where you were, clamped to the now-accurate page height
     else if(v==='calendar') calScrollToFocus();                  // first open , land on today / next match
     else if(v==='schedule'){ if(prev!=null) schedScrollToFocus(); }   // first switch-in (initial load is handled at boot)
     else window.scrollTo(0,0);                                   // first open of any other view , start at the top, not the previous view's offset
-  });
+  }));
   localStorage.setItem('wc2026.view', v);
   if(!document.body.classList.contains('anim-intro')){             // gentle entrance on user switches (not first paint or re-render)
     const el=$("#view-"+v); if(el){ el.classList.remove('view-in'); void el.offsetWidth; el.classList.add('view-in'); }
