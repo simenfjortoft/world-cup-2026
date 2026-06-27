@@ -243,6 +243,14 @@
    "penalties": null
   },
   {
+   "name": "Ramin Rezaeian",
+   "code": "IRN",
+   "nat": "Iran",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Ruben Vargas",
    "code": "SUI",
    "nat": "Switzerland",
@@ -734,14 +742,6 @@
    "name": "Rafael Leão",
    "code": "POR",
    "nat": "Portugal",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Ramin Rezaeian",
-   "code": "IRN",
-   "nat": "Iran",
    "pos": null,
    "goals": 1,
    "penalties": null
