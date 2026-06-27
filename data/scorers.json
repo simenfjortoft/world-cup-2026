@@ -67,6 +67,14 @@
    "penalties": null
   },
   {
+   "name": "Harry Kane",
+   "code": "ENG",
+   "nat": "England",
+   "pos": null,
+   "goals": 3,
+   "penalties": 1
+  },
+  {
    "name": "Ismael Saibari",
    "code": "MAR",
    "nat": "Morocco",
@@ -187,12 +195,12 @@
    "penalties": null
   },
   {
-   "name": "Harry Kane",
+   "name": "Jude Bellingham",
    "code": "ENG",
    "nat": "England",
    "pos": null,
    "goals": 2,
-   "penalties": 1
+   "penalties": null
   },
   {
    "name": "Julián Quiñones",
@@ -502,14 +510,6 @@
    "name": "Jovo Lukić",
    "code": "BIH",
    "nat": "Bosnia-Herzegovina",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Jude Bellingham",
-   "code": "ENG",
-   "nat": "England",
    "pos": null,
    "goals": 1,
    "penalties": null
