@@ -211,6 +211,14 @@
    "penalties": 1
   },
   {
+   "name": "Leandro Trossard",
+   "code": "BEL",
+   "nat": "Belgium",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Maximiliano Araújo",
    "code": "URU",
    "nat": "Uruguay",
@@ -734,14 +742,6 @@
    "name": "Petar Musa",
    "code": "CRO",
    "nat": "Croatia",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Rafael Leão",
-   "code": "POR",
-   "nat": "Portugal",
    "pos": null,
    "goals": 1,
    "penalties": null
