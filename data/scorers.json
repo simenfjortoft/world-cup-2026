@@ -59,6 +59,14 @@
    "penalties": null
   },
   {
+   "name": "Elijah Just",
+   "code": "NZL",
+   "nat": "New Zealand",
+   "pos": null,
+   "goals": 3,
+   "penalties": null
+  },
+  {
    "name": "Ismael Saibari",
    "code": "MAR",
    "nat": "Morocco",
@@ -158,14 +166,6 @@
    "name": "Daniel Muñoz",
    "code": "COL",
    "nat": "Colombia",
-   "pos": null,
-   "goals": 2,
-   "penalties": null
-  },
-  {
-   "name": "Elijah Just",
-   "code": "NZL",
-   "nat": "New Zealand",
    "pos": null,
    "goals": 2,
    "penalties": null
