@@ -335,12 +335,12 @@
   "66": {
    "hs": 0,
    "as": 0,
-   "status": "HT"
+   "status": "LIVE"
   },
   "67": {
    "hs": 1,
    "as": 0,
-   "status": "HT"
+   "status": "LIVE"
   },
   "72": {
    "h": "RSA",
