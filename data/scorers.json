@@ -283,6 +283,14 @@
    "penalties": null
   },
   {
+   "name": "Riyad Mahrez",
+   "code": "ALG",
+   "nat": "Algeria",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Ruben Vargas",
    "code": "SUI",
    "nat": "Switzerland",
@@ -726,14 +734,6 @@
    "name": "Nizar Al Rashdan",
    "code": "JOR",
    "nat": "Jordan",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Nuno Mendes",
-   "code": "POR",
-   "nat": "Portugal",
    "pos": null,
    "goals": 1,
    "penalties": null

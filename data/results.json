@@ -353,14 +353,14 @@
    "status": "FT"
   },
   "70": {
-   "hs": 2,
-   "as": 2,
-   "status": "LIVE"
+   "hs": 3,
+   "as": 3,
+   "status": "FT"
   },
   "71": {
    "hs": 1,
    "as": 3,
-   "status": "LIVE"
+   "status": "FT"
   },
   "72": {
    "h": "RSA",
