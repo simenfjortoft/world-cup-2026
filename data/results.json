@@ -1,5 +1,5 @@
 {
- "lastUpdated": "2026-06-27",
+ "lastUpdated": "2026-06-28",
  "source": "football-data.org , competition WC",
  "matches": {
   "0": {
@@ -342,6 +342,16 @@
    "as": 1,
    "status": "FT"
   },
+  "68": {
+   "hs": 0,
+   "as": 0,
+   "status": "FT"
+  },
+  "69": {
+   "hs": 3,
+   "as": 1,
+   "status": "LIVE"
+  },
   "72": {
    "h": "RSA",
    "a": "CAN"
@@ -354,8 +364,8 @@
    "h": "GER"
   },
   "75": {
-   "a": "MAR",
-   "h": "NED"
+   "h": "NED",
+   "a": "MAR"
   },
   "76": {
    "h": "CIV",
@@ -374,12 +384,14 @@
    "h": "BEL"
   },
   "81": {
-   "h": "USA"
+   "h": "USA",
+   "a": "BIH"
   },
   "82": {
    "h": "ESP"
   },
   "83": {
+   "h": "POR",
    "a": "CRO"
   },
   "84": {
@@ -390,7 +402,11 @@
    "a": "EGY"
   },
   "86": {
+   "h": "ARG",
    "a": "CPV"
+  },
+  "87": {
+   "h": "COL"
   }
  }
 }
