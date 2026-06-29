@@ -379,9 +379,9 @@
   "74": {
    "h": "GER",
    "a": "PAR",
-   "hs": 1,
-   "as": 1,
-   "status": "LIVE"
+   "hs": 5,
+   "as": 6,
+   "status": "FT"
   },
   "75": {
    "h": "NED",
