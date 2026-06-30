@@ -394,8 +394,8 @@
    "h": "CIV",
    "a": "NOR",
    "hs": 0,
-   "as": 0,
-   "status": "LIVE"
+   "as": 1,
+   "status": "HT"
   },
   "77": {
    "h": "FRA",
