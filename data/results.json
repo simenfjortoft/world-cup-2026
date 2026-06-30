@@ -1,5 +1,5 @@
 {
- "lastUpdated": "2026-06-29",
+ "lastUpdated": "2026-06-30",
  "source": "football-data.org , competition WC",
  "matches": {
   "0": {
@@ -379,13 +379,16 @@
   "74": {
    "h": "GER",
    "a": "PAR",
-   "hs": 5,
-   "as": 6,
+   "hs": 4,
+   "as": 5,
    "status": "FT"
   },
   "75": {
    "h": "NED",
-   "a": "MAR"
+   "a": "MAR",
+   "hs": 0,
+   "as": 0,
+   "status": "LIVE"
   },
   "76": {
    "h": "CIV",
