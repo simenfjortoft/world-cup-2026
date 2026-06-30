@@ -23,7 +23,7 @@
    "code": "FRA",
    "nat": "France",
    "pos": null,
-   "goals": 4,
+   "goals": 5,
    "penalties": null
   },
   {
@@ -158,6 +158,14 @@
    "name": "Ayase Ueda",
    "code": "JPN",
    "nat": "Japan",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
+   "name": "Bradley Barcola",
+   "code": "FRA",
+   "nat": "France",
    "pos": null,
    "goals": 2,
    "penalties": null
@@ -382,14 +390,6 @@
    "name": "Boualem Khoukhi",
    "code": "QAT",
    "nat": "Qatar",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Bradley Barcola",
-   "code": "FRA",
-   "nat": "France",
    "pos": null,
    "goals": 1,
    "penalties": null
