@@ -115,6 +115,14 @@
    "penalties": null
   },
   {
+   "name": "Julián Quiñones",
+   "code": "MEX",
+   "nat": "Colombia",
+   "pos": null,
+   "goals": 3,
+   "penalties": null
+  },
+  {
    "name": "Kai Havertz",
    "code": "GER",
    "nat": "Germany",
@@ -235,14 +243,6 @@
    "penalties": null
   },
   {
-   "name": "Julián Quiñones",
-   "code": "MEX",
-   "nat": "Colombia",
-   "pos": null,
-   "goals": 2,
-   "penalties": null
-  },
-  {
    "name": "Leandro Trossard",
    "code": "BEL",
    "nat": "Belgium",
@@ -294,6 +294,14 @@
    "name": "Ramin Rezaeian",
    "code": "IRN",
    "nat": "Iran",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
+   "name": "Raúl Jiménez",
+   "code": "MEX",
+   "nat": "Mexico",
    "pos": null,
    "goals": 2,
    "penalties": null
@@ -750,14 +758,6 @@
    "name": "Petar Musa",
    "code": "CRO",
    "nat": "Croatia",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Raúl Jiménez",
-   "code": "MEX",
-   "nat": "Mexico",
    "pos": null,
    "goals": 1,
    "penalties": null
