@@ -347,6 +347,14 @@
    "penalties": null
   },
   {
+   "name": "Youri Tielemans",
+   "code": "BEL",
+   "nat": "Belgium",
+   "pos": null,
+   "goals": 2,
+   "penalties": 1
+  },
+  {
    "name": "Abbosbek Fayzullaev",
    "code": "UZB",
    "nat": "Uzbekistan",
@@ -734,14 +742,6 @@
    "name": "Nico Schlotterbeck",
    "code": "GER",
    "nat": "Germany",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Nizar Al Rashdan",
-   "code": "JOR",
-   "nat": "Jordan",
    "pos": null,
    "goals": 1,
    "penalties": null
