@@ -235,6 +235,14 @@
    "penalties": null
   },
   {
+   "name": "Habib Diarra",
+   "code": "SEN",
+   "nat": "Senegal",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Jude Bellingham",
    "code": "ENG",
    "nat": "England",
@@ -374,14 +382,6 @@
    "name": "Ali Olwan",
    "code": "JOR",
    "nat": "Jordan",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Amine Gouiri",
-   "code": "ALG",
-   "nat": "Algeria",
    "pos": null,
    "goals": 1,
    "penalties": null
