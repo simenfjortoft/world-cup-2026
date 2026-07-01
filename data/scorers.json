@@ -35,6 +35,14 @@
    "penalties": 1
   },
   {
+   "name": "Ismaïla Sarr",
+   "code": "SEN",
+   "nat": "Senegal",
+   "pos": null,
+   "goals": 4,
+   "penalties": null
+  },
+  {
    "name": "Ousmane Dembélé",
    "code": "FRA",
    "nat": "France",
@@ -86,14 +94,6 @@
    "name": "Ismael Saibari",
    "code": "MAR",
    "nat": "Morocco",
-   "pos": null,
-   "goals": 3,
-   "penalties": null
-  },
-  {
-   "name": "Ismaïla Sarr",
-   "code": "SEN",
-   "nat": "Senegal",
    "pos": null,
    "goals": 3,
    "penalties": null
@@ -318,6 +318,14 @@
    "name": "Riyad Mahrez",
    "code": "ALG",
    "nat": "Algeria",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
+   "name": "Romelu Lukaku",
+   "code": "BEL",
+   "nat": "Belgium",
    "pos": null,
    "goals": 2,
    "penalties": null
@@ -694,14 +702,6 @@
    "name": "Mostafa Ziko",
    "code": "EGY",
    "nat": "Egypt",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Nadhir Benbouali",
-   "code": "ALG",
-   "nat": "Algeria",
    "pos": null,
    "goals": 1,
    "penalties": null

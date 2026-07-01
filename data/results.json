@@ -421,9 +421,9 @@
   "80": {
    "h": "BEL",
    "a": "SEN",
-   "hs": 0,
-   "as": 0,
-   "status": "LIVE"
+   "hs": 2,
+   "as": 2,
+   "status": "HT"
   },
   "81": {
    "h": "USA",
