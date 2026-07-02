@@ -428,9 +428,9 @@
   "81": {
    "h": "USA",
    "a": "BIH",
-   "hs": 1,
+   "hs": 2,
    "as": 0,
-   "status": "LIVE"
+   "status": "FT"
   },
   "82": {
    "h": "ESP",
