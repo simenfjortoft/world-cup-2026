@@ -1,5 +1,5 @@
 {
- "lastUpdated": "2026-07-01",
+ "lastUpdated": "2026-07-02",
  "source": "football-data.org , competition WC",
  "scorers": [
   {
@@ -86,6 +86,14 @@
    "name": "Elijah Just",
    "code": "NZL",
    "nat": "New Zealand",
+   "pos": null,
+   "goals": 3,
+   "penalties": null
+  },
+  {
+   "name": "Folarin Balogun",
+   "code": "USA",
+   "nat": "USA",
    "pos": null,
    "goals": 3,
    "penalties": null
@@ -222,14 +230,6 @@
    "name": "Ermin Mahmic",
    "code": "BIH",
    "nat": "Bosnia and Herzegovina",
-   "pos": null,
-   "goals": 2,
-   "penalties": null
-  },
-  {
-   "name": "Folarin Balogun",
-   "code": "USA",
-   "nat": "USA",
    "pos": null,
    "goals": 2,
    "penalties": null
