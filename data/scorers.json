@@ -43,6 +43,14 @@
    "penalties": null
   },
   {
+   "name": "Mikel Oyarzabal",
+   "code": "ESP",
+   "nat": "Spain",
+   "pos": null,
+   "goals": 4,
+   "penalties": null
+  },
+  {
    "name": "Ousmane Dembélé",
    "code": "FRA",
    "nat": "France",
@@ -142,14 +150,6 @@
    "name": "Matheus Cunha",
    "code": "BRA",
    "nat": "Brazil",
-   "pos": null,
-   "goals": 3,
-   "penalties": null
-  },
-  {
-   "name": "Mikel Oyarzabal",
-   "code": "ESP",
-   "nat": "Spain",
    "pos": null,
    "goals": 3,
    "penalties": null

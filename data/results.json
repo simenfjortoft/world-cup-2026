@@ -435,9 +435,9 @@
   "82": {
    "h": "ESP",
    "a": "AUT",
-   "hs": 1,
+   "hs": 3,
    "as": 0,
-   "status": "LIVE"
+   "status": "FT"
   },
   "83": {
    "h": "POR",
