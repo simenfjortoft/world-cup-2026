@@ -243,6 +243,14 @@
    "penalties": null
   },
   {
+   "name": "Emam Ashour",
+   "code": "EGY",
+   "nat": "Egypt",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Ermin Mahmic",
    "code": "BIH",
    "nat": "Bosnia and Herzegovina",
@@ -438,14 +446,6 @@
    "name": "Connor Metcalfe",
    "code": "AUS",
    "nat": "Australia",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Emam Ashour",
-   "code": "EGY",
-   "nat": "Egypt",
    "pos": null,
    "goals": 1,
    "penalties": null
