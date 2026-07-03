@@ -1,5 +1,5 @@
 {
- "lastUpdated": "2026-07-02",
+ "lastUpdated": "2026-07-03",
  "source": "football-data.org , competition WC",
  "matches": {
   "0": {
@@ -442,13 +442,16 @@
   "83": {
    "h": "POR",
    "a": "CRO",
-   "hs": 0,
-   "as": 0,
-   "status": "LIVE"
+   "hs": 2,
+   "as": 1,
+   "status": "FT"
   },
   "84": {
    "h": "SUI",
-   "a": "ALG"
+   "a": "ALG",
+   "hs": 1,
+   "as": 0,
+   "status": "LIVE"
   },
   "85": {
    "h": "AUS",
