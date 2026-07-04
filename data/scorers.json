@@ -3,19 +3,19 @@
  "source": "football-data.org , competition WC",
  "scorers": [
   {
+   "name": "Kylian Mbappé",
+   "code": "FRA",
+   "nat": "France",
+   "pos": null,
+   "goals": 7,
+   "penalties": 1
+  },
+  {
    "name": "Lionel Messi",
    "code": "ARG",
    "nat": "Argentina",
    "pos": null,
    "goals": 7,
-   "penalties": null
-  },
-  {
-   "name": "Kylian Mbappé",
-   "code": "FRA",
-   "nat": "France",
-   "pos": null,
-   "goals": 6,
    "penalties": null
   },
   {

@@ -485,8 +485,8 @@
    "h": "PAR",
    "a": "FRA",
    "hs": 0,
-   "as": 0,
-   "status": "HT"
+   "as": 1,
+   "status": "LIVE"
   },
   "90": {
    "h": "BRA",
