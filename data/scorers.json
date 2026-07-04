@@ -195,6 +195,14 @@
    "penalties": null
   },
   {
+   "name": "Azzedine Ounahi",
+   "code": "MAR",
+   "nat": "Morocco",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Bradley Barcola",
    "code": "FRA",
    "nat": "France",
@@ -350,6 +358,14 @@
    "name": "Ruben Vargas",
    "code": "SUI",
    "nat": "Switzerland",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
+   "name": "Soufiane Rahimi",
+   "code": "MAR",
+   "nat": "Morocco",
    "pos": null,
    "goals": 2,
    "penalties": null
@@ -635,14 +651,6 @@
    "penalties": null
   },
   {
-   "name": "Marcus Pedersen",
-   "code": "NOR",
-   "nat": "Norway",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
    "name": "Marcus Rashford",
    "code": "ENG",
    "nat": "England",
@@ -777,14 +785,6 @@
    "pos": null,
    "goals": 1,
    "penalties": 1
-  },
-  {
-   "name": "Trezeguet",
-   "code": "EGY",
-   "nat": "Egypt",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
   },
   {
    "name": "Viktor Gyökeres",

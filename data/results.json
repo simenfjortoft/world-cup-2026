@@ -478,8 +478,8 @@
    "h": "CAN",
    "a": "MAR",
    "hs": 0,
-   "as": 0,
-   "status": "HT"
+   "as": 3,
+   "status": "FT"
   },
   "89": {
    "h": "PAR",
