@@ -1,5 +1,5 @@
 {
- "lastUpdated": "2026-07-03",
+ "lastUpdated": "2026-07-04",
  "source": "football-data.org , competition WC",
  "matches": {
   "0": {
@@ -463,9 +463,9 @@
   "86": {
    "h": "ARG",
    "a": "CPV",
-   "hs": 1,
-   "as": 1,
-   "status": "LIVE"
+   "hs": 3,
+   "as": 2,
+   "status": "FT"
   },
   "87": {
    "h": "COL",
