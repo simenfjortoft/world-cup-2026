@@ -3,6 +3,14 @@
  "source": "football-data.org , competition WC",
  "scorers": [
   {
+   "name": "Erling Haaland",
+   "code": "NOR",
+   "nat": "Norway",
+   "pos": null,
+   "goals": 7,
+   "penalties": null
+  },
+  {
    "name": "Kylian Mbappé",
    "code": "FRA",
    "nat": "France",
@@ -16,14 +24,6 @@
    "nat": "Argentina",
    "pos": null,
    "goals": 7,
-   "penalties": null
-  },
-  {
-   "name": "Erling Haaland",
-   "code": "NOR",
-   "nat": "Norway",
-   "pos": null,
-   "goals": 5,
    "penalties": null
   },
   {
