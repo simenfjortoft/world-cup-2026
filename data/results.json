@@ -506,8 +506,8 @@
    "h": "POR",
    "a": "ESP",
    "hs": 0,
-   "as": 0,
-   "status": "HT"
+   "as": 1,
+   "status": "FT"
   },
   "93": {
    "h": "USA",
