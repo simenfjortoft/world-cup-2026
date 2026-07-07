@@ -3,6 +3,14 @@
  "source": "football-data.org , competition WC",
  "scorers": [
   {
+   "name": "Lionel Messi",
+   "code": "ARG",
+   "nat": "Argentina",
+   "pos": null,
+   "goals": 8,
+   "penalties": null
+  },
+  {
    "name": "Erling Haaland",
    "code": "NOR",
    "nat": "Norway",
@@ -17,14 +25,6 @@
    "pos": null,
    "goals": 7,
    "penalties": 1
-  },
-  {
-   "name": "Lionel Messi",
-   "code": "ARG",
-   "nat": "Argentina",
-   "pos": null,
-   "goals": 7,
-   "penalties": null
   },
   {
    "name": "Harry Kane",
@@ -339,6 +339,14 @@
    "penalties": null
   },
   {
+   "name": "Mostafa Ziko",
+   "code": "EGY",
+   "nat": "Egypt",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Nicolas Pépé",
    "code": "CIV",
    "nat": "Ivory Coast",
@@ -486,14 +494,6 @@
    "name": "Felix Kalu Nmecha",
    "code": "GER",
    "nat": "Germany",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Finn Surman",
-   "code": "NZL",
-   "nat": "New Zealand",
    "pos": null,
    "goals": 1,
    "penalties": null

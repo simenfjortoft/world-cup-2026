@@ -519,9 +519,9 @@
   "94": {
    "h": "ARG",
    "a": "EGY",
-   "hs": 0,
+   "hs": 3,
    "as": 2,
-   "status": "LIVE"
+   "status": "FT"
   },
   "95": {
    "h": "SUI",
