@@ -179,6 +179,14 @@
    "penalties": 1
   },
   {
+   "name": "Romelu Lukaku",
+   "code": "BEL",
+   "nat": "Belgium",
+   "pos": null,
+   "goals": 3,
+   "penalties": null
+  },
+  {
    "name": "Yoane Wissa",
    "code": "COD",
    "nat": "Congo DR",
@@ -358,14 +366,6 @@
    "name": "Riyad Mahrez",
    "code": "ALG",
    "nat": "Algeria",
-   "pos": null,
-   "goals": 2,
-   "penalties": null
-  },
-  {
-   "name": "Romelu Lukaku",
-   "code": "BEL",
-   "nat": "Belgium",
    "pos": null,
    "goals": 2,
    "penalties": null
