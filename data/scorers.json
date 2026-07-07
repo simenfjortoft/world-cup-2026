@@ -1,5 +1,5 @@
 {
- "lastUpdated": "2026-07-06",
+ "lastUpdated": "2026-07-07",
  "source": "football-data.org , competition WC",
  "scorers": [
   {
@@ -235,6 +235,14 @@
    "penalties": 1
   },
   {
+   "name": "Charles De Ketelaere",
+   "code": "BEL",
+   "nat": "Belgium",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Crysencio Summerville",
    "code": "NED",
    "nat": "Netherlands",
@@ -294,6 +302,14 @@
    "name": "Leandro Trossard",
    "code": "BEL",
    "nat": "Belgium",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
+   "name": "Malik Tillman",
+   "code": "USA",
+   "nat": "USA",
    "pos": null,
    "goals": 2,
    "penalties": null
@@ -699,25 +715,9 @@
    "penalties": null
   },
   {
-   "name": "Mohamed Salah",
-   "code": "EGY",
-   "nat": "Egypt",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
    "name": "Mohammad Mohebi",
    "code": "IRN",
    "nat": "Iran",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Mostafa Ziko",
-   "code": "EGY",
-   "nat": "Egypt",
    "pos": null,
    "goals": 1,
    "penalties": null

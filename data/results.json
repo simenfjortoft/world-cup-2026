@@ -1,5 +1,5 @@
 {
- "lastUpdated": "2026-07-06",
+ "lastUpdated": "2026-07-07",
  "source": "football-data.org , competition WC",
  "matches": {
   "0": {
@@ -511,7 +511,10 @@
   },
   "93": {
    "h": "USA",
-   "a": "BEL"
+   "a": "BEL",
+   "hs": 1,
+   "as": 3,
+   "status": "LIVE"
   },
   "94": {
    "h": "ARG",
