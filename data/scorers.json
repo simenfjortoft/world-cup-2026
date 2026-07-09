@@ -3,6 +3,14 @@
  "source": "football-data.org , competition WC",
  "scorers": [
   {
+   "name": "Kylian Mbappé",
+   "code": "FRA",
+   "nat": "France",
+   "pos": null,
+   "goals": 8,
+   "penalties": 1
+  },
+  {
    "name": "Lionel Messi",
    "code": "ARG",
    "nat": "Argentina",
@@ -19,20 +27,20 @@
    "penalties": null
   },
   {
-   "name": "Kylian Mbappé",
-   "code": "FRA",
-   "nat": "France",
-   "pos": null,
-   "goals": 7,
-   "penalties": 1
-  },
-  {
    "name": "Harry Kane",
    "code": "ENG",
    "nat": "England",
    "pos": null,
    "goals": 6,
    "penalties": 2
+  },
+  {
+   "name": "Ousmane Dembélé",
+   "code": "FRA",
+   "nat": "France",
+   "pos": null,
+   "goals": 5,
+   "penalties": null
   },
   {
    "name": "Ismaïla Sarr",
@@ -62,14 +70,6 @@
    "name": "Mikel Oyarzabal",
    "code": "ESP",
    "nat": "Spain",
-   "pos": null,
-   "goals": 4,
-   "penalties": null
-  },
-  {
-   "name": "Ousmane Dembélé",
-   "code": "FRA",
-   "nat": "France",
    "pos": null,
    "goals": 4,
    "penalties": null

@@ -533,9 +533,9 @@
   "96": {
    "h": "FRA",
    "a": "MAR",
-   "hs": 0,
+   "hs": 2,
    "as": 0,
-   "status": "HT"
+   "status": "FT"
   },
   "97": {
    "h": "ESP",
