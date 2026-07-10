@@ -540,9 +540,9 @@
   "97": {
    "h": "ESP",
    "a": "BEL",
-   "hs": 1,
+   "hs": 2,
    "as": 1,
-   "status": "HT"
+   "status": "FT"
   },
   "98": {
    "h": "NOR",

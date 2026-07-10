@@ -339,6 +339,14 @@
    "penalties": null
   },
   {
+   "name": "Mikel Merino",
+   "code": "ESP",
+   "nat": "Spain",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Mostafa Ziko",
    "code": "EGY",
    "nat": "Egypt",
@@ -521,14 +529,6 @@
    "pos": null,
    "goals": 1,
    "penalties": 1
-  },
-  {
-   "name": "Hélio Varela",
-   "code": "CPV",
-   "nat": "Cape Verde Islands",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
   },
   {
    "name": "Hyun-Gyu Oh",
