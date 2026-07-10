@@ -91,6 +91,14 @@
    "penalties": null
   },
   {
+   "name": "Charles De Ketelaere",
+   "code": "BEL",
+   "nat": "Belgium",
+   "pos": null,
+   "goals": 3,
+   "penalties": null
+  },
+  {
    "name": "Cody Gakpo",
    "code": "NED",
    "nat": "Netherlands",
@@ -241,14 +249,6 @@
    "pos": null,
    "goals": 2,
    "penalties": 1
-  },
-  {
-   "name": "Charles De Ketelaere",
-   "code": "BEL",
-   "nat": "Belgium",
-   "pos": null,
-   "goals": 2,
-   "penalties": null
   },
   {
    "name": "Crysencio Summerville",
