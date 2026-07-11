@@ -1,5 +1,5 @@
 {
- "lastUpdated": "2026-07-11T05:41:56.338Z",
+ "lastUpdated": "2026-07-11T07:56:42.784Z",
  "source": "open-meteo.com",
  "matches": {
   "0": {
@@ -563,15 +563,15 @@
    "lo": 18
   },
   "98": {
-   "c": 29,
-   "feels": 34,
+   "c": 30,
+   "feels": 33,
    "code": 3,
    "hi": 31,
    "lo": 23
   },
   "99": {
    "c": 30,
-   "feels": 30,
+   "feels": 31,
    "code": 0,
    "hi": 33,
    "lo": 20
