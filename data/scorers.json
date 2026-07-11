@@ -35,6 +35,14 @@
    "penalties": 2
   },
   {
+   "name": "Jude Bellingham",
+   "code": "ENG",
+   "nat": "England",
+   "pos": null,
+   "goals": 5,
+   "penalties": null
+  },
+  {
    "name": "Ousmane Dembélé",
    "code": "FRA",
    "nat": "France",
@@ -46,14 +54,6 @@
    "name": "Ismaïla Sarr",
    "code": "SEN",
    "nat": "Senegal",
-   "pos": null,
-   "goals": 4,
-   "penalties": null
-  },
-  {
-   "name": "Jude Bellingham",
-   "code": "ENG",
-   "nat": "England",
    "pos": null,
    "goals": 4,
    "penalties": null
