@@ -275,6 +275,14 @@
    "penalties": null
   },
   {
+   "name": "Dan Ndoye",
+   "code": "SUI",
+   "nat": "Switzerland",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Daniel Muñoz",
    "code": "COL",
    "nat": "Colombia",
@@ -430,14 +438,6 @@
    "name": "Abdulelah Al Amri",
    "code": "KSA",
    "nat": "Saudi Arabia",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Agustín Canobbio",
-   "code": "URU",
-   "nat": "Uruguay",
    "pos": null,
    "goals": 1,
    "penalties": null
