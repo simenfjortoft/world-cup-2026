@@ -554,9 +554,9 @@
   "99": {
    "h": "ARG",
    "a": "SUI",
-   "hs": 1,
+   "hs": 3,
    "as": 1,
-   "status": "LIVE"
+   "status": "FT"
   },
   "100": {
    "h": "FRA",
