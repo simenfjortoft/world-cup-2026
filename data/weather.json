@@ -1,5 +1,5 @@
 {
- "lastUpdated": "2026-07-14T05:31:13.814Z",
+ "lastUpdated": "2026-07-14T08:05:17.928Z",
  "source": "open-meteo.com",
  "matches": {
   "0": {
@@ -603,15 +603,15 @@
    "typical": true
   },
   "100": {
-   "c": 30,
-   "feels": 34,
-   "code": 2,
-   "hi": 32,
-   "lo": 25
+   "c": 31,
+   "feels": 33,
+   "code": 3,
+   "hi": 31,
+   "lo": 24
   },
   "101": {
-   "c": 29,
-   "feels": 33,
+   "c": 31,
+   "feels": 35,
    "code": 3,
    "hi": 31,
    "lo": 21
