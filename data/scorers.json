@@ -387,6 +387,14 @@
    "penalties": null
   },
   {
+   "name": "Pedro Porro",
+   "code": "ESP",
+   "nat": "Spain",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Ramin Rezaeian",
    "code": "IRN",
    "nat": "Iran",
@@ -622,14 +630,6 @@
    "name": "Ladislav Krejčí",
    "code": "CZE",
    "nat": "Czech Republic",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Lamine Yamal",
-   "code": "ESP",
-   "nat": "Spain",
    "pos": null,
    "goals": 1,
    "penalties": null
