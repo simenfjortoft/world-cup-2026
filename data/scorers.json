@@ -171,6 +171,14 @@
    "penalties": 1
   },
   {
+   "name": "Lautaro Martínez",
+   "code": "ARG",
+   "nat": "Argentina",
+   "pos": null,
+   "goals": 3,
+   "penalties": 1
+  },
+  {
    "name": "Matheus Cunha",
    "code": "BRA",
    "nat": "Brazil",
@@ -299,6 +307,14 @@
    "penalties": null
   },
   {
+   "name": "Enzo Fernández",
+   "code": "ARG",
+   "nat": "Argentina",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Ermin Mahmic",
    "code": "BIH",
    "nat": "Bosnia and Herzegovina",
@@ -313,14 +329,6 @@
    "pos": null,
    "goals": 2,
    "penalties": null
-  },
-  {
-   "name": "Lautaro Martínez",
-   "code": "ARG",
-   "nat": "Argentina",
-   "pos": null,
-   "goals": 2,
-   "penalties": 1
   },
   {
    "name": "Leandro Trossard",
@@ -606,14 +614,6 @@
    "name": "Jovo Lukić",
    "code": "BIH",
    "nat": "Bosnia-Herzegovina",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Junya Ito",
-   "code": "JPN",
-   "nat": "Japan",
    "pos": null,
    "goals": 1,
    "penalties": null
