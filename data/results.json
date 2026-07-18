@@ -575,9 +575,9 @@
   "102": {
    "h": "FRA",
    "a": "ENG",
-   "hs": 2,
-   "as": 4,
-   "status": "LIVE"
+   "hs": 4,
+   "as": 6,
+   "status": "FT"
   },
   "103": {
    "h": "ESP",

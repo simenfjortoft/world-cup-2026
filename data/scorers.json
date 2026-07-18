@@ -7,7 +7,7 @@
    "code": "FRA",
    "nat": "France",
    "pos": null,
-   "goals": 9,
+   "goals": 10,
    "penalties": 1
   },
   {
@@ -27,6 +27,14 @@
    "penalties": null
   },
   {
+   "name": "Jude Bellingham",
+   "code": "ENG",
+   "nat": "England",
+   "pos": null,
+   "goals": 7,
+   "penalties": null
+  },
+  {
    "name": "Harry Kane",
    "code": "ENG",
    "nat": "England",
@@ -35,9 +43,9 @@
    "penalties": 2
   },
   {
-   "name": "Jude Bellingham",
-   "code": "ENG",
-   "nat": "England",
+   "name": "Ousmane Dembélé",
+   "code": "FRA",
+   "nat": "France",
    "pos": null,
    "goals": 6,
    "penalties": null
@@ -49,14 +57,6 @@
    "pos": null,
    "goals": 5,
    "penalties": 1
-  },
-  {
-   "name": "Ousmane Dembélé",
-   "code": "FRA",
-   "nat": "France",
-   "pos": null,
-   "goals": 5,
-   "penalties": null
   },
   {
    "name": "Ismaïla Sarr",
@@ -97,6 +97,14 @@
    "pos": null,
    "goals": 3,
    "penalties": null
+  },
+  {
+   "name": "Bukayo Saka",
+   "code": "ENG",
+   "nat": "England",
+   "pos": null,
+   "goals": 3,
+   "penalties": 1
   },
   {
    "name": "Charles De Ketelaere",
@@ -257,14 +265,6 @@
    "pos": null,
    "goals": 2,
    "penalties": 1
-  },
-  {
-   "name": "Bukayo Saka",
-   "code": "ENG",
-   "nat": "England",
-   "pos": null,
-   "goals": 2,
-   "penalties": null
   },
   {
    "name": "Crysencio Summerville",
