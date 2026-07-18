@@ -7,7 +7,7 @@
    "code": "FRA",
    "nat": "France",
    "pos": null,
-   "goals": 8,
+   "goals": 9,
    "penalties": 1
   },
   {
@@ -80,6 +80,14 @@
    "nat": "Brazil",
    "pos": null,
    "goals": 4,
+   "penalties": null
+  },
+  {
+   "name": "Bradley Barcola",
+   "code": "FRA",
+   "nat": "France",
+   "pos": null,
+   "goals": 3,
    "penalties": null
   },
   {
@@ -238,14 +246,6 @@
    "name": "Azzedine Ounahi",
    "code": "MAR",
    "nat": "Morocco",
-   "pos": null,
-   "goals": 2,
-   "penalties": null
-  },
-  {
-   "name": "Bradley Barcola",
-   "code": "FRA",
-   "nat": "France",
    "pos": null,
    "goals": 2,
    "penalties": null
