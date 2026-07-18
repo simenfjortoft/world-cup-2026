@@ -259,6 +259,14 @@
    "penalties": 1
   },
   {
+   "name": "Bukayo Saka",
+   "code": "ENG",
+   "nat": "England",
+   "pos": null,
+   "goals": 2,
+   "penalties": null
+  },
+  {
    "name": "Crysencio Summerville",
    "code": "NED",
    "nat": "Netherlands",
@@ -526,14 +534,6 @@
    "name": "Felix Kalu Nmecha",
    "code": "GER",
    "nat": "Germany",
-   "pos": null,
-   "goals": 1,
-   "penalties": null
-  },
-  {
-   "name": "Franck Kessié",
-   "code": "CIV",
-   "nat": "Ivory Coast",
    "pos": null,
    "goals": 1,
    "penalties": null
