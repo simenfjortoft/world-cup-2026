@@ -1,5 +1,5 @@
 {
- "lastUpdated": "2026-10-05T04:23:51.956Z",
+ "lastUpdated": "2026-10-05T13:47:01.138Z",
  "source": "open-meteo.com",
  "matches": {
   "0": {
@@ -564,6 +564,12 @@
    "c": 27,
    "hi": 32,
    "lo": 25,
+   "typical": true
+  },
+  "99": {
+   "c": 25,
+   "hi": 31,
+   "lo": 21,
    "typical": true
   },
   "100": {
